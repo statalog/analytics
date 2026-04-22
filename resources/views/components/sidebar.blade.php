@@ -45,6 +45,15 @@
         <a href="{{ route('user.entry-exit') }}" class="nav-link {{ request()->routeIs('user.entry-exit*') ? 'active' : '' }}">
             <i class="bi bi-door-open"></i> {{ __('app.nav_entry_exit') }}
         </a>
+        <a href="{{ route('user.visit-depth') }}" class="nav-link {{ request()->routeIs('user.visit-depth*') ? 'active' : '' }}">
+            <i class="bi bi-layers"></i> {{ __('app.nav_visit_depth') }}
+        </a>
+        <a href="{{ route('user.new-vs-returning') }}" class="nav-link {{ request()->routeIs('user.new-vs-returning*') ? 'active' : '' }}">
+            <i class="bi bi-arrow-left-right"></i> {{ __('app.nav_new_vs_returning') }}
+        </a>
+        <a href="{{ route('user.time-on-page') }}" class="nav-link {{ request()->routeIs('user.time-on-page*') ? 'active' : '' }}">
+            <i class="bi bi-clock"></i> {{ __('app.nav_time_on_page') }}
+        </a>
     </div>
 
     {{-- Cloud package injects extra sections here (AI Insights, Teams, Billing). --}}

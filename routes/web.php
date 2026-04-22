@@ -6,10 +6,13 @@ use App\Http\Controllers\User\CampaignsController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
 use App\Http\Controllers\User\LiveStatsController;
+use App\Http\Controllers\User\NewVsReturningController;
 use App\Http\Controllers\User\OverviewController;
 use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\SiteController;
+use App\Http\Controllers\User\TimeOnPageController;
 use App\Http\Controllers\User\TwoFactorController;
+use App\Http\Controllers\User\VisitDepthController;
 use Illuminate\Support\Facades\Route;
 
 // Root: authed users go to dashboard. Guests see the cloud landing page
@@ -60,6 +63,18 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     // Entry & Exit Pages
     Route::get('/entry-exit', [EntryExitController::class, 'index'])->name('entry-exit');
     Route::get('/entry-exit/data', [EntryExitController::class, 'data'])->name('entry-exit.data');
+
+    // Visit Depth
+    Route::get('/visit-depth', [VisitDepthController::class, 'index'])->name('visit-depth');
+    Route::get('/visit-depth/data', [VisitDepthController::class, 'data'])->name('visit-depth.data');
+
+    // New vs Returning
+    Route::get('/new-vs-returning', [NewVsReturningController::class, 'index'])->name('new-vs-returning');
+    Route::get('/new-vs-returning/data', [NewVsReturningController::class, 'data'])->name('new-vs-returning.data');
+
+    // Time on Page
+    Route::get('/time-on-page', [TimeOnPageController::class, 'index'])->name('time-on-page');
+    Route::get('/time-on-page/data', [TimeOnPageController::class, 'data'])->name('time-on-page.data');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
