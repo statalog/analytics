@@ -21,61 +21,30 @@
 
 namespace App\Models;
 
-use App\Traits\BelongsToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
-class Site extends Model
+class FunnelStep extends Model
 {
-    use HasFactory, SoftDeletes, BelongsToUser;
+    use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'name',
-        'domain',
-        'site_id',
-        'timezone',
-        'is_active',
-        'track_subdomains',
+        'funnel_id',
+        'label',
+        'path',
+        'step_order',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_active'        => 'boolean',
-            'track_subdomains' => 'boolean',
+            'step_order' => 'integer',
         ];
     }
 
-    protected static function booted(): void
+    public function funnel(): BelongsTo
     {
-        static::creating(fn ($site) => $site->site_id = $site->site_id ?: 'SA-' . strtoupper(Str::random(13)));
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function funnels(): HasMany
-    {
-        return $this->hasMany(Funnel::class);
-    }
-
-    public function getTrackingSnippetAttribute(): string
-    {
-        return '<script defer data-site-id="' . e($this->site_id) . '" src="' . url('/js/tracker.js') . '"></script>';
-    }
-
-    public function setDomainAttribute(string $value): void
-    {
-        $value = preg_replace('#^https?://#', '', $value);
-        $value = rtrim($value, '/');
-
-        $this->attributes['domain'] = $value;
+        return $this->belongsTo(Funnel::class);
     }
 }

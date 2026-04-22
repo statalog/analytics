@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\CampaignsController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
+use App\Http\Controllers\User\FunnelController;
 use App\Http\Controllers\User\LiveStatsController;
 use App\Http\Controllers\User\NewVsReturningController;
 use App\Http\Controllers\User\OverviewController;
@@ -75,6 +76,15 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     // Time on Page
     Route::get('/time-on-page', [TimeOnPageController::class, 'index'])->name('time-on-page');
     Route::get('/time-on-page/data', [TimeOnPageController::class, 'data'])->name('time-on-page.data');
+
+    // Funnels
+    Route::get('/funnels',                  [FunnelController::class, 'index'])->name('funnels.index');
+    Route::get('/funnels/create',           [FunnelController::class, 'create'])->name('funnels.create');
+    Route::post('/funnels',                 [FunnelController::class, 'store'])->name('funnels.store');
+    Route::get('/funnels/{funnel}/edit',    [FunnelController::class, 'edit'])->name('funnels.edit');
+    Route::put('/funnels/{funnel}',         [FunnelController::class, 'update'])->name('funnels.update');
+    Route::delete('/funnels/{funnel}',      [FunnelController::class, 'destroy'])->name('funnels.destroy');
+    Route::get('/funnels/{funnel}/report',  [FunnelController::class, 'report'])->name('funnels.report');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');

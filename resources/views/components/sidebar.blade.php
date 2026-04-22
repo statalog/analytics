@@ -56,6 +56,13 @@
         </a>
     </div>
 
+    <div class="nav-section">
+        <div class="nav-section-title">{{ __('app.nav_section_conversion') }}</div>
+        <a href="{{ route('user.funnels.index') }}" class="nav-link {{ request()->routeIs('user.funnels*') ? 'active' : '' }}">
+            <i class="bi bi-funnel"></i> {{ __('app.nav_funnels') }}
+        </a>
+    </div>
+
     {{-- Cloud package injects extra sections here (AI Insights, Teams, Billing). --}}
     @if(view()->exists('cloud::partials.sidebar'))
         @include('cloud::partials.sidebar')
