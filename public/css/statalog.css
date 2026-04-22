@@ -4,13 +4,38 @@
    AGPL-3.0 License
 ============================================================ */
 
+/* ── Accent color schemes ────────────────────────────────────
+   Switch the active scheme by setting data-accent="<name>" on <html>,
+   driven by the STATALOG_ACCENT env variable. "blue" is the default
+   and is applied when no data-accent attribute is present.
+
+   Available: blue (default), indigo, violet, emerald, cyan, teal, amber, rose, ember
+   ──────────────────────────────────────────────────────────── */
+:root,
+[data-accent="blue"]    { --pa-primary: #0e7dd5; --pa-primary-hover: #0b6ab8; }
+[data-accent="indigo"]  { --pa-primary: #4F46E5; --pa-primary-hover: #4338CA; }
+[data-accent="violet"]  { --pa-primary: #8B5CF6; --pa-primary-hover: #7C3AED; }
+[data-accent="emerald"] { --pa-primary: #10B981; --pa-primary-hover: #059669; }
+[data-accent="cyan"]    { --pa-primary: #06B6D4; --pa-primary-hover: #0891B2; }
+[data-accent="teal"]    { --pa-primary: #0D9488; --pa-primary-hover: #0F766E; }
+[data-accent="amber"]   { --pa-primary: #F59E0B; --pa-primary-hover: #D97706; }
+[data-accent="rose"]    { --pa-primary: #F43F5E; --pa-primary-hover: #E11D48; }
+[data-accent="ember"]   { --pa-primary: #D04A1F; --pa-primary-hover: #B03D15; }
+
+/* Sidebar is a fixed dark slate across all schemes and themes. */
+:root {
+    --pa-sidebar-bg: #0F172A;
+    --pa-sidebar-link: #CBCBCB;
+    --pa-sidebar-text: #E8EBF3;
+    --pa-sidebar-border: rgba(255, 255, 255, 0.08);
+    --pa-sidebar-section-title: #6B7290;
+}
+
 /* ── Variables ── */
 :root {
-    --pa-primary: #0e7dd5;
-    --pa-primary-hover: #0b6ab8;
-    --pa-primary-soft: rgba(14, 125, 213, 0.1);
-    --pa-accent: #38bdf8;
-    --pa-hover-bg: rgba(14, 125, 213, 0.04);
+    --pa-primary-soft: color-mix(in srgb, var(--pa-primary) 10%, transparent);
+    --pa-accent: var(--pa-primary);
+    --pa-hover-bg: color-mix(in srgb, var(--pa-primary) 4%, transparent);
 
     --pa-bg: #FCFCFA;
     --pa-bg-alt: #f8f5ee;
@@ -47,8 +72,8 @@
 }
 
 [data-theme="dark"] {
-    --pa-primary-soft: rgba(14, 125, 213, 0.12);
-    --pa-hover-bg: rgba(14, 125, 213, 0.03);
+    --pa-primary-soft: color-mix(in srgb, var(--pa-primary) 12%, transparent);
+    --pa-hover-bg: color-mix(in srgb, var(--pa-primary) 3%, transparent);
 
     --pa-bg: #0D0F14;
     --pa-bg-alt: #1E2230;
@@ -114,8 +139,8 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     width: var(--pa-sidebar-width);
     height: 100vh;
-    background: var(--pa-bg-alt);
-    border-right: 1px solid var(--pa-border);
+    background: var(--pa-sidebar-bg);
+    border-right: 1px solid var(--pa-sidebar-border);
     z-index: 1040;
     overflow-y: auto;
     transition: transform 0.3s ease;
@@ -125,11 +150,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .sidebar .sidebar-brand {
     padding: 0.875rem 1.25rem;
-    border-bottom: 1px solid var(--pa-border);
+    border-bottom: 1px solid var(--pa-sidebar-border);
     font-family: 'Space Grotesk', sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--pa-text);
+    color: var(--pa-sidebar-text);
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -140,23 +165,31 @@ h1, h2, h3, h4, h5, h6 {
 
 .sidebar .site-switcher {
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--pa-border);
+    border-bottom: 1px solid var(--pa-sidebar-border);
 }
 
 .sidebar .site-switcher select {
     width: 100%;
-    background: var(--pa-card-bg);
-    border: 1px solid var(--pa-border);
-    color: var(--pa-text);
-    padding: 0.5rem 0.75rem;
+    background-color: rgba(255, 255, 255, 0.06);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23CBCBCB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 6 8 10 12 6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.625rem center;
+    background-size: 14px;
+    border: 1px solid var(--pa-sidebar-border);
+    color: var(--pa-sidebar-text);
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
     border-radius: var(--pa-radius);
     font-size: 0.875rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
 }
 
 .sidebar .site-switcher select:focus {
     border-color: var(--pa-primary);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(14, 125, 213, 0.2);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--pa-primary) 20%, transparent);
 }
 
 .sidebar .nav-section { padding: 0.5rem 0; }
@@ -168,7 +201,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: var(--pa-text-muted);
+    color: var(--pa-sidebar-section-title);
 }
 
 .sidebar .nav-link {
@@ -176,7 +209,7 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     gap: 0.5rem;
     padding: 0.45rem 1.25rem;
-    color: var(--pa-text-muted);
+    color: var(--pa-sidebar-link);
     text-decoration: none;
     font-size: 0.875rem;
     font-weight: 500;
@@ -188,18 +221,22 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1rem;
     width: 1.125rem;
     text-align: center;
+    color: inherit;
 }
 
 .sidebar .nav-link:hover {
-    color: var(--pa-text);
-    background: rgba(14, 125, 213, 0.05);
+    color: var(--pa-sidebar-text);
+    background: rgba(255, 255, 255, 0.04);
 }
 
-.sidebar .nav-link.active {
-    color: var(--pa-primary);
-    background: rgba(14, 125, 213, 0.08);
+.sidebar .nav-link.active,
+.sidebar .nav-link.active:hover {
+    color: #fff;
+    background: var(--pa-primary);
     border-left-color: var(--pa-primary);
 }
+
+.sidebar .nav-link.active i { color: #fff; }
 
 /* ── Main content area ── */
 .main-content {
@@ -223,17 +260,17 @@ h1, h2, h3, h4, h5, h6 {
 /* ── Cards ── */
 .pa-card {
     background: var(--pa-card-bg);
-    border: 1px solid var(--pa-border);
     border-radius: var(--pa-radius-lg);
     padding: 1.25rem;
+    box-shadow: var(--pa-shadow);
 }
 
 /* ── Stat cards ── */
 .stat-card {
     background: var(--pa-card-bg);
-    border: 1px solid var(--pa-border);
     border-radius: var(--pa-radius-lg);
     padding: 1.25rem;
+    box-shadow: var(--pa-shadow);
 }
 
 .stat-card .stat-icon {
@@ -271,15 +308,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .stat-card[role="button"]:hover:not(.stat-card-active) {
-    border-color: rgba(14, 125, 213, 0.4);
+    border-color: color-mix(in srgb, var(--pa-primary) 40%, transparent);
 }
 
 /* ── Detail cards ── */
 .detail-card {
     background: var(--pa-card-bg);
-    border: 1px solid var(--pa-border);
     border-radius: var(--pa-radius-lg);
     height: 100%;
+    box-shadow: var(--pa-shadow);
 }
 
 .detail-card .detail-card-header {
@@ -434,7 +471,7 @@ h1, h2, h3, h4, h5, h6 {
 .pa-input:focus {
     border-color: var(--pa-primary);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(14, 125, 213, 0.2);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--pa-primary) 20%, transparent);
 }
 
 .pa-input::placeholder { color: var(--pa-text-muted); }
@@ -644,7 +681,7 @@ input:checked + .toggle-track + .toggle-dot { transform: translateX(18px); }
 .btn-outline-primary { color: var(--pa-primary) !important; border-color: var(--pa-primary) !important; }
 .btn-outline-primary:hover { background-color: var(--pa-primary) !important; color: #fff !important; }
 .form-check-input:checked { background-color: var(--pa-primary); border-color: var(--pa-primary); }
-.form-control:focus, .form-select:focus { border-color: var(--pa-primary); box-shadow: 0 0 0 0.2rem rgba(14,125,213,0.25); }
+.form-control:focus, .form-select:focus { border-color: var(--pa-primary); box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--pa-primary) 25%, transparent); }
 
 /* ── Responsive ── */
 @media (max-width: 991.98px) {
@@ -681,11 +718,12 @@ input:checked + .toggle-track + .toggle-dot { transform: translateX(18px); }
 }
 
 .auth-logo a {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--pa-primary);
+    display: inline-block;
     text-decoration: none;
+}
+
+.auth-logo img {
+    display: block;
 }
 
 .auth-heading {
@@ -725,7 +763,7 @@ input:checked + .toggle-track + .toggle-dot { transform: translateX(18px); }
 .auth-input:focus {
     border-color: var(--pa-primary);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(14, 125, 213, 0.2);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--pa-primary) 20%, transparent);
 }
 
 .auth-error {

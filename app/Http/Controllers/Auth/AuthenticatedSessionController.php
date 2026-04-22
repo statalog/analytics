@@ -24,8 +24,30 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->ensureIsNotRateLimited();
 
+        $credentials = $request->only('email', 'password');
+
+        // Verify credentials without establishing a session — this lets us
+        // route users with 2FA enabled to the challenge screen first.
+        if (!Auth::validate($credentials)) {
+            \Illuminate\Support\Facades\RateLimiter::hit($request->throttleKey());
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        \Illuminate\Support\Facades\RateLimiter::clear($request->throttleKey());
+
+        $user = Auth::getProvider()->retrieveByCredentials($credentials);
+
+        if ($user->hasTwoFactorEnabled()) {
+            $request->session()->put('login.id', $user->getAuthIdentifier());
+            $request->session()->put('login.remember', $request->boolean('remember'));
+            return redirect()->route('two-factor.challenge');
+        }
+
+        Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
         return redirect()->intended(route('user.dashboard', absolute: false));

@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="auth-card">
         <div class="auth-logo">
-            <a href="{{ route('home') }}">{{ __('app.name') }}</a>
+            <a href="{{ route('home') }}"><img src="{{ asset('img/logo.png') }}" alt="{{ __('app.name') }}" style="height:42px;width:auto"></a>
         </div>
         <div class="auth-heading">{{ __('auth.forgot_heading') }}</div>
         <div class="auth-subheading">{{ __('auth.forgot_subheading') }}</div>

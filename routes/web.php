@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\LiveStatsController;
 use App\Http\Controllers\User\OverviewController;
 use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\SiteController;
+use App\Http\Controllers\User\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 
 // Root: authed users go to dashboard. Guests see the cloud landing page
@@ -55,7 +57,23 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     // Profile (from Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Two-factor authentication (profile page actions)
+    Route::post('/two-factor/start',   [TwoFactorController::class, 'start'])->name('two-factor.start');
+    Route::post('/two-factor/confirm', [TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
+    Route::post('/two-factor/cancel',  [TwoFactorController::class, 'cancel'])->name('two-factor.cancel');
+
+    Route::middleware('password.confirm')->group(function () {
+        Route::post('/two-factor/recovery-codes',    [TwoFactorController::class, 'showRecoveryCodes'])->name('two-factor.recovery-codes');
+        Route::post('/two-factor/recovery-codes/regenerate', [TwoFactorController::class, 'regenerateCodes'])->name('two-factor.regenerate');
+        Route::delete('/two-factor', [TwoFactorController::class, 'disable'])->name('two-factor.disable');
+    });
+});
+
+// Two-factor challenge (between password verification and full login).
+Route::middleware('guest')->group(function () {
+    Route::get('/two-factor-challenge',  [TwoFactorChallengeController::class, 'create'])->name('two-factor.challenge');
+    Route::post('/two-factor-challenge', [TwoFactorChallengeController::class, 'store']);
 });
 
 // Auth routes (published by Laravel Breeze)

@@ -5,8 +5,7 @@
 @endphp
 <aside class="sidebar">
     <a href="{{ route('user.overview') }}" class="sidebar-brand">
-        <i class="bi bi-graph-up-arrow" style="color:var(--pa-primary)"></i>
-        <span>{{ __('app.name') }}</span>
+        <img src="{{ asset('img/logo-backend.png') }}" alt="{{ __('app.name') }}">
     </a>
 
     @if($sites->count())

@@ -41,6 +41,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Accent Color Scheme
+    |--------------------------------------------------------------------------
+    |
+    | Controls the primary accent color used throughout the admin UI.
+    | Self-hosted admins can rebrand their instance by setting this in .env.
+    |
+    | Available: blue (default), indigo, violet, emerald, cyan, teal, amber, rose, ember
+    |
+    */
+
+    'accent' => env('STATALOG_ACCENT', 'blue'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Visitor Anonymization
     |--------------------------------------------------------------------------
     |
