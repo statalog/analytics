@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\CampaignsController;
 use App\Http\Controllers\User\DashboardController;
+use App\Http\Controllers\User\EntryExitController;
 use App\Http\Controllers\User\LiveStatsController;
 use App\Http\Controllers\User\OverviewController;
 use App\Http\Controllers\User\SettingsController;
@@ -49,6 +51,15 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     // Live Stats
     Route::get('/live', [LiveStatsController::class, 'index'])->name('live');
     Route::get('/live/data', [LiveStatsController::class, 'data'])->name('live.data');
+
+    // Campaigns
+    Route::get('/campaigns', [CampaignsController::class, 'index'])->name('campaigns');
+    Route::get('/campaigns/data', [CampaignsController::class, 'data'])->name('campaigns.data');
+    Route::get('/campaigns/drilldown', [CampaignsController::class, 'drilldown'])->name('campaigns.drilldown');
+
+    // Entry & Exit Pages
+    Route::get('/entry-exit', [EntryExitController::class, 'index'])->name('entry-exit');
+    Route::get('/entry-exit/data', [EntryExitController::class, 'data'])->name('entry-exit.data');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');

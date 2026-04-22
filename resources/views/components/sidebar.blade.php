@@ -39,6 +39,12 @@
         <a href="{{ route('user.live') }}" class="nav-link {{ request()->routeIs('user.live*') ? 'active' : '' }}">
             <i class="bi bi-broadcast"></i> {{ __('app.nav_live') }}
         </a>
+        <a href="{{ route('user.campaigns') }}" class="nav-link {{ request()->routeIs('user.campaigns*') ? 'active' : '' }}">
+            <i class="bi bi-megaphone"></i> {{ __('app.nav_campaigns') }}
+        </a>
+        <a href="{{ route('user.entry-exit') }}" class="nav-link {{ request()->routeIs('user.entry-exit*') ? 'active' : '' }}">
+            <i class="bi bi-door-open"></i> {{ __('app.nav_entry_exit') }}
+        </a>
     </div>
 
     {{-- Cloud package injects extra sections here (AI Insights, Teams, Billing). --}}

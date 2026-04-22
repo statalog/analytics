@@ -12,10 +12,10 @@
    Available: blue (default), indigo, violet, emerald, cyan, teal, amber, rose, ember
    ──────────────────────────────────────────────────────────── */
 :root,
+[data-accent="emerald"] { --pa-primary: #10B981; --pa-primary-hover: #059669; }
 [data-accent="blue"]    { --pa-primary: #0e7dd5; --pa-primary-hover: #0b6ab8; }
 [data-accent="indigo"]  { --pa-primary: #4F46E5; --pa-primary-hover: #4338CA; }
 [data-accent="violet"]  { --pa-primary: #8B5CF6; --pa-primary-hover: #7C3AED; }
-[data-accent="emerald"] { --pa-primary: #10B981; --pa-primary-hover: #059669; }
 [data-accent="cyan"]    { --pa-primary: #06B6D4; --pa-primary-hover: #0891B2; }
 [data-accent="teal"]    { --pa-primary: #0D9488; --pa-primary-hover: #0F766E; }
 [data-accent="amber"]   { --pa-primary: #F59E0B; --pa-primary-hover: #D97706; }

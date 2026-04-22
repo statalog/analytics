@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'accent' => env('STATALOG_ACCENT', 'blue'),
+    'accent' => env('STATALOG_ACCENT', 'emerald'),
 
     /*
     |--------------------------------------------------------------------------
