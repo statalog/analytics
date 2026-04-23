@@ -6,6 +6,7 @@ use App\Http\Controllers\PublicDashboardController;
 use App\Http\Controllers\User\CampaignsController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
+use App\Http\Controllers\User\EventController;
 use App\Http\Controllers\User\FunnelController;
 use App\Http\Controllers\User\GoalController;
 use App\Http\Controllers\User\LiveStatsController;
@@ -102,6 +103,12 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::delete('/goals/{goal}',            [GoalController::class, 'destroy'])->name('goals.destroy');
     Route::get('/goals/{goal}/report',        [GoalController::class, 'report'])->name('goals.report');
     Route::get('/goals/{goal}/report/data',   [GoalController::class, 'reportData'])->name('goals.report.data');
+
+    // Custom Events
+    Route::get('/events',               [EventController::class, 'index'])->name('events');
+    Route::get('/events/data',          [EventController::class, 'data'])->name('events.data');
+    Route::get('/events/{name}',        [EventController::class, 'show'])->name('events.show');
+    Route::get('/events/{name}/data',   [EventController::class, 'showData'])->name('events.show.data');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');

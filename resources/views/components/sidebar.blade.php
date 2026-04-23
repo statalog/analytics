@@ -64,6 +64,9 @@
         <a href="{{ route('user.goals.index') }}" class="nav-link {{ request()->routeIs('user.goals*') ? 'active' : '' }}">
             <i class="bi bi-bullseye"></i> {{ __('app.nav_goals') }}
         </a>
+        <a href="{{ route('user.events') }}" class="nav-link {{ request()->routeIs('user.events*') ? 'active' : '' }}">
+            <i class="bi bi-lightning"></i> {{ __('app.nav_events') }}
+        </a>
     </div>
 
     {{-- Cloud package injects extra sections here (AI Insights, Teams, Billing). --}}
