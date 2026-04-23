@@ -76,6 +76,14 @@ return [
     |
     */
 
-    'geoip_database' => env('STATALOG_GEOIP_DATABASE', storage_path('app/geoip/GeoLite2-City.mmdb')),
+    'geoip_database' => (function () {
+        $val = env('STATALOG_GEOIP_DATABASE', '');
+        if ($val === '') {
+            return storage_path('app/geoip/GeoLite2-City.mmdb');
+        }
+        return str_starts_with($val, '/') || (strlen($val) > 1 && $val[1] === ':')
+            ? $val
+            : base_path($val);
+    })(),
 
 ];
