@@ -1,6 +1,68 @@
 (function () {
     'use strict';
 
+    // ── Heatmap preview mode ──────────────────────────────────────────────────
+    // When the dashboard loads a tracked page in an iframe with ?_statalog_preview=1
+    // we skip all tracking and instead render incoming click data on a canvas overlay.
+    if (window.location.search.indexOf('_statalog_preview=1') !== -1) {
+        function renderHeatmapOverlay(clicks) {
+            var GRID = 20;
+            var old = document.getElementById('_st_heatmap');
+            if (old) old.remove();
+
+            var canvas = document.createElement('canvas');
+            canvas.id = '_st_heatmap';
+            var W = Math.max(document.documentElement.scrollWidth, document.body ? document.body.scrollWidth : 0);
+            var H = Math.max(document.documentElement.scrollHeight, document.body ? document.body.scrollHeight : 0);
+            canvas.width  = W;
+            canvas.height = H;
+            canvas.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:2147483647';
+            if (document.body) {
+                if (getComputedStyle(document.body).position === 'static') {
+                    document.body.style.position = 'relative';
+                }
+                document.body.appendChild(canvas);
+            }
+
+            var ctx = canvas.getContext('2d');
+            var max = 0;
+            clicks.forEach(function (c) { if (+c.c > max) max = +c.c; });
+            if (max === 0) return;
+
+            clicks.forEach(function (c) {
+                var alpha = Math.min(1, Math.sqrt(+c.c / max));
+                var x = (+c.cell_x + 0.5) * GRID;
+                var y = (+c.cell_y + 0.5) * GRID;
+                var r = 32;
+                var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+                g.addColorStop(0, 'rgba(208,74,31,' + (0.75 * alpha) + ')');
+                g.addColorStop(1, 'rgba(208,74,31,0)');
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        window.addEventListener('message', function (ev) {
+            if (!ev.data || ev.data.type !== 'statalog_heatmap') return;
+            renderHeatmapOverlay(ev.data.clicks || []);
+        });
+
+        function signalReady() {
+            var H = Math.max(document.documentElement.scrollHeight, document.body ? document.body.scrollHeight : 0);
+            window.parent.postMessage({ type: 'statalog_ready', height: H }, '*');
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', signalReady);
+        } else {
+            signalReady();
+        }
+        return; // skip all tracking
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     var scriptTag = document.currentScript || (function () {
         var scripts = document.getElementsByTagName('script');
         for (var i = scripts.length - 1; i >= 0; i--) {
