@@ -79,7 +79,7 @@
         <a href="{{ route('user.settings') }}" class="nav-link {{ request()->routeIs('user.settings*') ? 'active' : '' }}">
             <i class="bi bi-sliders"></i> {{ __('app.nav_settings') }}
         </a>
-        <a href="{{ route('user.configuration') }}" class="nav-link {{ request()->routeIs('user.configuration*') || request()->routeIs('user.ga-import*') || request()->routeIs('user.team*') ? 'active' : '' }}">
+        <a href="{{ route('user.configuration') }}" class="nav-link {{ request()->routeIs('user.configuration*') || request()->routeIs('user.ga-import*') || request()->routeIs('user.account-users*') ? 'active' : '' }}">
             <i class="bi bi-gear-wide-connected"></i> Configuration
         </a>
     </div>

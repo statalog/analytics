@@ -19,8 +19,8 @@ class EnsureNotViewer
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $member = app()->bound('statalog.active_team_member')
-            ? app('statalog.active_team_member')
+        $member = app()->bound('statalog.active_account_user')
+            ? app('statalog.active_account_user')
             : null;
 
         if ($member && $member->isViewer()) {

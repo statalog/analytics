@@ -8,7 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('team_members', function (Blueprint $table) {
+        // An account_user row means: "user_id has access to owner_id's account".
+        Schema::create('account_users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
@@ -19,19 +20,20 @@ return new class extends Migration
             $table->index('user_id');
         });
 
-        Schema::create('team_member_site_access', function (Blueprint $table) {
+        // Optional per-site viewer restriction. Empty = all owner's sites.
+        Schema::create('account_user_sites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_member_id')->constrained('team_members')->cascadeOnDelete();
+            $table->foreignId('account_user_id')->constrained('account_users')->cascadeOnDelete();
             $table->foreignId('site_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
 
-            $table->unique(['team_member_id', 'site_id']);
+            $table->unique(['account_user_id', 'site_id']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('team_member_site_access');
-        Schema::dropIfExists('team_members');
+        Schema::dropIfExists('account_user_sites');
+        Schema::dropIfExists('account_users');
     }
 };

@@ -8,23 +8,23 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\TeamMember;
+use App\Models\AccountUser;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class TeamController extends Controller
+class AccountUserController extends Controller
 {
     public function index(Request $request): View
     {
         $owner   = $request->user();
-        $members = TeamMember::where('owner_id', $owner->id)
+        $members = AccountUser::where('owner_id', $owner->id)
             ->with('user', 'siteAccess')
             ->orderByDesc('created_at')
             ->get();
 
-        return view('user.team.index', [
+        return view('user.account-users.index', [
             'owner'   => $owner,
             'members' => $members,
             'sites'   => $owner->sites,
@@ -41,28 +41,28 @@ class TeamController extends Controller
         $owner = $request->user();
 
         if ($data['email'] === $owner->email) {
-            return back()->withInput()->with('error', 'You cannot add yourself as a team member.');
+            return back()->withInput()->with('error', 'You cannot add yourself.');
         }
 
         $member = User::where('email', $data['email'])->first();
         if (!$member) {
-            return back()->withInput()->with('error', 'No user with that email exists yet. They must sign up first before you can add them.');
+            return back()->withInput()->with('error', 'No user with that email. They must sign up first.');
         }
 
-        if (TeamMember::where('owner_id', $owner->id)->where('user_id', $member->id)->exists()) {
-            return back()->withInput()->with('error', 'This user is already a team member.');
+        if (AccountUser::where('owner_id', $owner->id)->where('user_id', $member->id)->exists()) {
+            return back()->withInput()->with('error', 'This user already has access.');
         }
 
-        TeamMember::create([
+        AccountUser::create([
             'owner_id' => $owner->id,
             'user_id'  => $member->id,
             'role'     => $data['role'],
         ]);
 
-        return redirect()->route('user.team.index')->with('success', 'Team member added.');
+        return redirect()->route('user.account-users.index')->with('success', 'Access granted.');
     }
 
-    public function update(Request $request, TeamMember $member): RedirectResponse
+    public function update(Request $request, AccountUser $member): RedirectResponse
     {
         abort_unless($member->owner_id === auth()->id(), 403);
 
@@ -79,24 +79,21 @@ class TeamController extends Controller
             $validSites   = array_values(array_intersect($data['sites'] ?? [], $ownerSiteIds));
             $member->siteAccess()->sync($validSites);
         } else {
-            // Admins don't need per-site access — they see everything.
             $member->siteAccess()->detach();
         }
 
-        return redirect()->route('user.team.index')->with('success', 'Team member updated.');
+        return redirect()->route('user.account-users.index')->with('success', 'Updated.');
     }
 
-    public function destroy(Request $request, TeamMember $member): RedirectResponse
+    public function destroy(Request $request, AccountUser $member): RedirectResponse
     {
         abort_unless($member->owner_id === auth()->id(), 403);
-
         $member->siteAccess()->detach();
         $member->delete();
 
-        return redirect()->route('user.team.index')->with('success', 'Team member removed.');
+        return redirect()->route('user.account-users.index')->with('success', 'Access revoked.');
     }
 
-    /** Switch the viewer into one of the accounts they belong to (or back to their own). */
     public function switchAccount(Request $request): RedirectResponse
     {
         $ownerId = (int) $request->input('owner_id', 0);
@@ -107,7 +104,7 @@ class TeamController extends Controller
             return redirect()->route('user.overview')->with('success', 'Switched to your own account.');
         }
 
-        $valid = TeamMember::where('owner_id', $ownerId)->where('user_id', $user->id)->exists();
+        $valid = AccountUser::where('owner_id', $ownerId)->where('user_id', $user->id)->exists();
         abort_unless($valid, 403);
 
         $request->session()->put('active_owner_id', $ownerId);

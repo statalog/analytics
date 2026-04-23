@@ -192,6 +192,17 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--pa-primary) 20%, transparent);
 }
 
+/* Open dropdown panel — force dark readable text regardless of the sidebar's
+   own colour scheme (browsers render <option> with parent colour which is
+   near-white here, making the panel unreadable). */
+.sidebar .site-switcher select option {
+    color: #1A1D2B;
+    background: #FFFFFF;
+}
+.sidebar .site-switcher select option:disabled {
+    color: #9AA0B3;
+}
+
 .sidebar .nav-section { padding: 0.5rem 0; }
 
 .sidebar .nav-section-title {

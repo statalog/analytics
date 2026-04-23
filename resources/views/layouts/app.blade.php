@@ -28,7 +28,7 @@
         </div>
         @php
             $me = auth()->user();
-            $accountsUserIsMemberOf = \App\Models\TeamMember::where('user_id', $me->id)->with('owner')->get();
+            $accountsUserIsMemberOf = \App\Models\AccountUser::where('user_id', $me->id)->with('owner')->get();
             $activeOwnerId = session('active_owner_id');
             $activeAccount = $activeOwnerId ? \App\Models\User::find($activeOwnerId) : null;
         @endphp
@@ -43,7 +43,7 @@
                     </span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end pa-account-dropdown">
-                    <form method="POST" action="{{ route('user.team.switch') }}">
+                    <form method="POST" action="{{ route('user.account-users.switch') }}">
                         @csrf
                         <input type="hidden" name="owner_id" value="0">
                         <button type="submit" class="dropdown-item d-flex align-items-center gap-2" style="width:100%;text-align:left;border:none;background:none;{{ !$activeAccount ? 'color:var(--pa-primary)' : '' }}">
@@ -53,7 +53,7 @@
                     </form>
                     <div class="dropdown-divider"></div>
                     @foreach($accountsUserIsMemberOf as $tm)
-                        <form method="POST" action="{{ route('user.team.switch') }}">
+                        <form method="POST" action="{{ route('user.account-users.switch') }}">
                             @csrf
                             <input type="hidden" name="owner_id" value="{{ $tm->owner_id }}">
                             <button type="submit" class="dropdown-item d-flex align-items-center gap-2" style="width:100%;text-align:left;border:none;background:none;{{ $activeOwnerId == $tm->owner_id ? 'color:var(--pa-primary)' : '' }}">

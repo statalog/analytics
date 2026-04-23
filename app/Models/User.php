@@ -32,7 +32,12 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password', 'is_admin'];
+    protected $fillable = [
+        'name', 'email', 'password', 'is_admin',
+        // Cloud billing (columns added by cloud package migration, harmless in OSS)
+        'plan_id', 'stripe_customer_id', 'stripe_subscription_id',
+        'subscription_status', 'billing_interval', 'trial_ends_at',
+    ];
 
     protected $hidden = [
         'password',
@@ -49,6 +54,7 @@ class User extends Authenticatable
             'email_verified_at'         => 'datetime',
             'two_factor_confirmed_at'   => 'datetime',
             'ga_token_expires_at'       => 'datetime',
+            'trial_ends_at'             => 'datetime',
             'password'                  => 'hashed',
             'is_admin'                  => 'boolean',
             'two_factor_secret'         => 'encrypted',
@@ -58,9 +64,23 @@ class User extends Authenticatable
         ];
     }
 
+    public function hasActiveSubscription(): bool
+    {
+        return in_array($this->subscription_status, ['active', 'trialing'], true);
+    }
+
     public function sites(): HasMany
     {
         return $this->hasMany(Site::class);
+    }
+
+    /** Plan relation — only resolves when the cloud package is installed. */
+    public function plan()
+    {
+        if (!class_exists(\Statalog\Cloud\Models\Plan::class)) {
+            return null;
+        }
+        return $this->belongsTo(\Statalog\Cloud\Models\Plan::class);
     }
 
     public function settings(): HasMany

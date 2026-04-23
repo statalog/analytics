@@ -7,7 +7,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\TeamMember;
+use App\Models\AccountUser;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
  * - Default: viewer sees their own data — no container binding, BelongsToUser
  *   falls back to auth()->id().
  * - If the user has switched into an owner's account via the topbar switcher,
- *   we validate they have a TeamMember record for that owner and bind the
+ *   we validate they have an AccountUser record for that owner and bind the
  *   owner id into the container so BelongsToUser scopes to the owner.
  */
 class ResolveActiveAccount
@@ -38,7 +38,7 @@ class ResolveActiveAccount
         }
 
         // Validate membership. If revoked, silently fall back to own account.
-        $member = TeamMember::where('owner_id', $activeOwnerId)
+        $member = AccountUser::where('owner_id', $activeOwnerId)
             ->where('user_id', $user->id)
             ->first();
 
@@ -48,9 +48,9 @@ class ResolveActiveAccount
         }
 
         app()->instance('statalog.active_owner_id', $activeOwnerId);
-        app()->instance('statalog.active_team_member', $member);
+        app()->instance('statalog.active_account_user', $member);
         $request->attributes->set('active_owner_id', $activeOwnerId);
-        $request->attributes->set('active_team_member', $member);
+        $request->attributes->set('active_account_user', $member);
 
         return $next($request);
     }

@@ -15,9 +15,9 @@
     $cards = [
         [
             'icon'   => 'people',
-            'title'  => 'Team members',
-            'desc'   => 'Invite admins and viewers to your account. Admins manage everything; viewers are read-only.',
-            'url'    => route('user.team.index'),
+            'title'  => 'Account users',
+            'desc'   => 'Grant admins and viewers access to your account. Admins manage everything; viewers are read-only.',
+            'url'    => route('user.account-users.index'),
             'status' => null,
         ],
         [

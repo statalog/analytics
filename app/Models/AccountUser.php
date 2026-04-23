@@ -11,7 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class TeamMember extends Model
+/**
+ * Access grant: user_id has access to owner_id's account.
+ * role = 'admin' (full) or 'viewer' (read-only).
+ */
+class AccountUser extends Model
 {
     protected $fillable = ['owner_id', 'user_id', 'role'];
 
@@ -28,7 +32,8 @@ class TeamMember extends Model
     /** Sites the viewer is allowed to see. Empty = all owner's sites (admins always see all). */
     public function siteAccess(): BelongsToMany
     {
-        return $this->belongsToMany(Site::class, 'team_member_site_access')->withTimestamps();
+        return $this->belongsToMany(Site::class, 'account_user_sites', 'account_user_id', 'site_id')
+            ->withTimestamps();
     }
 
     public function isAdmin(): bool
@@ -45,7 +50,6 @@ class TeamMember extends Model
     {
         if ($this->isAdmin()) return true;
 
-        // No site-access rows means "all sites of the owner"
         $anyRestriction = $this->siteAccess()->exists();
         if (!$anyRestriction) return true;
 

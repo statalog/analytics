@@ -16,7 +16,7 @@ use App\Http\Controllers\User\NewVsReturningController;
 use App\Http\Controllers\User\OverviewController;
 use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\SiteController;
-use App\Http\Controllers\User\TeamController;
+use App\Http\Controllers\User\AccountUserController;
 use App\Http\Controllers\User\TimeOnPageController;
 use App\Http\Controllers\User\TwoFactorController;
 use App\Http\Controllers\User\VisitDepthController;
@@ -117,11 +117,11 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
 
     // Team members
-    Route::get('/team',              [TeamController::class, 'index'])->name('team.index');
-    Route::post('/team',             [TeamController::class, 'store'])->name('team.store');
-    Route::put('/team/{member}',     [TeamController::class, 'update'])->name('team.update');
-    Route::delete('/team/{member}',  [TeamController::class, 'destroy'])->name('team.destroy');
-    Route::post('/team/switch',      [TeamController::class, 'switchAccount'])->name('team.switch');
+    Route::get('/account-users',             [AccountUserController::class, 'index'])->name('account-users.index');
+    Route::post('/account-users',            [AccountUserController::class, 'store'])->name('account-users.store');
+    Route::put('/account-users/{member}',    [AccountUserController::class, 'update'])->name('account-users.update');
+    Route::delete('/account-users/{member}', [AccountUserController::class, 'destroy'])->name('account-users.destroy');
+    Route::post('/account-users/switch',     [AccountUserController::class, 'switchAccount'])->name('account-users.switch');
 
     // Google Analytics import (reachable from Configuration)
     Route::get('/ga-import',                        [GaImportController::class, 'index'])->name('ga-import');
