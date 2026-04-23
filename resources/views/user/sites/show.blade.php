@@ -134,11 +134,15 @@
                     @endphp
                     <div class="d-flex flex-column gap-2">
                         @foreach($allSections as $section)
-                        <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:0.875rem">
-                            <input type="checkbox" name="public_sections[]" value="{{ $section }}"
-                                   {{ in_array($section, (array)$activeSections) ? 'checked' : '' }}>
-                            {{ $sectionLabels[$section] }}
-                        </label>
+                        <div class="d-flex align-items-center justify-content-between" style="padding:0.5rem 0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
+                            <span style="font-size:0.875rem">{{ $sectionLabels[$section] }}</span>
+                            <label style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;cursor:pointer;margin-left:1rem">
+                                <input type="checkbox" name="public_sections[]" value="{{ $section }}"
+                                       {{ in_array($section, (array)$activeSections) ? 'checked' : '' }}
+                                       style="opacity:0;width:0;height:0;position:absolute">
+                                <span class="toggle-track"></span><span class="toggle-dot"></span>
+                            </label>
+                        </div>
                         @endforeach
                     </div>
                 </div>

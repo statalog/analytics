@@ -26,14 +26,54 @@
             </button>
             <a href="{{ route('home') }}" class="topbar-brand">{{ __('app.name') }}</a>
         </div>
+        @php
+            $me = auth()->user();
+            $accountsUserIsMemberOf = \App\Models\TeamMember::where('user_id', $me->id)->with('owner')->get();
+            $activeOwnerId = session('active_owner_id');
+            $activeAccount = $activeOwnerId ? \App\Models\User::find($activeOwnerId) : null;
+        @endphp
+
         <div class="d-flex align-items-center gap-3">
+            @if($accountsUserIsMemberOf->count() > 0)
+            <div class="dropdown">
+                <button class="btn-pa-outline dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" style="padding:0.375rem 0.75rem;font-size:0.8125rem" title="Switch account">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                        {{ $activeAccount ? $activeAccount->name : 'My account' }}
+                    </span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end pa-account-dropdown">
+                    <form method="POST" action="{{ route('user.team.switch') }}">
+                        @csrf
+                        <input type="hidden" name="owner_id" value="0">
+                        <button type="submit" class="dropdown-item d-flex align-items-center gap-2" style="width:100%;text-align:left;border:none;background:none;{{ !$activeAccount ? 'color:var(--pa-primary)' : '' }}">
+                            <i class="bi bi-person-circle"></i>
+                            <span>My account{{ !$activeAccount ? ' (current)' : '' }}</span>
+                        </button>
+                    </form>
+                    <div class="dropdown-divider"></div>
+                    @foreach($accountsUserIsMemberOf as $tm)
+                        <form method="POST" action="{{ route('user.team.switch') }}">
+                            @csrf
+                            <input type="hidden" name="owner_id" value="{{ $tm->owner_id }}">
+                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2" style="width:100%;text-align:left;border:none;background:none;{{ $activeOwnerId == $tm->owner_id ? 'color:var(--pa-primary)' : '' }}">
+                                <i class="bi bi-people"></i>
+                                <span>{{ $tm->owner->name }}'s account</span>
+                                <span style="margin-left:auto;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;opacity:0.7">{{ $tm->role }}</span>
+                            </button>
+                        </form>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
             <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">
                 <i class="bi bi-sun-fill" id="theme-icon"></i>
             </button>
             <div class="dropdown">
                 <button class="btn-pa-outline dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" style="padding:0.375rem 0.75rem">
                     <i class="bi bi-person-circle"></i>
-                    <span style="font-size:0.875rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ auth()->user()->name }}</span>
+                    <span style="font-size:0.875rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $me->name }}</span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end pa-account-dropdown">
                     <div class="pa-account-header">

@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicDashboardController;
 use App\Http\Controllers\User\CampaignsController;
+use App\Http\Controllers\User\ConfigurationController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
 use App\Http\Controllers\User\EventController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\User\NewVsReturningController;
 use App\Http\Controllers\User\OverviewController;
 use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\SiteController;
+use App\Http\Controllers\User\TeamController;
 use App\Http\Controllers\User\TimeOnPageController;
 use App\Http\Controllers\User\TwoFactorController;
 use App\Http\Controllers\User\VisitDepthController;
@@ -111,7 +113,17 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/events/{name}',        [EventController::class, 'show'])->name('events.show');
     Route::get('/events/{name}/data',   [EventController::class, 'showData'])->name('events.show.data');
 
-    // Google Analytics import
+    // Configuration hub (integrations, external connections)
+    Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
+
+    // Team members
+    Route::get('/team',              [TeamController::class, 'index'])->name('team.index');
+    Route::post('/team',             [TeamController::class, 'store'])->name('team.store');
+    Route::put('/team/{member}',     [TeamController::class, 'update'])->name('team.update');
+    Route::delete('/team/{member}',  [TeamController::class, 'destroy'])->name('team.destroy');
+    Route::post('/team/switch',      [TeamController::class, 'switchAccount'])->name('team.switch');
+
+    // Google Analytics import (reachable from Configuration)
     Route::get('/ga-import',                        [GaImportController::class, 'index'])->name('ga-import');
     Route::post('/ga-import/connect',               [GaImportController::class, 'connect'])->name('ga-import.connect');
     Route::get('/ga-import/callback',               [GaImportController::class, 'callback'])->name('ga-import.callback');

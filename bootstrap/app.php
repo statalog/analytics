@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Middleware\AddCorsHeaders;
+use App\Http\Middleware\EnsureNotViewer;
+use App\Http\Middleware\ResolveActiveAccount;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,7 +16,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'cors' => AddCorsHeaders::class,
+            'cors'        => AddCorsHeaders::class,
+            'not-viewer'  => EnsureNotViewer::class,
+        ]);
+
+        // Resolve the active account (own vs switched-into-owner) on every
+        // web request AFTER auth has run.
+        $middleware->web(append: [
+            ResolveActiveAccount::class,
         ]);
 
         // Stripe webhook signs every request — CSRF doesn't apply.

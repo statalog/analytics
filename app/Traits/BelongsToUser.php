@@ -44,6 +44,13 @@ trait BelongsToUser
 
     protected static function resolveUserId(): ?int
     {
+        // When a team member has switched into an owner's account, queries
+        // should scope to the owner, not the viewer. Middleware sets this
+        // binding per-request.
+        if (app()->bound('statalog.active_owner_id')) {
+            return (int) app('statalog.active_owner_id');
+        }
+
         return auth()->id();
     }
 

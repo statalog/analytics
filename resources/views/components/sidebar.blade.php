@@ -29,9 +29,6 @@
         <a href="{{ route('user.overview') }}" class="nav-link {{ request()->routeIs('user.overview*') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2"></i> {{ __('app.nav_overview') }}
         </a>
-        <a href="{{ route('user.ga-import') }}" class="nav-link {{ request()->routeIs('user.ga-import*') ? 'active' : '' }}">
-            <i class="bi bi-cloud-download"></i> GA Import
-        </a>
     </div>
 
     <div class="nav-section">
@@ -81,6 +78,9 @@
         <div class="nav-section-title">{{ __('app.nav_section_account') }}</div>
         <a href="{{ route('user.settings') }}" class="nav-link {{ request()->routeIs('user.settings*') ? 'active' : '' }}">
             <i class="bi bi-sliders"></i> {{ __('app.nav_settings') }}
+        </a>
+        <a href="{{ route('user.configuration') }}" class="nav-link {{ request()->routeIs('user.configuration*') || request()->routeIs('user.ga-import*') || request()->routeIs('user.team*') ? 'active' : '' }}">
+            <i class="bi bi-gear-wide-connected"></i> Configuration
         </a>
     </div>
 </aside>
