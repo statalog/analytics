@@ -61,6 +61,9 @@
         <a href="{{ route('user.funnels.index') }}" class="nav-link {{ request()->routeIs('user.funnels*') ? 'active' : '' }}">
             <i class="bi bi-funnel"></i> {{ __('app.nav_funnels') }}
         </a>
+        <a href="{{ route('user.goals.index') }}" class="nav-link {{ request()->routeIs('user.goals*') ? 'active' : '' }}">
+            <i class="bi bi-bullseye"></i> {{ __('app.nav_goals') }}
+        </a>
     </div>
 
     {{-- Cloud package injects extra sections here (AI Insights, Teams, Billing). --}}

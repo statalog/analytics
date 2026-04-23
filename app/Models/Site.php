@@ -72,6 +72,11 @@ class Site extends Model
         return $this->hasMany(Funnel::class);
     }
 
+    public function goals(): HasMany
+    {
+        return $this->hasMany(Goal::class);
+    }
+
     public function getTrackingSnippetAttribute(): string
     {
         return '<script defer data-site-id="' . e($this->site_id) . '" src="' . url('/js/tracker.js') . '"></script>';

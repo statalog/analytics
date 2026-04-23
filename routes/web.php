@@ -7,6 +7,7 @@ use App\Http\Controllers\User\CampaignsController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
 use App\Http\Controllers\User\FunnelController;
+use App\Http\Controllers\User\GoalController;
 use App\Http\Controllers\User\LiveStatsController;
 use App\Http\Controllers\User\NewVsReturningController;
 use App\Http\Controllers\User\OverviewController;
@@ -91,6 +92,16 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::put('/funnels/{funnel}',         [FunnelController::class, 'update'])->name('funnels.update');
     Route::delete('/funnels/{funnel}',      [FunnelController::class, 'destroy'])->name('funnels.destroy');
     Route::get('/funnels/{funnel}/report',  [FunnelController::class, 'report'])->name('funnels.report');
+
+    // Goals
+    Route::get('/goals',                      [GoalController::class, 'index'])->name('goals.index');
+    Route::get('/goals/create',               [GoalController::class, 'create'])->name('goals.create');
+    Route::post('/goals',                     [GoalController::class, 'store'])->name('goals.store');
+    Route::get('/goals/{goal}/edit',          [GoalController::class, 'edit'])->name('goals.edit');
+    Route::put('/goals/{goal}',               [GoalController::class, 'update'])->name('goals.update');
+    Route::delete('/goals/{goal}',            [GoalController::class, 'destroy'])->name('goals.destroy');
+    Route::get('/goals/{goal}/report',        [GoalController::class, 'report'])->name('goals.report');
+    Route::get('/goals/{goal}/report/data',   [GoalController::class, 'reportData'])->name('goals.report.data');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
