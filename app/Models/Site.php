@@ -41,6 +41,10 @@ class Site extends Model
         'timezone',
         'is_active',
         'track_subdomains',
+        'is_public',
+        'public_token',
+        'public_password',
+        'public_sections',
     ];
 
     protected function casts(): array
@@ -48,6 +52,8 @@ class Site extends Model
         return [
             'is_active'        => 'boolean',
             'track_subdomains' => 'boolean',
+            'is_public'        => 'boolean',
+            'public_sections'  => 'array',
         ];
     }
 

@@ -25,6 +25,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Site;
 use App\Repositories\AnalyticsRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
@@ -115,12 +117,34 @@ class SiteController extends Controller
             'domain.regex' => 'Please enter a valid domain name (e.g. example.com).',
         ]);
 
-        $site->update([
+        $updates = [
             'name'             => $request->input('name'),
             'domain'           => $request->input('domain'),
             'timezone'         => $request->input('timezone'),
             'track_subdomains' => $request->boolean('track_subdomains'),
-        ]);
+        ];
+
+        $isPublic = $request->boolean('is_public');
+        $updates['is_public'] = $isPublic;
+
+        if ($isPublic && !$site->public_token) {
+            $updates['public_token'] = Str::random(48);
+        }
+
+        $passwordProtected = $request->boolean('password_protected');
+        if (!$passwordProtected) {
+            $updates['public_password'] = null;
+        } else {
+            $newPassword = trim($request->input('public_password', ''));
+            if ($newPassword !== '') {
+                $updates['public_password'] = Hash::make($newPassword);
+            }
+        }
+
+        $sections = $request->input('public_sections', []);
+        $updates['public_sections'] = !empty($sections) ? $sections : null;
+
+        $site->update($updates);
 
         return back()->with('success', 'Website updated.');
     }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicDashboardController;
 use App\Http\Controllers\User\CampaignsController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
@@ -20,11 +21,16 @@ use Illuminate\Support\Facades\Route;
 // if the cloud package is installed (cloud::welcome view), otherwise
 // they're redirected straight to login (self-hosted behaviour).
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('user.dashboard');
+    // Cloud: always render the marketing landing — authed users can still
+    // visit their own site. The landing's header links take them to the
+    // dashboard or login as appropriate.
+    if (view()->exists('cloud::welcome')) {
+        return view('cloud::welcome');
     }
-    return view()->exists('cloud::welcome')
-        ? view('cloud::welcome')
+
+    // Self-hosted: landing page is out of scope, go straight to the app.
+    return auth()->check()
+        ? redirect()->route('user.dashboard')
         : redirect()->route('login');
 })->name('home');
 
@@ -111,6 +117,12 @@ Route::middleware('guest')->group(function () {
     Route::get('/two-factor-challenge',  [TwoFactorChallengeController::class, 'create'])->name('two-factor.challenge');
     Route::post('/two-factor-challenge', [TwoFactorChallengeController::class, 'store']);
 });
+
+// Public shared dashboards — read-only analytics at /share/{token}
+Route::get('/share/{token}',         [PublicDashboardController::class, 'show'])->name('public.dashboard');
+Route::post('/share/{token}/unlock', [PublicDashboardController::class, 'unlock'])->name('public.dashboard.unlock');
+Route::get('/share/{token}/data',    [PublicDashboardController::class, 'data'])->name('public.dashboard.data');
+Route::get('/share/{token}/chart',   [PublicDashboardController::class, 'chart'])->name('public.dashboard.chart');
 
 // Auth routes (published by Laravel Breeze)
 require __DIR__.'/auth.php';
