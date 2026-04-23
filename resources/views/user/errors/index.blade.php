@@ -15,13 +15,18 @@
     <div class="col-6 col-md-3"><div class="pa-card"><div style="font-size:0.8125rem;color:var(--pa-text-muted)">Error rate</div><div id="stat-rate" style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif">—</div></div></div>
 </div>
 
-<div class="pa-card mb-4">
-    <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Errors over time</h6>
-    <canvas id="chart" height="80"></canvas>
-</div>
-
-<div class="pa-card" style="padding:0">
-    <div id="errors-table"><div class="text-center py-5"><div class="spinner-border text-secondary" role="status"></div></div></div>
+<div class="row g-3 align-items-start">
+    <div class="col-lg-5">
+        <div class="pa-card">
+            <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Errors over time</h6>
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="pa-card p-0">
+            <div id="errors-table"><div class="text-center py-5"><div class="spinner-border text-secondary" role="status"></div></div></div>
+        </div>
+    </div>
 </div>
 @endsection
 

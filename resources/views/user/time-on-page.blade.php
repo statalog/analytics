@@ -17,7 +17,7 @@ function loadData() {
     var params = new URLSearchParams(window.location.search);
     fetch('{{ route("user.time-on-page.data") }}?' + params.toString())
         .then(function(r) { return r.json(); })
-        .then(function(data) { render(data); });
+        .then(function(data) { render(data.pages || []); });
 }
 
 function fmtDuration(s) {

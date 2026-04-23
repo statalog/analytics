@@ -24,7 +24,7 @@ function loadData() {
     var params = new URLSearchParams(window.location.search);
     fetch('{{ route("user.visit-depth.data") }}?' + params.toString())
         .then(function(r) { return r.json(); })
-        .then(function(data) { render(data); });
+        .then(function(data) { render(data.depth || []); });
 }
 
 function render(rows) {
