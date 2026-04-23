@@ -8,6 +8,7 @@ use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
 use App\Http\Controllers\User\EventController;
 use App\Http\Controllers\User\FunnelController;
+use App\Http\Controllers\User\GaImportController;
 use App\Http\Controllers\User\GoalController;
 use App\Http\Controllers\User\LiveStatsController;
 use App\Http\Controllers\User\NewVsReturningController;
@@ -109,6 +110,17 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/events/data',          [EventController::class, 'data'])->name('events.data');
     Route::get('/events/{name}',        [EventController::class, 'show'])->name('events.show');
     Route::get('/events/{name}/data',   [EventController::class, 'showData'])->name('events.show.data');
+
+    // Google Analytics import
+    Route::get('/ga-import',                        [GaImportController::class, 'index'])->name('ga-import');
+    Route::post('/ga-import/connect',               [GaImportController::class, 'connect'])->name('ga-import.connect');
+    Route::get('/ga-import/callback',               [GaImportController::class, 'callback'])->name('ga-import.callback');
+    Route::delete('/ga-import/disconnect',          [GaImportController::class, 'disconnect'])->name('ga-import.disconnect');
+    Route::get('/ga-import/select',                 [GaImportController::class, 'selectProperty'])->name('ga-import.select');
+    Route::post('/ga-import/start',                 [GaImportController::class, 'start'])->name('ga-import.start');
+    Route::get('/ga-import/progress/{import}',      [GaImportController::class, 'progress'])->name('ga-import.progress');
+    Route::get('/ga-import/progress/{import}/data', [GaImportController::class, 'progressData'])->name('ga-import.progress.data');
+    Route::get('/ga-import/summary/{site}',         [GaImportController::class, 'summary'])->name('ga-import.summary');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');

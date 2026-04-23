@@ -39,17 +39,22 @@ class User extends Authenticatable
         'remember_token',
         'two_factor_secret',
         'two_factor_recovery_codes',
+        'ga_access_token',
+        'ga_refresh_token',
     ];
 
     protected function casts(): array
     {
         return [
-            'email_verified_at'        => 'datetime',
-            'two_factor_confirmed_at'  => 'datetime',
-            'password'                 => 'hashed',
-            'is_admin'                 => 'boolean',
-            'two_factor_secret'        => 'encrypted',
+            'email_verified_at'         => 'datetime',
+            'two_factor_confirmed_at'   => 'datetime',
+            'ga_token_expires_at'       => 'datetime',
+            'password'                  => 'hashed',
+            'is_admin'                  => 'boolean',
+            'two_factor_secret'         => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted:array',
+            'ga_access_token'           => 'encrypted',
+            'ga_refresh_token'          => 'encrypted',
         ];
     }
 

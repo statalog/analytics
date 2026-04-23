@@ -29,6 +29,9 @@
         <a href="{{ route('user.overview') }}" class="nav-link {{ request()->routeIs('user.overview*') ? 'active' : '' }}">
             <i class="bi bi-grid-1x2"></i> {{ __('app.nav_overview') }}
         </a>
+        <a href="{{ route('user.ga-import') }}" class="nav-link {{ request()->routeIs('user.ga-import*') ? 'active' : '' }}">
+            <i class="bi bi-cloud-download"></i> GA Import
+        </a>
     </div>
 
     <div class="nav-section">
