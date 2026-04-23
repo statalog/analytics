@@ -61,6 +61,17 @@
     </div>
 
     <div class="main-content">
+        @if(session()->has('impersonator_id'))
+        <div style="background:#92400e;color:#fff;padding:0.5rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:0.8125rem">
+            <span><i class="bi bi-incognito me-2"></i>You are impersonating <strong>{{ auth()->user()?->email }}</strong></span>
+            <form method="POST" action="{{ route('cloud.admin.leave-impersonation') }}" class="m-0">
+                @csrf
+                <button type="submit" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:4px;padding:0.2rem 0.75rem;font-size:0.75rem;font-weight:600;cursor:pointer">
+                    Leave impersonation
+                </button>
+            </form>
+        </div>
+        @endif
         <div class="content-inner">
             @if(session('success'))
                 <div class="pa-alert success">{{ session('success') }}</div>

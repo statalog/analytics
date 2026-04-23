@@ -31,7 +31,8 @@ class CreateAdmin extends Command
     protected $signature = 'statalog:create-admin
                             {--name= : Admin full name}
                             {--email= : Admin email address}
-                            {--password= : Admin password (min 8 chars)}';
+                            {--password= : Admin password (min 8 chars)}
+                            {--super : Grant super-admin (platform-wide) access — cloud only}';
 
     protected $description = 'Create an admin user for Statalog (self-hosted).';
 
@@ -59,9 +60,10 @@ class CreateAdmin extends Command
             'email'             => $email,
             'password'          => Hash::make($password),
             'email_verified_at' => now(),
+            'is_admin'          => (bool) $this->option('super'),
         ]);
 
-        $this->info("Admin user created: {$user->email} (ID: {$user->id})");
+        $this->info("User created: {$user->email} (ID: {$user->id})" . ($user->is_admin ? ' · super-admin' : ''));
         $this->line('You can now log in at ' . rtrim(config('app.url'), '/') . '/login');
 
         return self::SUCCESS;

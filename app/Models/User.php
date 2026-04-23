@@ -32,7 +32,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'is_admin'];
 
     protected $hidden = [
         'password',
@@ -47,6 +47,7 @@ class User extends Authenticatable
             'email_verified_at'        => 'datetime',
             'two_factor_confirmed_at'  => 'datetime',
             'password'                 => 'hashed',
+            'is_admin'                 => 'boolean',
             'two_factor_secret'        => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted:array',
         ];
