@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('timezone')->default('UTC');
             $table->boolean('is_active')->default(true);
             $table->boolean('track_subdomains')->default(false);
+            $table->boolean('track_bots')->default(false);
             $table->boolean('is_public')->default(false);
             $table->string('public_token', 64)->nullable();
             $table->string('public_password')->nullable();

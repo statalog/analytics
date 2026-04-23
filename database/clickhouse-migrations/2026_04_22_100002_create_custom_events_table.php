@@ -20,7 +20,9 @@ return new class extends AbstractClickhouseMigration
                     url                String              DEFAULT '',
                     hostname           String              DEFAULT '',
                     country            String              DEFAULT '',
-                    device_type        String              DEFAULT ''
+                    device_type        String              DEFAULT '',
+                    is_bot             UInt8               DEFAULT 0,
+                    bot_name           String              DEFAULT ''
                 )
                 ENGINE = MergeTree()
                 PARTITION BY toYYYYMM(timestamp)

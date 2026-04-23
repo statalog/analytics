@@ -41,7 +41,9 @@ return new class extends AbstractClickhouseMigration
                     is_bounce          UInt8               DEFAULT 1,
                     is_new_visitor     UInt8               DEFAULT 1,
                     entry_page         String              DEFAULT '',
-                    exit_page          String              DEFAULT ''
+                    exit_page          String              DEFAULT '',
+                    is_bot             UInt8               DEFAULT 0,
+                    bot_name           String              DEFAULT ''
                 )
                 ENGINE = MergeTree()
                 PARTITION BY toYYYYMM(timestamp)

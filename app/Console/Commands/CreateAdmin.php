@@ -60,7 +60,7 @@ class CreateAdmin extends Command
             'email'             => $email,
             'password'          => Hash::make($password),
             'email_verified_at' => now(),
-            'is_admin'          => (bool) $this->option('super'),
+            'is_admin'          => true,
         ]);
 
         $this->info("User created: {$user->email} (ID: {$user->id})" . ($user->is_admin ? ' · super-admin' : ''));

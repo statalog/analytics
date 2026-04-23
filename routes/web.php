@@ -7,6 +7,7 @@ use App\Http\Controllers\User\CampaignsController;
 use App\Http\Controllers\User\ConfigurationController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
+use App\Http\Controllers\User\ErrorController;
 use App\Http\Controllers\User\EventController;
 use App\Http\Controllers\User\FunnelController;
 use App\Http\Controllers\User\GaImportController;
@@ -113,6 +114,12 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/events/{name}',        [EventController::class, 'show'])->name('events.show');
     Route::get('/events/{name}/data',   [EventController::class, 'showData'])->name('events.show.data');
 
+    // Monitoring — JS errors
+    Route::get('/errors',                      [ErrorController::class, 'index'])->name('errors');
+    Route::get('/errors/data',                 [ErrorController::class, 'data'])->name('errors.data');
+    Route::get('/errors/{fingerprint}',        [ErrorController::class, 'show'])->name('errors.show');
+    Route::get('/errors/{fingerprint}/data',   [ErrorController::class, 'showData'])->name('errors.show.data');
+
     // Configuration hub (integrations, external connections)
     Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
 
@@ -134,9 +141,9 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/ga-import/progress/{import}/data', [GaImportController::class, 'progressData'])->name('ga-import.progress.data');
     Route::get('/ga-import/summary/{site}',         [GaImportController::class, 'summary'])->name('ga-import.summary');
 
-    // Settings
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
-    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    // General (privacy & data settings)
+    Route::get('/general', [SettingsController::class, 'index'])->name('general');
+    Route::put('/general', [SettingsController::class, 'update'])->name('general.update');
 
     // Profile (from Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

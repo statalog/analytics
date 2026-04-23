@@ -113,6 +113,16 @@ trait HasDateRange
         if ($hostname) {
             $repo = $repo->forHostname($hostname);
         }
+
+        // Bot visibility — opt-in via ?bots=1 (include) or ?bots=only (bots only).
+        // Only meaningful when the site has track_bots enabled; harmless otherwise.
+        $botsParam = request()->input('bots');
+        if ($botsParam === 'only') {
+            $repo = $repo->onlyBots();
+        } elseif ($botsParam === '1' || $botsParam === 'include') {
+            $repo = $repo->includeBots();
+        }
+
         return $repo;
     }
 }

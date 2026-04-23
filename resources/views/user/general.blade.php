@@ -1,14 +1,14 @@
 @extends('layouts.app')
-@section('title', __('app.nav_settings'))
+@section('title', 'General')
 @section('content')
 <div class="d-flex align-items-center gap-3 mb-4">
     <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-gear me-2" style="color:var(--pa-primary)"></i>{{ __('app.nav_settings') }}
+        <i class="bi bi-sliders me-2" style="color:var(--pa-primary)"></i>General
     </h4>
 </div>
 
 <div class="pa-card" style="max-width:600px">
-    <form method="POST" action="{{ route('user.settings.update') }}">
+    <form method="POST" action="{{ route('user.general.update') }}">
         @csrf @method('PUT')
 
         <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
@@ -34,7 +34,7 @@
         </div>
 
         <button type="submit" class="btn-pa-primary">
-            <i class="bi bi-check-lg me-1"></i> Save Settings
+            <i class="bi bi-check-lg me-1"></i> Save
         </button>
     </form>
 </div>

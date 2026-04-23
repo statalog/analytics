@@ -577,18 +577,20 @@ h1, h2, h3, h4, h5, h6 {
 
 .toggle-dot {
     position: absolute;
-    top: 2px;
+    top: 50%;
     left: 2px;
     width: 18px;
     height: 18px;
     background: #fff;
     border-radius: 50%;
+    transform: translateY(-50%);
     transition: transform 0.2s;
     box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    box-sizing: border-box;
 }
 
 input:checked + .toggle-track { background: var(--pa-primary); }
-input:checked + .toggle-track + .toggle-dot { transform: translateX(18px); }
+input:checked + .toggle-track + .toggle-dot { transform: translate(18px, -50%); }
 
 /* ── Empty state ── */
 .pa-empty-state { text-align: center; padding: 3rem 2rem; color: var(--pa-text-muted); }

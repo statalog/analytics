@@ -14,6 +14,13 @@
 @php
     $cards = [
         [
+            'icon'   => 'sliders',
+            'title'  => 'General',
+            'desc'   => 'Privacy settings — exclude IP addresses from tracking and control city-level geolocation.',
+            'url'    => route('user.general'),
+            'status' => null,
+        ],
+        [
             'icon'   => 'people',
             'title'  => 'Account users',
             'desc'   => 'Grant admins and viewers access to your account. Admins manage everything; viewers are read-only.',

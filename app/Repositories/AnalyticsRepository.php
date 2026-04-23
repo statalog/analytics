@@ -35,6 +35,8 @@ class AnalyticsRepository
     protected bool $excludeSubdomains = false;
     protected string $registeredDomain = '';
     protected string $hostnameFilter = '';
+    protected bool $includeBots = false;
+    protected bool $onlyBots = false;
 
     public function __construct()
     {
@@ -65,27 +67,60 @@ class AnalyticsRepository
         return $clone;
     }
 
-    /** Returns the extra WHERE fragment for hostname/subdomain filtering. */
-    protected function sd(): string
+    /** Include bot traffic in results (default: excluded). */
+    public function includeBots(): static
     {
-        if ($this->hostnameFilter !== '') {
-            $h = addslashes($this->hostnameFilter);
-            return " AND hostname = '{$h}'";
-        }
-        if (!$this->excludeSubdomains || $this->registeredDomain === '') {
-            return '';
-        }
-        $d = addslashes($this->registeredDomain);
-        return " AND (hostname = '{$d}' OR hostname = 'www.{$d}' OR hostname = '')";
+        $clone = clone $this;
+        $clone->includeBots = true;
+        return $clone;
     }
 
-    /** Returns cache key suffix for hostname/subdomain filtering. */
+    /** Return ONLY bot traffic in results. */
+    public function onlyBots(): static
+    {
+        $clone = clone $this;
+        $clone->includeBots = true;
+        $clone->onlyBots = true;
+        return $clone;
+    }
+
+    /** Returns the extra WHERE fragment for hostname/subdomain + bot filtering. */
+    protected function sd(): string
+    {
+        $clause = '';
+
+        if ($this->hostnameFilter !== '') {
+            $h = addslashes($this->hostnameFilter);
+            $clause .= " AND hostname = '{$h}'";
+        } elseif ($this->excludeSubdomains && $this->registeredDomain !== '') {
+            $d = addslashes($this->registeredDomain);
+            $clause .= " AND (hostname = '{$d}' OR hostname = 'www.{$d}' OR hostname = '')";
+        }
+
+        if ($this->onlyBots) {
+            $clause .= ' AND is_bot = 1';
+        } elseif (!$this->includeBots) {
+            $clause .= ' AND is_bot = 0';
+        }
+
+        return $clause;
+    }
+
+    /** Returns cache key suffix for hostname/subdomain + bot filtering. */
     protected function sdKey(): string
     {
+        $suffix = '';
         if ($this->hostnameFilter !== '') {
-            return ':hn=' . $this->hostnameFilter;
+            $suffix .= ':hn=' . $this->hostnameFilter;
+        } elseif ($this->excludeSubdomains) {
+            $suffix .= ':nosd';
         }
-        return $this->excludeSubdomains ? ':nosd' : '';
+        if ($this->onlyBots) {
+            $suffix .= ':obots';
+        } elseif ($this->includeBots) {
+            $suffix .= ':wbots';
+        }
+        return $suffix;
     }
 
     /** Returns distinct hostnames for a site in the given date range. */
@@ -762,6 +797,149 @@ class AnalyticsRepository
             ->post("http://{$this->host}:{$this->port}/?database={$this->database}");
 
         return $response->successful();
+    }
+
+    public function insertError(array $data): bool
+    {
+        $columns = implode(', ', array_keys($data));
+        $values = implode(', ', array_map(function ($v) {
+            if (is_int($v) || is_float($v)) {
+                return $v;
+            }
+            return "'" . addslashes((string) $v) . "'";
+        }, array_values($data)));
+
+        $sql = "INSERT INTO js_errors ({$columns}) VALUES ({$values})";
+
+        $response = Http::withBasicAuth($this->username, $this->password)
+            ->timeout(config('clickhouse.timeout', 10))
+            ->withBody($sql, 'text/plain')
+            ->post("http://{$this->host}:{$this->port}/?database={$this->database}");
+
+        return $response->successful();
+    }
+
+    public function getErrorStats(string $siteId, string $from, string $to): array
+    {
+        $rows = $this->query(
+            "SELECT
+                count() AS total_errors,
+                uniq(fingerprint) AS unique_errors,
+                uniq(visitor_id) AS affected_visitors
+             FROM js_errors
+             WHERE site_id = :site_id
+               AND timestamp BETWEEN :from AND :to",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+
+        $pv = $this->query(
+            "SELECT count() AS c FROM pageviews
+             WHERE site_id = :site_id AND timestamp BETWEEN :from AND :to",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+
+        $pageviews = (int) ($pv[0]['c'] ?? 0);
+        $total     = (int) ($rows[0]['total_errors'] ?? 0);
+
+        return [
+            'total_errors'      => $total,
+            'unique_errors'     => (int) ($rows[0]['unique_errors'] ?? 0),
+            'affected_visitors' => (int) ($rows[0]['affected_visitors'] ?? 0),
+            'error_rate'        => $pageviews > 0 ? round(($total / $pageviews) * 100, 2) : 0,
+        ];
+    }
+
+    public function getErrorsOverTime(string $siteId, string $from, string $to, string $timezone = 'UTC'): array
+    {
+        return $this->query(
+            "SELECT
+                toDate(timestamp, :tz) AS day,
+                error_type,
+                count() AS cnt
+             FROM js_errors
+             WHERE site_id = :site_id AND timestamp BETWEEN :from AND :to
+             GROUP BY day, error_type
+             ORDER BY day ASC",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to, 'tz' => $timezone]
+        );
+    }
+
+    public function getErrorGroups(string $siteId, string $from, string $to): array
+    {
+        return $this->query(
+            "SELECT
+                fingerprint,
+                any(message) AS message,
+                any(source)  AS source,
+                any(line)    AS line,
+                any(error_type) AS error_type,
+                count() AS total,
+                uniq(visitor_id) AS affected_visitors,
+                min(timestamp) AS first_seen,
+                max(timestamp) AS last_seen
+             FROM js_errors
+             WHERE site_id = :site_id AND timestamp BETWEEN :from AND :to
+             GROUP BY fingerprint
+             ORDER BY total DESC
+             LIMIT 200",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+    }
+
+    public function getErrorDetail(string $siteId, string $fingerprint, string $from, string $to): array
+    {
+        $summary = $this->query(
+            "SELECT
+                any(message) AS message,
+                any(source)  AS source,
+                any(line)    AS line,
+                any(col)     AS col,
+                any(stack)   AS stack,
+                any(error_type) AS error_type,
+                count() AS total,
+                uniq(visitor_id) AS affected_visitors,
+                min(timestamp) AS first_seen,
+                max(timestamp) AS last_seen
+             FROM js_errors
+             WHERE site_id = :site_id
+               AND fingerprint = :fingerprint
+               AND timestamp BETWEEN :from AND :to",
+            ['site_id' => $siteId, 'fingerprint' => $fingerprint, 'from' => $from, 'to' => $to]
+        );
+
+        $breakdown = function (string $column) use ($siteId, $fingerprint, $from, $to) {
+            return $this->query(
+                "SELECT {$column} AS name, count() AS cnt
+                 FROM js_errors
+                 WHERE site_id = :site_id
+                   AND fingerprint = :fingerprint
+                   AND timestamp BETWEEN :from AND :to
+                 GROUP BY {$column}
+                 ORDER BY cnt DESC
+                 LIMIT 20",
+                ['site_id' => $siteId, 'fingerprint' => $fingerprint, 'from' => $from, 'to' => $to]
+            );
+        };
+
+        $recent = $this->query(
+            "SELECT timestamp, url, browser, os, country
+             FROM js_errors
+             WHERE site_id = :site_id
+               AND fingerprint = :fingerprint
+               AND timestamp BETWEEN :from AND :to
+             ORDER BY timestamp DESC
+             LIMIT 50",
+            ['site_id' => $siteId, 'fingerprint' => $fingerprint, 'from' => $from, 'to' => $to]
+        );
+
+        return [
+            'summary'     => $summary[0] ?? null,
+            'by_browser'  => $breakdown('browser'),
+            'by_os'       => $breakdown('os'),
+            'by_device'   => $breakdown('device_type'),
+            'by_url'      => $breakdown('url'),
+            'recent'      => $recent,
+        ];
     }
 
     public function updatePageviewDuration(string $siteId, string $sessionId, string $url, int $duration): void

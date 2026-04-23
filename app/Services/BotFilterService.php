@@ -23,36 +23,118 @@ namespace App\Services;
 
 class BotFilterService
 {
-    private const BOT_PATTERNS = [
-        'bot', 'crawler', 'spider', 'scraper',
-        'googlebot', 'bingbot', 'yandexbot', 'baiduspider',
-        'duckduckbot', 'slurp', 'exabot', 'ia_archiver',
-        'facebookexternalhit', 'twitterbot', 'linkedinbot', 'applebot',
-        'gptbot', 'chatgpt-user', 'oai-searchbot',
-        'headlesschrome', 'phantomjs', 'selenium', 'lighthouse',
-        'wget', 'curl', 'python-requests', 'go-http-client',
-        'java/', 'ruby/', 'php/', 'perl/',
-        'axios/', 'got/', 'node-fetch',
+    /**
+     * Ordered list of (signature => human name).
+     * First match wins, so put more specific patterns before generic ones.
+     */
+    private const BOT_SIGNATURES = [
+        // Search engines
+        'googlebot'            => 'Googlebot',
+        'bingbot'              => 'Bingbot',
+        'yandexbot'            => 'YandexBot',
+        'baiduspider'          => 'Baidu Spider',
+        'duckduckbot'          => 'DuckDuckBot',
+        'yahoo! slurp'         => 'Yahoo Slurp',
+        'slurp'                => 'Yahoo Slurp',
+        'exabot'               => 'Exabot',
+        'ia_archiver'          => 'Internet Archive',
+
+        // Social / link preview
+        'facebookexternalhit'  => 'Facebook',
+        'meta-externalagent'   => 'Meta',
+        'twitterbot'           => 'Twitter',
+        'linkedinbot'          => 'LinkedIn',
+        'pinterestbot'         => 'Pinterest',
+        'slackbot'             => 'Slack',
+        'discordbot'           => 'Discord',
+        'telegrambot'          => 'Telegram',
+        'whatsapp'             => 'WhatsApp',
+        'applebot'             => 'Applebot',
+
+        // AI crawlers
+        'gptbot'               => 'OpenAI GPTBot',
+        'chatgpt-user'         => 'ChatGPT',
+        'oai-searchbot'        => 'OpenAI SearchBot',
+        'claudebot'            => 'ClaudeBot',
+        'claude-web'           => 'Claude',
+        'anthropic-ai'         => 'Anthropic',
+        'perplexitybot'        => 'Perplexity',
+        'ccbot'                => 'Common Crawl',
+        'google-extended'      => 'Google Extended',
+
+        // SEO / monitoring
+        'ahrefsbot'            => 'Ahrefs',
+        'semrushbot'           => 'SEMrush',
+        'mj12bot'              => 'Majestic',
+        'dotbot'               => 'Moz',
+        'rogerbot'             => 'Moz',
+        'screaming frog'       => 'Screaming Frog',
+        'pingdom'              => 'Pingdom',
+        'uptimerobot'          => 'UptimeRobot',
+        'newrelicpinger'       => 'New Relic',
+        'datadog'              => 'Datadog',
+        'gtmetrix'             => 'GTmetrix',
+        'pagespeed'            => 'PageSpeed',
+
+        // Headless / automation
+        'headlesschrome'       => 'Headless Chrome',
+        'phantomjs'            => 'PhantomJS',
+        'selenium'             => 'Selenium',
+        'puppeteer'            => 'Puppeteer',
+        'playwright'           => 'Playwright',
+        'lighthouse'           => 'Lighthouse',
+
+        // HTTP libraries
+        'wget'                 => 'wget',
+        'curl'                 => 'curl',
+        'python-requests'      => 'python-requests',
+        'go-http-client'       => 'go-http',
+        'java/'                => 'Java',
+        'ruby/'                => 'Ruby',
+        'php/'                 => 'PHP',
+        'perl/'                => 'Perl',
+        'axios/'               => 'Axios',
+        'got/'                 => 'Got',
+        'node-fetch'           => 'node-fetch',
+        'okhttp'               => 'OkHttp',
+
+        // Generic
+        'bot'                  => 'Generic bot',
+        'crawler'              => 'Generic crawler',
+        'spider'               => 'Generic spider',
+        'scraper'              => 'Generic scraper',
     ];
 
-    public function isBot(string $userAgent, bool $dnt = false): bool
+    /**
+     * Returns ['is_bot' => bool, 'name' => string].
+     * Name is '' for human traffic, a short label otherwise.
+     * DNT header forces is_bot=true so the record is dropped/flagged.
+     */
+    public function identify(string $userAgent, bool $dnt = false): array
     {
         if ($dnt) {
-            return true;
+            return ['is_bot' => true, 'name' => 'DNT'];
         }
 
-        if (empty(trim($userAgent))) {
-            return true;
+        $ua = trim($userAgent);
+        if ($ua === '') {
+            return ['is_bot' => true, 'name' => 'Empty UA'];
         }
 
-        $ua = strtolower($userAgent);
+        $lc = strtolower($ua);
 
-        foreach (self::BOT_PATTERNS as $pattern) {
-            if (str_contains($ua, $pattern)) {
-                return true;
+        foreach (self::BOT_SIGNATURES as $needle => $label) {
+            if (str_contains($lc, $needle)) {
+                return ['is_bot' => true, 'name' => $label];
             }
         }
 
-        return false;
+        return ['is_bot' => false, 'name' => ''];
+    }
+
+    /** Back-compat convenience — prefer identify() in new code. */
+    public function isBot(string $userAgent, bool $dnt = false): bool
+    {
+        return $this->identify($userAgent, $dnt)['is_bot'];
     }
 }

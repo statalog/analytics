@@ -55,9 +55,9 @@ class ProcessAnalyticsHit implements ShouldQueue
         VisitorService $visitor,
         AnalyticsRepository $analytics,
     ): void {
-        if ($botFilter->isBot($this->userAgent, $this->dnt)) {
-            return;
-        }
+        $botInfo = $botFilter->identify($this->userAgent, $this->dnt);
+        $isBot   = $botInfo['is_bot'];
+        $botName = $botInfo['name'];
 
         $siteId = trim($this->payload['site_id'] ?? '');
         if ($siteId === '') {
@@ -65,6 +65,11 @@ class ProcessAnalyticsHit implements ShouldQueue
         }
         $site = $this->getSiteData($siteId);
         if (!$site) {
+            return;
+        }
+
+        // Drop bots entirely unless this site opts in to store them.
+        if ($isBot && !$site['track_bots']) {
             return;
         }
 
@@ -81,6 +86,41 @@ class ProcessAnalyticsHit implements ShouldQueue
 
         $visitorId = $visitor->anonymise($this->ip, $this->userAgent, $siteId);
 
+        if ($type === 'error') {
+            $message     = (string) ($this->payload['message'] ?? '');
+            $source      = (string) ($this->payload['source'] ?? '');
+            $line        = (int)    ($this->payload['line'] ?? 0);
+            $col         = (int)    ($this->payload['col'] ?? 0);
+            $stack       = mb_substr((string) ($this->payload['stack'] ?? ''), 0, 2000);
+            $errorType   = (string) ($this->payload['error_type'] ?? 'error');
+            $fingerprint = substr(sha1($message . '|' . $source . '|' . $line), 0, 16);
+
+            $geo    = $geoIp->lookup($this->ip);
+            $uaData = $uaParser->parse($this->userAgent, (int) ($this->payload['screen_width'] ?? 0));
+
+            $analytics->insertError([
+                'site_id'     => $siteId,
+                'timestamp'   => date('Y-m-d H:i:s'),
+                'fingerprint' => $fingerprint,
+                'error_type'  => $errorType,
+                'message'     => mb_substr($message, 0, 500),
+                'source'      => mb_substr($source, 0, 500),
+                'line'        => $line,
+                'col'         => $col,
+                'stack'       => $stack,
+                'url'         => $rawUrl,
+                'hostname'    => $hostname,
+                'browser'     => $uaData['browser'],
+                'os'          => $uaData['os'],
+                'device_type' => $uaData['device_type'],
+                'country'     => $geo['country'],
+                'visitor_id'  => $visitorId,
+                'is_bot'      => $isBot ? 1 : 0,
+                'bot_name'    => $botName,
+            ]);
+            return;
+        }
+
         if ($type === 'event') {
             $geo    = $geoIp->lookup($this->ip);
             $uaData = $uaParser->parse($this->userAgent, (int) ($this->payload['screen_width'] ?? 0));
@@ -96,6 +136,8 @@ class ProcessAnalyticsHit implements ShouldQueue
                 'hostname'    => $hostname,
                 'country'     => $geo['country'],
                 'device_type' => $uaData['device_type'],
+                'is_bot'      => $isBot ? 1 : 0,
+                'bot_name'    => $botName,
             ]);
             return;
         }
@@ -110,6 +152,8 @@ class ProcessAnalyticsHit implements ShouldQueue
                     'visitor_id'     => $visitorId,
                     'url'            => '',
                     'visit_duration' => $duration,
+                    'is_bot'         => $isBot ? 1 : 0,
+                    'bot_name'       => $botName,
                 ]);
             }
             return;
@@ -161,6 +205,8 @@ class ProcessAnalyticsHit implements ShouldQueue
             'is_new_visitor'  => $isNewVisitor,
             'entry_page'      => $rawUrl,
             'exit_page'       => $rawUrl,
+            'is_bot'          => $isBot ? 1 : 0,
+            'bot_name'        => $botName,
         ]);
     }
 
@@ -177,6 +223,7 @@ class ProcessAnalyticsHit implements ShouldQueue
             return [
                 'domain'           => $site->domain,
                 'track_subdomains' => (bool) $site->track_subdomains,
+                'track_bots'       => (bool) $site->track_bots,
             ];
         });
     }

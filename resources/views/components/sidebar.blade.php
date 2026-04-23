@@ -69,6 +69,13 @@
         </a>
     </div>
 
+    <div class="nav-section">
+        <div class="nav-section-title">Monitoring</div>
+        <a href="{{ route('user.errors') }}" class="nav-link {{ request()->routeIs('user.errors*') ? 'active' : '' }}">
+            <i class="bi bi-bug"></i> Errors
+        </a>
+    </div>
+
     {{-- Cloud package injects extra sections here (AI Insights, Teams, Billing). --}}
     @if(view()->exists('cloud::partials.sidebar'))
         @include('cloud::partials.sidebar')
@@ -76,10 +83,7 @@
 
     <div class="nav-section">
         <div class="nav-section-title">{{ __('app.nav_section_account') }}</div>
-        <a href="{{ route('user.settings') }}" class="nav-link {{ request()->routeIs('user.settings*') ? 'active' : '' }}">
-            <i class="bi bi-sliders"></i> {{ __('app.nav_settings') }}
-        </a>
-        <a href="{{ route('user.configuration') }}" class="nav-link {{ request()->routeIs('user.configuration*') || request()->routeIs('user.ga-import*') || request()->routeIs('user.account-users*') ? 'active' : '' }}">
+        <a href="{{ route('user.configuration') }}" class="nav-link {{ request()->routeIs('user.configuration*') || request()->routeIs('user.ga-import*') || request()->routeIs('user.account-users*') || request()->routeIs('user.general*') ? 'active' : '' }}">
             <i class="bi bi-gear-wide-connected"></i> Configuration
         </a>
     </div>

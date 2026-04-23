@@ -41,6 +41,7 @@ class Site extends Model
         'timezone',
         'is_active',
         'track_subdomains',
+        'track_bots',
         'is_public',
         'public_token',
         'public_password',
@@ -52,6 +53,7 @@ class Site extends Model
         return [
             'is_active'        => 'boolean',
             'track_subdomains' => 'boolean',
+            'track_bots'       => 'boolean',
             'is_public'        => 'boolean',
             'public_sections'  => 'array',
         ];
@@ -59,7 +61,7 @@ class Site extends Model
 
     protected static function booted(): void
     {
-        static::creating(fn ($site) => $site->site_id = $site->site_id ?: 'SA-' . strtoupper(Str::random(13)));
+        static::creating(fn ($site) => $site->site_id = $site->site_id ?: 'ST-' . strtoupper(Str::random(13)));
     }
 
     public function user(): BelongsTo

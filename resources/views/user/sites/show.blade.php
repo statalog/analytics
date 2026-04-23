@@ -32,7 +32,7 @@
 
             <div class="mb-3">
                 <label class="auth-label">{{ __('sites.field_timezone') }}</label>
-                <select name="timezone" class="pa-input @error('timezone') is-invalid @enderror">
+                <select name="timezone" class="pa-input js-searchable @error('timezone') is-invalid @enderror">
                     @foreach(timezone_identifiers_list() as $tz)
                     <option value="{{ $tz }}" {{ old('timezone', $site->timezone) === $tz ? 'selected' : '' }}>{{ $tz }}</option>
                     @endforeach
@@ -41,7 +41,7 @@
                 <small style="color:var(--pa-text-muted);font-size:0.8125rem">{{ __('sites.hint_timezone') }}</small>
             </div>
 
-            <div class="d-flex align-items-center justify-content-between" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
+            <div class="d-flex align-items-center justify-content-between mb-3" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
                 <div>
                     <label class="mb-0" style="font-weight:600;font-size:0.875rem">{{ __('sites.field_track_subdomains') }}</label>
                     <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.125rem">{{ __('sites.hint_track_subdomains') }}</div>
@@ -49,6 +49,18 @@
                 <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;cursor:pointer;margin-left:1rem">
                     <input type="hidden" name="track_subdomains" value="0">
                     <input type="checkbox" name="track_subdomains" value="1" {{ old('track_subdomains', $site->track_subdomains) ? 'checked' : '' }} style="opacity:0;width:0;height:0;position:absolute">
+                    <span class="toggle-track"></span><span class="toggle-dot"></span>
+                </label>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
+                <div>
+                    <label class="mb-0" style="font-weight:600;font-size:0.875rem">Store bot traffic</label>
+                    <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.125rem">Record crawler and bot hits too. Excluded from stats by default — toggle on a dashboard with <code>?bots=1</code> to include them, or <code>?bots=only</code> to see bots only.</div>
+                </div>
+                <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;cursor:pointer;margin-left:1rem">
+                    <input type="hidden" name="track_bots" value="0">
+                    <input type="checkbox" name="track_bots" value="1" {{ old('track_bots', $site->track_bots) ? 'checked' : '' }} style="opacity:0;width:0;height:0;position:absolute">
                     <span class="toggle-track"></span><span class="toggle-dot"></span>
                 </label>
             </div>

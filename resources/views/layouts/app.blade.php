@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('css/statalog.css') }}">
     @stack('styles')
 </head>
@@ -85,9 +86,6 @@
                     <a href="{{ route('user.profile.edit') }}" class="dropdown-item">
                         <i class="bi bi-person"></i> Profile
                     </a>
-                    <a href="{{ route('user.settings') }}" class="dropdown-item">
-                        <i class="bi bi-sliders"></i> Settings
-                    </a>
                     <div class="dropdown-divider"></div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -136,6 +134,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('select.js-searchable').forEach(function (el) {
+                new TomSelect(el, { maxOptions: 1000 });
+            });
+        });
+    </script>
     <script>
     function toggleSidebar() {
         var sidebar = document.querySelector('.sidebar');

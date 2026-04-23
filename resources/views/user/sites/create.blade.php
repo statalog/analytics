@@ -26,7 +26,7 @@
 
         <div class="mb-3">
             <label class="auth-label">{{ __('sites.field_timezone') }}</label>
-            <select name="timezone" class="pa-input @error('timezone') is-invalid @enderror">
+            <select name="timezone" class="pa-input js-searchable @error('timezone') is-invalid @enderror">
                 @foreach(timezone_identifiers_list() as $tz)
                 <option value="{{ $tz }}" {{ old('timezone', 'UTC') === $tz ? 'selected' : '' }}>{{ $tz }}</option>
                 @endforeach

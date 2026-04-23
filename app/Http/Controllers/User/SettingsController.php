@@ -31,12 +31,12 @@ class SettingsController extends Controller
 
     public function index(Request $request)
     {
-        return view('user.settings', [
+        return view('user.general', [
             'user'         => $request->user(),
             'settings'     => $this->settings->all(),
             'excludedIps'  => $this->settings->get('excluded_ips', ''),
             'hideCities'   => (bool) $this->settings->get('hide_cities', false),
-            'breadcrumbs'  => [['label' => 'Settings']],
+            'breadcrumbs'  => [['label' => 'General']],
         ]);
     }
 
@@ -52,6 +52,6 @@ class SettingsController extends Controller
         $this->settings->set('excluded_ips', implode(',', $ips), 'privacy');
         $this->settings->set('hide_cities', $request->boolean('hide_cities') ? '1' : '0', 'privacy');
 
-        return redirect()->route('user.settings')->with('success', 'Settings saved.');
+        return redirect()->route('user.general')->with('success', 'Settings saved.');
     }
 }

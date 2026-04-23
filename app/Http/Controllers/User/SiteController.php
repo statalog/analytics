@@ -83,6 +83,7 @@ class SiteController extends Controller
             'domain'           => $request->input('domain'),
             'timezone'         => $request->input('timezone'),
             'track_subdomains' => $request->boolean('track_subdomains'),
+            'track_bots'       => $request->boolean('track_bots'),
         ]);
 
         session(['current_site_id' => $site->site_id]);
@@ -122,6 +123,7 @@ class SiteController extends Controller
             'domain'           => $request->input('domain'),
             'timezone'         => $request->input('timezone'),
             'track_subdomains' => $request->boolean('track_subdomains'),
+            'track_bots'       => $request->boolean('track_bots'),
         ];
 
         $isPublic = $request->boolean('is_public');
