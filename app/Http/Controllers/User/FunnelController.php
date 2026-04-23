@@ -75,7 +75,7 @@ class FunnelController extends Controller
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
             'steps'         => 'required|array|min:2|max:10',
-            'steps.*.label' => 'required|string|max:255',
+            'steps.*.label' => 'nullable|string|max:255',
             'steps.*.path'  => 'required|string|starts_with:/',
         ]);
 
@@ -83,7 +83,7 @@ class FunnelController extends Controller
 
         foreach ($validated['steps'] as $i => $step) {
             $funnel->steps()->create([
-                'label'      => $step['label'],
+                'label'      => trim($step['label'] ?? '') !== '' ? $step['label'] : $step['path'],
                 'path'       => $step['path'],
                 'step_order' => $i + 1,
             ]);
@@ -117,7 +117,7 @@ class FunnelController extends Controller
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
             'steps'         => 'required|array|min:2|max:10',
-            'steps.*.label' => 'required|string|max:255',
+            'steps.*.label' => 'nullable|string|max:255',
             'steps.*.path'  => 'required|string|starts_with:/',
         ]);
 
@@ -126,7 +126,7 @@ class FunnelController extends Controller
 
         foreach ($validated['steps'] as $i => $step) {
             $funnel->steps()->create([
-                'label'      => $step['label'],
+                'label'      => trim($step['label'] ?? '') !== '' ? $step['label'] : $step['path'],
                 'path'       => $step['path'],
                 'step_order' => $i + 1,
             ]);
