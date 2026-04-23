@@ -280,6 +280,76 @@ class AnalyticsRepository
         );
     }
 
+    public function getPageBreakdown(string $siteId, string $from, string $to, int $limit = 100): array
+    {
+        return $this->queryWithCache(
+            "page_breakdown:{$siteId}:{$from}:{$to}:{$limit}" . $this->sdKey(), 300,
+            "SELECT
+                path,
+                count() AS pageviews,
+                uniq(visitor_id) AS unique_visitors,
+                round(avg(is_bounce) * 100) AS bounce_rate,
+                round(avgIf(visit_duration, visit_duration > 0)) AS avg_time
+             FROM pageviews
+             WHERE site_id = :site_id" . $this->sd() . "
+               AND timestamp >= :from AND timestamp <= :to
+               AND path != ''
+             GROUP BY path
+             ORDER BY pageviews DESC
+             LIMIT {$limit}",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+    }
+
+    public function getLocationsFull(string $siteId, string $from, string $to, int $limit = 100): array
+    {
+        return $this->queryWithCache(
+            "locations_full:{$siteId}:{$from}:{$to}" . $this->sdKey(), 300,
+            "SELECT country, uniq(visitor_id) AS visitors, count() AS pageviews
+             FROM pageviews
+             WHERE site_id = :site_id" . $this->sd() . "
+               AND timestamp >= :from AND timestamp <= :to
+               AND country != ''
+             GROUP BY country
+             ORDER BY visitors DESC
+             LIMIT {$limit}",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+    }
+
+    public function getByCity(string $siteId, string $from, string $to, int $limit = 100): array
+    {
+        return $this->queryWithCache(
+            "by_city:{$siteId}:{$from}:{$to}" . $this->sdKey(), 300,
+            "SELECT country, city, uniq(visitor_id) AS visitors
+             FROM pageviews
+             WHERE site_id = :site_id" . $this->sd() . "
+               AND timestamp >= :from AND timestamp <= :to
+               AND city != ''
+             GROUP BY country, city
+             ORDER BY visitors DESC
+             LIMIT {$limit}",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+    }
+
+    public function getHourlyHeatmap(string $siteId, string $from, string $to, string $timezone = 'UTC'): array
+    {
+        return $this->queryWithCache(
+            "hourly_heatmap:{$siteId}:{$from}:{$to}:{$timezone}" . $this->sdKey(), 300,
+            "SELECT
+                toDayOfWeek(toTimeZone(timestamp, :tz)) AS day_of_week,
+                toHour(toTimeZone(timestamp, :tz))      AS hour,
+                count() AS pageviews
+             FROM pageviews
+             WHERE site_id = :site_id" . $this->sd() . "
+               AND timestamp >= :from AND timestamp <= :to
+             GROUP BY day_of_week, hour
+             ORDER BY day_of_week, hour",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to, 'tz' => $timezone]
+        );
+    }
+
     public function getTrafficSources(string $siteId, string $from, string $to, int $limit = 10): array
     {
         return $this->queryWithCache(

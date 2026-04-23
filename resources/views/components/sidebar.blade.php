@@ -2,6 +2,12 @@
     $sites = auth()->user()->sites ?? collect();
     $currentSiteId = session('current_site_id');
     $currentSite = $currentSiteId ? $sites->firstWhere('site_id', $currentSiteId) : $sites->first();
+
+    $audienceRoutes = ['user.pages*','user.locations*','user.devices*','user.time-of-day*'];
+    $audienceOpen   = collect($audienceRoutes)->contains(fn($p) => request()->routeIs($p));
+
+    $behaviourRoutes = ['user.campaigns*','user.entry-exit*','user.visit-depth*','user.new-vs-returning*','user.time-on-page*'];
+    $behaviourOpen   = collect($behaviourRoutes)->contains(fn($p) => request()->routeIs($p));
 @endphp
 <aside class="sidebar">
     <a href="{{ route('user.overview') }}" class="sidebar-brand">
@@ -30,27 +36,60 @@
 
     <div class="nav-section">
         <div class="nav-section-title">{{ __('app.nav_section_analytics') }}</div>
+
         <a href="{{ route('user.dashboard') }}" class="nav-link {{ request()->routeIs('user.dashboard*') ? 'active' : '' }}">
             <i class="bi bi-speedometer2"></i> {{ __('app.nav_dashboard') }}
         </a>
         <a href="{{ route('user.live') }}" class="nav-link {{ request()->routeIs('user.live*') ? 'active' : '' }}">
             <i class="bi bi-broadcast"></i> {{ __('app.nav_live') }}
         </a>
-        <a href="{{ route('user.campaigns') }}" class="nav-link {{ request()->routeIs('user.campaigns*') ? 'active' : '' }}">
-            <i class="bi bi-megaphone"></i> {{ __('app.nav_campaigns') }}
-        </a>
-        <a href="{{ route('user.entry-exit') }}" class="nav-link {{ request()->routeIs('user.entry-exit*') ? 'active' : '' }}">
-            <i class="bi bi-door-open"></i> {{ __('app.nav_entry_exit') }}
-        </a>
-        <a href="{{ route('user.visit-depth') }}" class="nav-link {{ request()->routeIs('user.visit-depth*') ? 'active' : '' }}">
-            <i class="bi bi-layers"></i> {{ __('app.nav_visit_depth') }}
-        </a>
-        <a href="{{ route('user.new-vs-returning') }}" class="nav-link {{ request()->routeIs('user.new-vs-returning*') ? 'active' : '' }}">
-            <i class="bi bi-arrow-left-right"></i> {{ __('app.nav_new_vs_returning') }}
-        </a>
-        <a href="{{ route('user.time-on-page') }}" class="nav-link {{ request()->routeIs('user.time-on-page*') ? 'active' : '' }}">
-            <i class="bi bi-clock"></i> {{ __('app.nav_time_on_page') }}
-        </a>
+
+        {{-- Audience dropdown --}}
+        <div class="nav-group {{ $audienceOpen ? 'open' : '' }}" data-nav-group>
+            <div class="nav-group-toggle" onclick="toggleNavGroup(this.parentElement)">
+                <i class="bi bi-people nav-gi"></i> Audience
+                <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+            <div class="nav-group-items">
+                <a href="{{ route('user.pages') }}" class="nav-link {{ request()->routeIs('user.pages*') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-text"></i> Pages
+                </a>
+                <a href="{{ route('user.locations') }}" class="nav-link {{ request()->routeIs('user.locations*') ? 'active' : '' }}">
+                    <i class="bi bi-geo-alt"></i> Locations
+                </a>
+                <a href="{{ route('user.devices') }}" class="nav-link {{ request()->routeIs('user.devices*') ? 'active' : '' }}">
+                    <i class="bi bi-laptop"></i> Devices
+                </a>
+                <a href="{{ route('user.time-of-day') }}" class="nav-link {{ request()->routeIs('user.time-of-day*') ? 'active' : '' }}">
+                    <i class="bi bi-clock"></i> Time of Day
+                </a>
+            </div>
+        </div>
+
+        {{-- Behaviour dropdown --}}
+        <div class="nav-group {{ $behaviourOpen ? 'open' : '' }}" data-nav-group>
+            <div class="nav-group-toggle" onclick="toggleNavGroup(this.parentElement)">
+                <i class="bi bi-activity nav-gi"></i> Behaviour
+                <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+            <div class="nav-group-items">
+                <a href="{{ route('user.campaigns') }}" class="nav-link {{ request()->routeIs('user.campaigns*') ? 'active' : '' }}">
+                    <i class="bi bi-megaphone"></i> {{ __('app.nav_campaigns') }}
+                </a>
+                <a href="{{ route('user.entry-exit') }}" class="nav-link {{ request()->routeIs('user.entry-exit*') ? 'active' : '' }}">
+                    <i class="bi bi-door-open"></i> {{ __('app.nav_entry_exit') }}
+                </a>
+                <a href="{{ route('user.visit-depth') }}" class="nav-link {{ request()->routeIs('user.visit-depth*') ? 'active' : '' }}">
+                    <i class="bi bi-layers"></i> {{ __('app.nav_visit_depth') }}
+                </a>
+                <a href="{{ route('user.new-vs-returning') }}" class="nav-link {{ request()->routeIs('user.new-vs-returning*') ? 'active' : '' }}">
+                    <i class="bi bi-arrow-left-right"></i> {{ __('app.nav_new_vs_returning') }}
+                </a>
+                <a href="{{ route('user.time-on-page') }}" class="nav-link {{ request()->routeIs('user.time-on-page*') ? 'active' : '' }}">
+                    <i class="bi bi-hourglass-split"></i> {{ __('app.nav_time_on_page') }}
+                </a>
+            </div>
+        </div>
     </div>
 
     <div class="nav-section">
@@ -92,3 +131,9 @@
         </a>
     </div>
 </aside>
+
+<script>
+function toggleNavGroup(el) {
+    el.classList.toggle('open');
+}
+</script>

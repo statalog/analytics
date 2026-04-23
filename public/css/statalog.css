@@ -249,6 +249,30 @@ h1, h2, h3, h4, h5, h6 {
 
 .sidebar .nav-link.active i { color: #fff; }
 
+/* ── Collapsible nav group ── */
+.sidebar .nav-group-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1.25rem;
+    color: var(--pa-sidebar-link);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+}
+.sidebar .nav-group-toggle:hover { color: var(--pa-sidebar-text); background: rgba(255,255,255,0.04); }
+.sidebar .nav-group-toggle i.nav-gi { font-size: 1rem; width: 1.125rem; text-align: center; }
+.sidebar .nav-group-toggle .nav-arrow { margin-left: auto; font-size: 0.7rem; transition: transform 0.2s; opacity: 0.5; }
+.sidebar .nav-group.open > .nav-group-toggle .nav-arrow { transform: rotate(90deg); }
+.sidebar .nav-group.open > .nav-group-toggle { color: var(--pa-sidebar-text); }
+
+.sidebar .nav-group-items { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+.sidebar .nav-group.open > .nav-group-items { max-height: 600px; }
+.sidebar .nav-group-items .nav-link { padding-left: 2.5rem; font-size: 0.8125rem; }
+
 /* ── Main content area ── */
 .main-content {
     margin-left: var(--pa-sidebar-width);

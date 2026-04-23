@@ -19,6 +19,10 @@ use App\Http\Controllers\User\NewVsReturningController;
 use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\SiteController;
 use App\Http\Controllers\User\AccountUserController;
+use App\Http\Controllers\User\DevicesController;
+use App\Http\Controllers\User\LocationsController;
+use App\Http\Controllers\User\PagesController;
+use App\Http\Controllers\User\TimeOfDayController;
 use App\Http\Controllers\User\TimeOnPageController;
 use App\Http\Controllers\User\TwoFactorController;
 use App\Http\Controllers\User\VisitDepthController;
@@ -89,6 +93,16 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     // Time on Page
     Route::get('/time-on-page', [TimeOnPageController::class, 'index'])->name('time-on-page');
     Route::get('/time-on-page/data', [TimeOnPageController::class, 'data'])->name('time-on-page.data');
+
+    // Audience detail reports
+    Route::get('/pages',           [PagesController::class, 'index'])->name('pages');
+    Route::get('/pages/data',      [PagesController::class, 'data'])->name('pages.data');
+    Route::get('/locations',       [LocationsController::class, 'index'])->name('locations');
+    Route::get('/locations/data',  [LocationsController::class, 'data'])->name('locations.data');
+    Route::get('/devices',         [DevicesController::class, 'index'])->name('devices');
+    Route::get('/devices/data',    [DevicesController::class, 'data'])->name('devices.data');
+    Route::get('/time-of-day',     [TimeOfDayController::class, 'index'])->name('time-of-day');
+    Route::get('/time-of-day/data',[TimeOfDayController::class, 'data'])->name('time-of-day.data');
 
     // Funnels
     Route::get('/funnels',                  [FunnelController::class, 'index'])->name('funnels.index');
