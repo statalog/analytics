@@ -27,3 +27,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /docs
+# Personal operator scripts — not part of the OSS release
+deploy.sh

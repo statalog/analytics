@@ -4,9 +4,11 @@ use App\Http\Controllers\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicDashboardController;
 use App\Http\Controllers\User\CampaignsController;
+use App\Http\Controllers\User\InvitationController;
 use App\Http\Controllers\User\ConfigurationController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
+use App\Http\Controllers\User\BotController;
 use App\Http\Controllers\User\ErrorController;
 use App\Http\Controllers\User\EventController;
 use App\Http\Controllers\User\FunnelController;
@@ -113,6 +115,10 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/events/{name}',        [EventController::class, 'show'])->name('events.show');
     Route::get('/events/{name}/data',   [EventController::class, 'showData'])->name('events.show.data');
 
+    // Tools — bots
+    Route::get('/bots',      [BotController::class, 'index'])->name('bots');
+    Route::get('/bots/data', [BotController::class, 'data'])->name('bots.data');
+
     // Monitoring — JS errors
     Route::get('/errors',                      [ErrorController::class, 'index'])->name('errors');
     Route::get('/errors/data',                 [ErrorController::class, 'data'])->name('errors.data');
@@ -124,10 +130,14 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
 
     // Team members
     Route::get('/account-users',             [AccountUserController::class, 'index'])->name('account-users.index');
-    Route::post('/account-users',            [AccountUserController::class, 'store'])->name('account-users.store');
     Route::put('/account-users/{member}',    [AccountUserController::class, 'update'])->name('account-users.update');
     Route::delete('/account-users/{member}', [AccountUserController::class, 'destroy'])->name('account-users.destroy');
     Route::post('/account-users/switch',     [AccountUserController::class, 'switchAccount'])->name('account-users.switch');
+    Route::get('/account-picker',            [AccountUserController::class, 'picker'])->name('account-users.picker');
+
+    // Invitations
+    Route::post('/invitations',                  [InvitationController::class, 'store'])->name('invitations.store');
+    Route::delete('/invitations/{invitation}',   [InvitationController::class, 'destroy'])->name('invitations.destroy');
 
     // Google Analytics import (reachable from Configuration)
     Route::get('/ga-import',                        [GaImportController::class, 'index'])->name('ga-import');
@@ -165,6 +175,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/two-factor-challenge',  [TwoFactorChallengeController::class, 'create'])->name('two-factor.challenge');
     Route::post('/two-factor-challenge', [TwoFactorChallengeController::class, 'store']);
 });
+
+// Public invitation accept page (no auth required)
+Route::get('/invite/{token}',  [InvitationController::class, 'show'])->name('invitations.show');
+Route::post('/invite/{token}', [InvitationController::class, 'accept'])->name('invitations.accept')->middleware('auth');
 
 // Public shared dashboards — read-only analytics at /share/{token}
 Route::get('/share/{token}',         [PublicDashboardController::class, 'show'])->name('public.dashboard');

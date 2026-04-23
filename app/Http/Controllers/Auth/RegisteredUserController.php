@@ -46,6 +46,11 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // If arriving from an invitation link, redirect back to accept it.
+        if ($token = session()->pull('invite_token')) {
+            return redirect()->route('invitations.show', $token);
+        }
+
         return redirect(route('user.dashboard', absolute: false));
     }
 }

@@ -18,48 +18,38 @@ class AccountUserController extends Controller
 {
     public function index(Request $request): View
     {
-        $owner   = $request->user();
-        $members = AccountUser::where('owner_id', $owner->id)
+        $owner       = $request->user();
+        $members     = AccountUser::where('owner_id', $owner->id)
             ->with('user', 'siteAccess')
+            ->orderByDesc('created_at')
+            ->get();
+        $invitations = \App\Models\Invitation::where('owner_id', $owner->id)
+            ->whereNull('accepted_at')
+            ->where('expires_at', '>', now())
             ->orderByDesc('created_at')
             ->get();
 
         return view('user.account-users.index', [
-            'owner'   => $owner,
-            'members' => $members,
-            'sites'   => $owner->sites,
+            'owner'       => $owner,
+            'members'     => $members,
+            'invitations' => $invitations,
+            'sites'       => $owner->sites,
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function picker(Request $request): View|\Illuminate\Http\RedirectResponse
     {
-        $data = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
-            'role'  => ['required', 'in:admin,viewer'],
-        ]);
+        $user        = $request->user();
+        $ownSites    = $user->sites;
+        $memberships = AccountUser::where('user_id', $user->id)
+            ->with('owner')
+            ->get();
 
-        $owner = $request->user();
-
-        if ($data['email'] === $owner->email) {
-            return back()->withInput()->with('error', 'You cannot add yourself.');
+        if ($memberships->isEmpty()) {
+            return redirect()->route('user.dashboard');
         }
 
-        $member = User::where('email', $data['email'])->first();
-        if (!$member) {
-            return back()->withInput()->with('error', 'No user with that email. They must sign up first.');
-        }
-
-        if (AccountUser::where('owner_id', $owner->id)->where('user_id', $member->id)->exists()) {
-            return back()->withInput()->with('error', 'This user already has access.');
-        }
-
-        AccountUser::create([
-            'owner_id' => $owner->id,
-            'user_id'  => $member->id,
-            'role'     => $data['role'],
-        ]);
-
-        return redirect()->route('user.account-users.index')->with('success', 'Access granted.');
+        return view('user.account-picker', compact('user', 'ownSites', 'memberships'));
     }
 
     public function update(Request $request, AccountUser $member): RedirectResponse

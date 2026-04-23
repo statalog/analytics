@@ -71,6 +71,9 @@
         <a href="{{ route('user.errors') }}" class="nav-link {{ request()->routeIs('user.errors*') ? 'active' : '' }}">
             <i class="bi bi-bug"></i> Error tracking
         </a>
+        <a href="{{ route('user.bots') }}" class="nav-link {{ request()->routeIs('user.bots*') ? 'active' : '' }}">
+            <i class="bi bi-robot"></i> Bots
+        </a>
         {{-- Cloud injects AI Insights, Email reports, Heatmaps, etc. here. --}}
         @if(view()->exists('cloud::partials.tools'))
             @include('cloud::partials.tools')

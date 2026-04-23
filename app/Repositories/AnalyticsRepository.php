@@ -942,6 +942,55 @@ class AnalyticsRepository
         ];
     }
 
+    /** Count of hits grouped by bot_name (bots only). */
+    public function getBotBreakdown(string $siteId, string $from, string $to): array
+    {
+        return $this->query(
+            "SELECT bot_name AS name, count() AS hits, uniq(visitor_id) AS visitors
+             FROM pageviews
+             WHERE site_id = :site_id
+               AND is_bot = 1
+               AND timestamp BETWEEN :from AND :to
+               AND bot_name != ''
+             GROUP BY bot_name
+             ORDER BY hits DESC
+             LIMIT 50",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+    }
+
+    /** Bot hits per day, used for the stacked line chart on the Bots page. */
+    public function getBotsOverTime(string $siteId, string $from, string $to, string $timezone = 'UTC'): array
+    {
+        return $this->query(
+            "SELECT toDate(timestamp, :tz) AS day, bot_name, count() AS hits
+             FROM pageviews
+             WHERE site_id = :site_id
+               AND is_bot = 1
+               AND timestamp BETWEEN :from AND :to
+             GROUP BY day, bot_name
+             ORDER BY day ASC",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to, 'tz' => $timezone]
+        );
+    }
+
+    /** Top pages hit by bots — what are they crawling most? */
+    public function getBotTopPages(string $siteId, string $from, string $to): array
+    {
+        return $this->query(
+            "SELECT path AS url, count() AS hits, uniq(bot_name) AS distinct_bots
+             FROM pageviews
+             WHERE site_id = :site_id
+               AND is_bot = 1
+               AND timestamp BETWEEN :from AND :to
+               AND path != ''
+             GROUP BY path
+             ORDER BY hits DESC
+             LIMIT 50",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+    }
+
     /**
      * Hard-deletes every row for a site across pageviews, custom_events, js_errors.
      * Uses ClickHouse lightweight deletes — fast and async at the table level.

@@ -1,6 +1,13 @@
 @php
     $currentRange = (request('from') && request('to')) ? null : request('range', 'last7days');
     $currentHostname = request('hostname', '');
+    $currentBots = request('bots', '');
+    $currentSite = null;
+    $currentSiteId = session('current_site_id');
+    if ($currentSiteId && auth()->check()) {
+        $currentSite = auth()->user()->sites()->where('site_id', $currentSiteId)->first();
+    }
+    $siteTracksBots = (bool) ($currentSite?->track_bots ?? false);
     $ranges = [
         'today'      => __('analytics.range_today'),
         'yesterday'  => __('analytics.range_yesterday'),
@@ -12,6 +19,27 @@
     ];
 @endphp
 <div class="date-range-picker">
+    @if($siteTracksBots)
+    <div class="btn-group" role="group" aria-label="Bot filter" style="font-size:0.8125rem">
+        @php
+            $botsOptions = [
+                ''     => ['label' => 'Humans', 'icon' => 'person', 'title' => 'Human visitors only (default)'],
+                '1'    => ['label' => 'All',    'icon' => 'stack',  'title' => 'Humans + bots'],
+                'only' => ['label' => 'Bots',   'icon' => 'robot',  'title' => 'Bots only'],
+            ];
+        @endphp
+        @foreach($botsOptions as $val => $opt)
+            @php $active = ($currentBots === $val) || ($val === '' && $currentBots === ''); @endphp
+            <a href="{{ request()->fullUrlWithQuery(['bots' => $val ?: null]) }}"
+               class="btn {{ $active ? 'btn-pa-primary' : 'btn-pa-outline' }}"
+               style="padding:0.35rem 0.6rem;font-size:0.8125rem"
+               title="{{ $opt['title'] }}">
+                <i class="bi bi-{{ $opt['icon'] }}"></i> {{ $opt['label'] }}
+            </a>
+        @endforeach
+    </div>
+    @endif
+
     <div id="hostname-filter-wrap" style="display:none">
         <select id="hostname-filter" class="pa-input" style="font-size:0.8125rem;padding:0.35rem 0.6rem;width:auto;min-width:160px">
             <option value="">All subdomains</option>

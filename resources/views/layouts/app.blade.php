@@ -17,7 +17,11 @@
     @stack('styles')
 </head>
 <body>
-    @include('components.sidebar')
+    @if(request()->is('admin*') && view()->exists('cloud::partials.admin-sidebar'))
+        @include('cloud::partials.admin-sidebar')
+    @else
+        @include('components.sidebar')
+    @endif
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
     <div class="topbar">

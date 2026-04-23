@@ -188,9 +188,14 @@ class SiteController extends Controller
         return back()->with('success', 'Website updated.');
     }
 
-    public function destroy(Site $site)
+    public function destroy(Request $request, Site $site)
     {
         abort_unless($site->user_id === auth()->id(), 403);
+
+        $request->validate(
+            ['password' => ['required', 'current_password']],
+            ['password.current_password' => 'Incorrect password.']
+        );
 
         // Purge ClickHouse data first (pageviews, events, errors).
         $this->analytics->deleteAllForSite($site->site_id);

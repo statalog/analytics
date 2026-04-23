@@ -55,8 +55,12 @@
 
             <div class="d-flex align-items-center justify-content-between" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
                 <div>
-                    <label class="mb-0" style="font-weight:600;font-size:0.875rem">Store bot traffic</label>
-                    <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.125rem">Record crawler and bot hits too. Excluded from stats by default — toggle on a dashboard with <code>?bots=1</code> to include them, or <code>?bots=only</code> to see bots only.</div>
+                    <label class="mb-0" style="font-weight:600;font-size:0.875rem">Store bot traffic <span style="color:var(--pa-success);font-size:0.7rem;font-weight:600;margin-left:0.25rem">Recommended</span></label>
+                    <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.25rem;line-height:1.5">
+                        Highly recommended — track crawlers (Googlebot, Bingbot, AI scrapers like GPTBot and ClaudeBot, SEO tools, etc.) to understand who's indexing and mining your site.
+                        Bot hits are always <strong>excluded from your regular stats by default</strong>, so they never pollute your human analytics.
+                        You get a dedicated <strong>Bots</strong> page with a breakdown by bot, category, and page, and you can toggle bots in or out on any report.
+                    </div>
                 </div>
                 <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;cursor:pointer;margin-left:1rem">
                     <input type="hidden" name="track_bots" value="0">
@@ -172,22 +176,42 @@
 </form>
 
 <div class="d-flex justify-content-end mt-3">
-    <form method="POST" action="{{ route('user.sites.destroy', $site) }}" id="delete-site-form">
-        @csrf @method('DELETE')
-        <button type="submit" class="btn-pa-danger" data-pa-confirm="delete-site">
-            <i class="bi bi-trash me-1"></i>{{ __('sites.btn_delete') }}
-        </button>
-    </form>
+    <button type="button" class="btn-pa-danger" data-bs-toggle="modal" data-bs-target="#delete-site-modal">
+        <i class="bi bi-trash me-1"></i>{{ __('sites.btn_delete') }}
+    </button>
 </div>
 
-<x-confirm-modal
-    id="delete-site"
-    variant="danger"
-    icon="exclamation-triangle"
-    title="Delete website?"
-    :body="__('sites.confirm_delete')"
-    confirmLabel="{{ __('sites.btn_delete') }}"
-/>
+<div class="modal fade" id="delete-site-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:var(--pa-card-bg);border:1px solid var(--pa-border);color:var(--pa-text)">
+            <form method="POST" action="{{ route('user.sites.destroy', $site) }}">
+                @csrf @method('DELETE')
+                <div class="modal-header" style="border-bottom:1px solid var(--pa-border)">
+                    <h5 class="modal-title" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
+                        <i class="bi bi-exclamation-triangle me-2" style="color:var(--pa-danger)"></i>Delete website?
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p style="margin-bottom:1rem">You're about to permanently delete <strong>{{ $site->name }}</strong> and all of its analytics data (pageviews, events, errors, heatmaps). This cannot be undone.</p>
+                    <label class="auth-label">Confirm your password</label>
+                    <input type="password" name="password" class="pa-input @error('password') is-invalid @enderror" required autocomplete="current-password" placeholder="Your account password">
+                    @error('password')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                </div>
+                <div class="modal-footer" style="border-top:1px solid var(--pa-border)">
+                    <button type="button" class="btn-pa-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-pa-danger">
+                        <i class="bi bi-trash me-1"></i>{{ __('sites.btn_delete') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if($errors->has('password'))
+<script>document.addEventListener('DOMContentLoaded', function(){ new bootstrap.Modal(document.getElementById('delete-site-modal')).show(); });</script>
+@endif
 
 @push('scripts')
 <script>
