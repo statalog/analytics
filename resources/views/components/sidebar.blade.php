@@ -26,9 +26,6 @@
         <a href="{{ route('user.sites.index') }}" class="nav-link {{ request()->routeIs('user.sites*') ? 'active' : '' }}">
             <i class="bi bi-globe2"></i> {{ __('app.nav_websites') }}
         </a>
-        <a href="{{ route('user.overview') }}" class="nav-link {{ request()->routeIs('user.overview*') ? 'active' : '' }}">
-            <i class="bi bi-grid-1x2"></i> {{ __('app.nav_overview') }}
-        </a>
     </div>
 
     <div class="nav-section">
@@ -70,13 +67,17 @@
     </div>
 
     <div class="nav-section">
-        <div class="nav-section-title">Monitoring</div>
+        <div class="nav-section-title">Tools</div>
         <a href="{{ route('user.errors') }}" class="nav-link {{ request()->routeIs('user.errors*') ? 'active' : '' }}">
-            <i class="bi bi-bug"></i> Errors
+            <i class="bi bi-bug"></i> Error tracking
         </a>
+        {{-- Cloud injects AI Insights, Email reports, Heatmaps, etc. here. --}}
+        @if(view()->exists('cloud::partials.tools'))
+            @include('cloud::partials.tools')
+        @endif
     </div>
 
-    {{-- Cloud package injects extra sections here (AI Insights, Teams, Billing). --}}
+    {{-- Cloud package injects Account-area sections (Billing, Admin). --}}
     @if(view()->exists('cloud::partials.sidebar'))
         @include('cloud::partials.sidebar')
     @endif

@@ -22,6 +22,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\User\Concerns\HasDateRange;
 use App\Models\Site;
 use App\Repositories\AnalyticsRepository;
 use Illuminate\Http\Request;
@@ -30,21 +31,55 @@ use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
+    use HasDateRange;
+
     public function __construct(protected AnalyticsRepository $analytics) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $sites     = auth()->user()->sites;
-        $siteIds   = $sites->pluck('site_id')->toArray();
-        $hitCounts = $this->analytics->getSiteHitCounts($siteIds);
+        $sites = $request->user()->sites()->get();
+
+        [$from, $to]         = $this->getDateRange($request);
+        [$prevFrom, $prevTo] = $this->getPreviousDateRange($from, $to);
+
+        $siteStats         = [];
+        $totalVisitors     = 0;
+        $totalSessions     = 0;
+        $totalPageviews    = 0;
+        $prevTotalVisitors = 0;
+
+        foreach ($sites as $site) {
+            $repo = $this->analyticsFor($site);
+
+            $visitors     = $repo->getUniqueVisitors($site->site_id, $from, $to);
+            $sessions     = $repo->getTotalSessions($site->site_id, $from, $to);
+            $pageviews    = $repo->getTotalPageviews($site->site_id, $from, $to);
+            $prevVisitors = $repo->getUniqueVisitors($site->site_id, $prevFrom, $prevTo);
+
+            $totalVisitors     += $visitors;
+            $totalSessions     += $sessions;
+            $totalPageviews    += $pageviews;
+            $prevTotalVisitors += $prevVisitors;
+
+            $siteStats[] = [
+                'site'      => $site,
+                'visitors'  => $visitors,
+                'sessions'  => $sessions,
+                'pageviews' => $pageviews,
+                'trend'     => $this->calculateTrend($visitors, $prevVisitors),
+            ];
+        }
+
+        usort($siteStats, fn ($a, $b) => $b['visitors'] - $a['visitors']);
 
         return view('user.sites.index', [
             'breadcrumbs'    => [['label' => 'Websites']],
             'sites'          => $sites,
-            'hitCounts'      => $hitCounts,
-            'todayTotal'     => array_sum(array_column($hitCounts, 'today')),
-            'thisMonthTotal' => array_sum(array_column($hitCounts, 'this_month')),
-            'lastMonthTotal' => array_sum(array_column($hitCounts, 'last_month')),
+            'siteStats'      => $siteStats,
+            'totalVisitors'  => $totalVisitors,
+            'totalSessions'  => $totalSessions,
+            'totalPageviews' => $totalPageviews,
+            'totalTrend'     => $this->calculateTrend($totalVisitors, $prevTotalVisitors),
         ]);
     }
 
@@ -129,22 +164,24 @@ class SiteController extends Controller
         $isPublic = $request->boolean('is_public');
         $updates['is_public'] = $isPublic;
 
-        if ($isPublic && !$site->public_token) {
-            $updates['public_token'] = Str::random(48);
-        }
-
-        $passwordProtected = $request->boolean('password_protected');
-        if (!$passwordProtected) {
-            $updates['public_password'] = null;
-        } else {
-            $newPassword = trim($request->input('public_password', ''));
-            if ($newPassword !== '') {
-                $updates['public_password'] = Hash::make($newPassword);
+        if ($isPublic) {
+            if (empty($site->public_token)) {
+                $updates['public_token'] = bin2hex(random_bytes(16));
+            }
+            $password = trim((string) $request->input('public_password', ''));
+            if ($password !== '') {
+                $updates['public_password'] = Hash::make($password);
+            } elseif ($request->boolean('clear_public_password')) {
+                $updates['public_password'] = null;
+            }
+            $sections = $request->input('public_sections', []);
+            if (is_array($sections)) {
+                $updates['public_sections'] = array_values(array_intersect(
+                    $sections,
+                    ['chart', 'top_pages', 'sources', 'countries', 'devices', 'browsers']
+                ));
             }
         }
-
-        $sections = $request->input('public_sections', []);
-        $updates['public_sections'] = !empty($sections) ? $sections : null;
 
         $site->update($updates);
 
@@ -155,8 +192,16 @@ class SiteController extends Controller
     {
         abort_unless($site->user_id === auth()->id(), 403);
 
+        // Purge ClickHouse data first (pageviews, events, errors).
+        $this->analytics->deleteAllForSite($site->site_id);
+
+        // Purge cloud-only stats (heatmap_events) if cloud is installed.
+        if (class_exists(\Statalog\Cloud\Repositories\HeatmapRepository::class)) {
+            app(\Statalog\Cloud\Repositories\HeatmapRepository::class)->deleteAllForSite($site->site_id);
+        }
+
         $site->delete();
 
-        return redirect()->route('user.sites.index')->with('success', 'Website removed.');
+        return redirect()->route('user.sites.index')->with('success', 'Website and all its stats removed.');
     }
 }

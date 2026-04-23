@@ -87,7 +87,7 @@ class Site extends Model
             ? url('/js/t/' . $this->site_id . '.js')
             : url('/js/tracker.js');
 
-        return '<script defer data-site-id="' . e($this->site_id) . '" src="' . $src . '"></script>';
+        return '<script async src="' . $src . '"></script>';
     }
 
     public function setDomainAttribute(string $value): void

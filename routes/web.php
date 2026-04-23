@@ -14,7 +14,6 @@ use App\Http\Controllers\User\GaImportController;
 use App\Http\Controllers\User\GoalController;
 use App\Http\Controllers\User\LiveStatsController;
 use App\Http\Controllers\User\NewVsReturningController;
-use App\Http\Controllers\User\OverviewController;
 use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\SiteController;
 use App\Http\Controllers\User\AccountUserController;
@@ -47,8 +46,8 @@ Route::get('/account/dashboard', fn () => redirect()->route('user.dashboard'));
 // User panel
 Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
 
-    // Overview (all sites)
-    Route::get('/overview', [OverviewController::class, 'index'])->name('overview');
+    // Overview merged into Websites; keep a redirect for bookmarks / old links.
+    Route::get('/overview', fn () => redirect()->route('user.sites.index'))->name('overview');
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

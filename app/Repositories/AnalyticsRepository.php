@@ -942,6 +942,25 @@ class AnalyticsRepository
         ];
     }
 
+    /**
+     * Hard-deletes every row for a site across pageviews, custom_events, js_errors.
+     * Uses ClickHouse lightweight deletes — fast and async at the table level.
+     */
+    public function deleteAllForSite(string $siteId): void
+    {
+        foreach (['pageviews', 'custom_events', 'js_errors'] as $table) {
+            $sql = "DELETE FROM {$table} WHERE site_id = '" . addslashes($siteId) . "'";
+            try {
+                Http::withBasicAuth($this->username, $this->password)
+                    ->timeout(config('clickhouse.timeout', 10))
+                    ->withBody($sql, 'text/plain')
+                    ->post("http://{$this->host}:{$this->port}/?database={$this->database}");
+            } catch (\Throwable $e) {
+                Log::warning("ClickHouse purge failed for {$table}/{$siteId}: " . $e->getMessage());
+            }
+        }
+    }
+
     public function updatePageviewDuration(string $siteId, string $sessionId, string $url, int $duration): void
     {
         $sql = "ALTER TABLE pageviews UPDATE visit_duration = {$duration}"

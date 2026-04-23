@@ -14,10 +14,12 @@
     if (!scriptTag) return;
 
     var src = scriptTag.src || '';
-    var siteId = scriptTag.getAttribute('data-site-id') || (src.match(/[?&]id=([^&]+)/) || [])[1];
+    var siteId = scriptTag.getAttribute('data-site-id')
+        || (src.match(/\/js\/t\/([A-Za-z0-9_-]+)\.js/) || [])[1]
+        || (src.match(/[?&]id=([^&]+)/) || [])[1];
     if (!siteId) return;
 
-    var endpoint = src.replace(/\/js\/tracker\.js.*$/, '/api/collect');
+    var endpoint = src.replace(/\/js\/(tracker\.js|t\/[^/?#]+\.js).*$/, '/api/collect');
     var trackErrors = scriptTag.getAttribute('data-no-errors') === null;
     var pageEnteredAt = Date.now();
     var heartbeatSent = false;
