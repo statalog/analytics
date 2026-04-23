@@ -81,7 +81,13 @@ class Site extends Model
 
     public function getTrackingSnippetAttribute(): string
     {
-        return '<script defer data-site-id="' . e($this->site_id) . '" src="' . url('/js/tracker.js') . '"></script>';
+        // Cloud installs expose a templated per-site tracker that lights up paid
+        // features (heatmaps, etc.) automatically. OSS falls back to the static file.
+        $src = class_exists(\Statalog\Cloud\CloudServiceProvider::class)
+            ? url('/js/t/' . $this->site_id . '.js')
+            : url('/js/tracker.js');
+
+        return '<script defer data-site-id="' . e($this->site_id) . '" src="' . $src . '"></script>';
     }
 
     public function setDomainAttribute(string $value): void
