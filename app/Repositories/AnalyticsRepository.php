@@ -285,15 +285,21 @@ class AnalyticsRepository
         return $this->queryWithCache(
             "page_breakdown:{$siteId}:{$from}:{$to}:{$limit}" . $this->sdKey(), 300,
             "SELECT
-                path,
-                countIf(url != '') AS pageviews,
-                uniqIf(visitor_id, url != '') AS unique_visitors,
-                round(avgIf(is_bounce, url != '') * 100) AS bounce_rate,
-                round(avgIf(visit_duration, visit_duration > 0)) AS avg_time
-             FROM pageviews
-             WHERE site_id = :site_id" . $this->sd() . "
-               AND timestamp >= :from AND timestamp <= :to
-               AND path != ''
+                p.path AS path,
+                countIf(p.url != '') AS pageviews,
+                uniqIf(p.visitor_id, p.url != '') AS unique_visitors,
+                round(avgIf(p.is_bounce, p.url != '') * 100) AS bounce_rate,
+                round(avgIf(s.duration, p.url != '' AND s.duration > 0)) AS avg_time
+             FROM pageviews p
+             LEFT JOIN (
+                 SELECT session_id,
+                        greatest(dateDiff('second', min(timestamp), max(timestamp)), max(visit_duration)) AS duration
+                 FROM pageviews
+                 WHERE site_id = :site_id AND timestamp >= :from AND timestamp <= :to
+                 GROUP BY session_id
+             ) s ON p.session_id = s.session_id
+             WHERE p.site_id = :site_id" . $this->sd() . "
+               AND p.path != '' AND p.timestamp >= :from AND p.timestamp <= :to
              GROUP BY path
              ORDER BY pageviews DESC
              LIMIT {$limit}",
@@ -479,13 +485,25 @@ class AnalyticsRepository
                 utm_campaign,
                 utm_source,
                 utm_medium,
-                uniq(session_id) as visits,
+                count() as visits,
                 uniq(visitor_id) as unique_visitors,
-                count() as pageviews,
-                round(countIf(is_bounce = 1) * 100.0 / count(), 1) as bounce_rate,
-                round(avg(visit_duration)) as avg_duration
-            FROM pageviews
-            WHERE site_id = :site_id" . $this->sd() . " AND timestamp >= :from AND timestamp <= :to AND (utm_campaign != '' OR utm_source != '' OR utm_medium != '')
+                sum(pv_count) as pageviews,
+                round(countIf(pv_count = 1) * 100.0 / count(), 1) as bounce_rate,
+                round(avgIf(duration, duration > 0)) as avg_duration
+            FROM (
+                SELECT
+                    session_id,
+                    any(utm_campaign) as utm_campaign,
+                    any(utm_source) as utm_source,
+                    any(utm_medium) as utm_medium,
+                    uniq(visitor_id) as visitor_id,
+                    countIf(url != '') as pv_count,
+                    greatest(dateDiff('second', min(timestamp), max(timestamp)), max(visit_duration)) as duration
+                FROM pageviews
+                WHERE site_id = :site_id" . $this->sd() . " AND timestamp >= :from AND timestamp <= :to
+                  AND (utm_campaign != '' OR utm_source != '' OR utm_medium != '')
+                GROUP BY session_id
+            )
             GROUP BY utm_campaign, utm_source, utm_medium
             ORDER BY visits DESC",
             ['site_id' => $siteId, 'from' => $from, 'to' => $to]
@@ -815,14 +833,23 @@ class AnalyticsRepository
             "SELECT
                 referrer_domain,
                 anyIf(utm_source, utm_source != '') AS utm_source,
-                uniq(session_id) AS visits,
-                countIf(url != '') AS pageviews,
-                round(countIf(is_bounce = 1) * 100.0 / uniq(session_id), 1) AS bounce_rate,
-                round(countIf(url != '') * 1.0 / uniq(session_id), 2) AS pages_per_visit,
-                round(avg(visit_duration), 0) AS avg_duration
-            FROM pageviews
-            WHERE site_id = :site_id" . $this->sd() . "
-              AND timestamp >= :from AND timestamp <= :to
+                count() AS visits,
+                sum(pv_count) AS pageviews,
+                round(countIf(pv_count = 1) * 100.0 / count(), 1) AS bounce_rate,
+                round(sum(pv_count) * 1.0 / count(), 2) AS pages_per_visit,
+                round(avgIf(duration, duration > 0), 0) AS avg_duration
+            FROM (
+                SELECT
+                    session_id,
+                    any(referrer_domain) AS referrer_domain,
+                    anyIf(utm_source, utm_source != '') AS utm_source,
+                    countIf(url != '') AS pv_count,
+                    greatest(dateDiff('second', min(timestamp), max(timestamp)), max(visit_duration)) AS duration
+                FROM pageviews
+                WHERE site_id = :site_id" . $this->sd() . "
+                  AND timestamp >= :from AND timestamp <= :to
+                GROUP BY session_id
+            )
             GROUP BY referrer_domain
             ORDER BY visits DESC
             LIMIT 2000",

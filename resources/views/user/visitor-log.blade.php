@@ -24,9 +24,9 @@ var totalPages  = 1;
 
 function visitorAvatar(id) {
     if (!id) return '<span style="width:24px;height:24px;display:inline-block;flex-shrink:0"></span>';
-    var hash = 0;
-    for (var i = 0; i < id.length; i++) { hash = id.charCodeAt(i) + ((hash << 5) - hash); }
-    var hue = (Math.abs(hash) * 137.508) % 360;
+    var h = 5381;
+    for (var i = 0; i < id.length; i++) { h = (((h << 5) + h) ^ id.charCodeAt(i)) | 0; }
+    var hue = (h >>> 0) % 360;
     return '<span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:hsl(' + hue + ',65%,45%);flex-shrink:0"></span>';
 }
 
