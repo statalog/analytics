@@ -84,6 +84,19 @@ return [
 
     'pagespeed_key' => env('GOOGLE_PAGESPEED_KEY', ''),
 
+    /*
+    |--------------------------------------------------------------------------
+    | REST API Key
+    |--------------------------------------------------------------------------
+    |
+    | A secret key that protects the /api/v1/* endpoints.
+    | Leave empty to disable API access entirely.
+    | Cloud installations override this with per-user DB-backed keys.
+    |
+    */
+
+    'api_key' => env('STATALOG_API_KEY', ''),
+
     'geoip_database' => (function () {
         $val = env('STATALOG_GEOIP_DATABASE', '');
         if ($val === '') {

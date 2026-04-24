@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AddCorsHeaders;
+use App\Http\Middleware\ApiAuthenticate;
 use App\Http\Middleware\EnsureNotViewer;
 use App\Http\Middleware\ResolveActiveAccount;
 use Illuminate\Foundation\Application;
@@ -18,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'cors'        => AddCorsHeaders::class,
             'not-viewer'  => EnsureNotViewer::class,
+            'api.auth'    => ApiAuthenticate::class,
         ]);
 
         // Resolve the active account (own vs switched-into-owner) on every
