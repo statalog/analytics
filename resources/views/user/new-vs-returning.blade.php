@@ -8,10 +8,10 @@
 
 <div class="row g-4 mb-4">
     <div class="col-md-4">
-        <div class="pa-card" style="height:260px;display:flex;flex-direction:column">
-            <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">Distribution</h6>
-            <div style="flex:1;position:relative">
-                <canvas id="nvr-donut"></canvas>
+        <div class="pa-card" style="height:260px">
+            <h6 class="mb-2" style="font-family:'Space Grotesk',sans-serif">Distribution</h6>
+            <div style="position:relative;width:180px;height:180px;margin:0 auto">
+                <canvas id="nvr-donut" width="180" height="180"></canvas>
             </div>
         </div>
     </div>
@@ -41,8 +41,21 @@ function loadData() {
     fetch('{{ route("user.new-vs-returning.data") }}?' + params.toString())
         .then(function(r) { return r.json(); })
         .then(function(data) {
-            renderDistribution(data.segments || []);
-            renderTimeline(data.chart || []);
+            var segments = data.segments || [];
+            var chart    = data.chart    || [];
+
+            // Fallback: derive totals from chart data if segments query returned nothing
+            if (!segments.length && chart.length) {
+                var totalNew = chart.reduce(function(s, r) { return s + parseInt(r.new_visitors || 0); }, 0);
+                var totalRet = chart.reduce(function(s, r) { return s + parseInt(r.returning_visitors || 0); }, 0);
+                segments = [
+                    { segment: 'New',       visitors: totalNew, sessions: totalNew },
+                    { segment: 'Returning', visitors: totalRet, sessions: totalRet },
+                ];
+            }
+
+            renderDistribution(segments);
+            renderTimeline(chart);
         });
 }
 
@@ -78,7 +91,7 @@ function renderDistribution(rows) {
             maintainAspectRatio: false,
             cutout: '68%',
             plugins: {
-                legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16, font: { size: 12 } } },
+                legend: { display: false },
                 tooltip: { enabled: total > 0 }
             }
         }
