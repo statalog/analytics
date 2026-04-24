@@ -42,7 +42,7 @@ class AccountUserController extends Controller
         $user        = $request->user();
         $ownSites    = $user->sites;
         $memberships = AccountUser::where('user_id', $user->id)
-            ->with('owner')
+            ->with(['owner.sites'])
             ->get();
 
         if ($memberships->isEmpty()) {
@@ -91,7 +91,7 @@ class AccountUserController extends Controller
 
         if ($ownerId === 0 || $ownerId === $user->id) {
             $request->session()->forget('active_owner_id');
-            return redirect()->route('user.overview')->with('success', 'Switched to your own account.');
+            return redirect()->route('user.dashboard');
         }
 
         $valid = AccountUser::where('owner_id', $ownerId)->where('user_id', $user->id)->exists();
@@ -99,6 +99,6 @@ class AccountUserController extends Controller
 
         $request->session()->put('active_owner_id', $ownerId);
 
-        return redirect()->route('user.overview')->with('success', 'Switched account.');
+        return redirect()->route('user.dashboard');
     }
 }

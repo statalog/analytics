@@ -56,34 +56,16 @@ class AuthenticatedSessionController extends Controller
 
     protected function afterLogin(Request $request, $user): RedirectResponse
     {
-        // If arriving from an invitation link, return there.
+        // If arriving from an invitation link, return there first.
         if ($token = $request->session()->pull('invite_token')) {
             return redirect()->route('invitations.show', $token);
         }
 
-        // Restore last-used account from cookie.
-        $cookieKey = 'statalog_account_' . $user->id;
-        $savedOwner = (int) ($request->cookie($cookieKey) ?? 0);
-        if ($savedOwner && $savedOwner !== $user->id) {
-            $valid = AccountUser::where('owner_id', $savedOwner)->where('user_id', $user->id)->exists();
-            if ($valid) {
-                $request->session()->put('active_owner_id', $savedOwner);
-                return redirect()->intended(route('user.dashboard', absolute: false));
-            }
-        }
+        // Always show account picker if the user is a member of any other account.
+        $memberships = AccountUser::where('user_id', $user->id)->with('owner')->get();
 
-        // No own sites — check memberships.
-        if ($user->sites()->count() === 0) {
-            $memberships = AccountUser::where('user_id', $user->id)->get();
-
-            if ($memberships->count() === 1) {
-                $request->session()->put('active_owner_id', $memberships->first()->owner_id);
-                return redirect()->intended(route('user.dashboard', absolute: false));
-            }
-
-            if ($memberships->count() > 1) {
-                return redirect()->route('user.account-users.picker');
-            }
+        if ($memberships->isNotEmpty()) {
+            return redirect()->route('user.account-users.picker');
         }
 
         return redirect()->intended(route('user.dashboard', absolute: false));
