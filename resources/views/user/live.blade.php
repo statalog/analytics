@@ -52,6 +52,7 @@
             <table class="pa-table" style="width:100%">
                 <thead><tr>
                     <th style="width:16px"></th>
+                    <th style="width:36px"></th>
                     <th>{{ __('analytics.live_col_time') }}</th>
                     <th>{{ __('analytics.live_col_page') }}</th>
                     <th>{{ __('analytics.live_col_location') }}</th>
@@ -92,6 +93,15 @@ var __t = {
     direct:     @json(__('analytics.live_source_direct')),
     noRecent:   @json(__('analytics.live_no_recent_visits')),
 };
+
+function visitorAvatar(id) {
+    if (!id) return '<span style="width:28px;height:28px;display:inline-block;flex-shrink:0"></span>';
+    var hash = 0;
+    for (var i = 0; i < Math.min(id.length, 12); i++) { hash = id.charCodeAt(i) + ((hash << 5) - hash); }
+    var hue = Math.abs(hash) % 360;
+    var label = id.substring(0, 4).toUpperCase();
+    return '<span title="Visitor ' + label + '" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:hsl(' + hue + ',60%,48%);color:#fff;font-size:0.55rem;font-weight:700;flex-shrink:0;font-family:monospace;letter-spacing:0">' + label + '</span>';
+}
 
 function getLiveReferrer(referrer) {
     if (!referrer) return __t.direct;
@@ -191,6 +201,7 @@ function loadLiveData() {
                 var deviceIcon = v.device_type === 'mobile' ? 'phone' : v.device_type === 'tablet' ? 'tablet' : 'laptop';
                 rows += '<tr>';
                 rows += '<td>' + (isLive ? '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22C55E"></span>' : '') + '</td>';
+                rows += '<td>' + visitorAvatar(v.visitor_id) + '</td>';
                 rows += '<td>' + formatTimestamp(v.timestamp) + '</td>';
                 rows += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">' + (v.url || '').replace(/^https?:\/\//, '') + '</td>';
                 rows += '<td><span style="display:inline-flex;align-items:center;gap:5px">' + (v.country ? '<img src="/img/flags/' + v.country.toLowerCase() + '.svg" width="20" height="20" style="border-radius:2px;object-fit:cover;flex-shrink:0" onerror="this.style.display=\'none\'">' : '') + (v.country || '') + (!__hideCities && v.city ? ', ' + v.city : '') + '</span></td>';

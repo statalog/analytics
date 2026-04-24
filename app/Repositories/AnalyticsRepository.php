@@ -456,7 +456,7 @@ class AnalyticsRepository
         }
 
         return $this->query(
-            "SELECT timestamp, url, country, city, device_type, browser, referrer, utm_source, utm_medium, utm_campaign FROM pageviews WHERE site_id = :site_id" . $this->sd() . " AND url != ''{$hf} ORDER BY timestamp DESC LIMIT {$limit}",
+            "SELECT timestamp, url, country, city, device_type, browser, referrer, utm_source, utm_medium, utm_campaign, visitor_id FROM pageviews WHERE site_id = :site_id" . $this->sd() . " AND url != ''{$hf} ORDER BY timestamp DESC LIMIT {$limit}",
             $params
         );
     }

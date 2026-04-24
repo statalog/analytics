@@ -22,6 +22,15 @@
 var currentPage = 1;
 var totalPages  = 1;
 
+function visitorAvatar(id) {
+    if (!id) return '<span style="width:28px;height:28px;display:inline-block;flex-shrink:0"></span>';
+    var hash = 0;
+    for (var i = 0; i < Math.min(id.length, 12); i++) { hash = id.charCodeAt(i) + ((hash << 5) - hash); }
+    var hue = Math.abs(hash) % 360;
+    var label = id.substring(0, 4).toUpperCase();
+    return '<span title="Visitor ' + label + '" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:hsl(' + hue + ',60%,48%);color:#fff;font-size:0.55rem;font-weight:700;flex-shrink:0;font-family:monospace;letter-spacing:0">' + label + '</span>';
+}
+
 function flag(code) {
     if (!code) return '';
     return '<img src="/img/flags/' + code.toLowerCase() + '.svg" width="18" height="18" style="border-radius:2px;object-fit:cover;margin-right:5px;vertical-align:middle;flex-shrink:0" onerror="this.style.display=\'none\'">';
@@ -89,6 +98,7 @@ function render(data) {
 
     var html = '<div style="overflow-x:auto"><table class="pa-table" style="min-width:900px">';
     html += '<thead><tr>'
+          + '<th style="width:36px"></th>'
           + '<th>Time</th>'
           + '<th>Location</th>'
           + '<th>Entry page</th>'
@@ -107,6 +117,7 @@ function render(data) {
                    : fmtRef(r.referrer);
 
         html += '<tr>'
+              + '<td style="padding-right:4px">' + visitorAvatar(r.visitor_id) + '</td>'
               + '<td style="white-space:nowrap;font-size:0.8125rem;color:var(--pa-text-muted)">' + fmtTime(r.first_seen) + '</td>'
               + '<td><span style="display:inline-flex;align-items:center">' + location + '</span></td>'
               + '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8125rem" title="' + escHtml(r.entry_page) + '">' + escHtml(fmtUrl(r.entry_page)) + '</td>'
