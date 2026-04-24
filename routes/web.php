@@ -34,6 +34,7 @@ use App\Http\Controllers\User\SearchEnginesController;
 use App\Http\Controllers\User\WebsitesController;
 use App\Http\Controllers\User\SocialNetworksController;
 use App\Http\Controllers\User\AiSourcesController;
+use App\Http\Controllers\User\SeoToolsController;
 use Illuminate\Support\Facades\Route;
 
 // Root: authed users go to dashboard. Guests see the cloud landing page
@@ -157,6 +158,22 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     // Tools — bots
     Route::get('/bots',      [BotController::class, 'index'])->name('bots');
     Route::get('/bots/data', [BotController::class, 'data'])->name('bots.data');
+
+    // SEO Tools
+    Route::prefix('/seo')->name('seo.')->group(function () {
+        Route::get('/sitemap',                [SeoToolsController::class, 'sitemap'])->name('sitemap');
+        Route::get('/sitemap/check',          [SeoToolsController::class, 'sitemapCheck'])->name('sitemap.check');
+        Route::get('/robots',                 [SeoToolsController::class, 'robots'])->name('robots');
+        Route::get('/robots/check',           [SeoToolsController::class, 'robotsCheck'])->name('robots.check');
+        Route::get('/broken-links',           [SeoToolsController::class, 'brokenLinks'])->name('broken-links');
+        Route::post('/broken-links/scan',     [SeoToolsController::class, 'brokenLinksScan'])->name('broken-links.scan');
+        Route::get('/redirect-checker',       [SeoToolsController::class, 'redirectChecker'])->name('redirect-checker');
+        Route::get('/redirect-checker/check', [SeoToolsController::class, 'redirectCheckerCheck'])->name('redirect-checker.check');
+        Route::get('/meta-tags',              [SeoToolsController::class, 'metaTags'])->name('meta-tags');
+        Route::get('/meta-tags/check',        [SeoToolsController::class, 'metaTagsCheck'])->name('meta-tags.check');
+        Route::get('/core-web-vitals',        [SeoToolsController::class, 'coreWebVitals'])->name('core-web-vitals');
+        Route::get('/core-web-vitals/check',  [SeoToolsController::class, 'coreWebVitalsCheck'])->name('core-web-vitals.check');
+    });
 
     // Monitoring — JS errors
     Route::get('/errors',                      [ErrorController::class, 'index'])->name('errors');

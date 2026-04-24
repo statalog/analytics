@@ -76,6 +76,14 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Google PageSpeed / Core Web Vitals API Key
+    |--------------------------------------------------------------------------
+    */
+
+    'pagespeed_key' => env('GOOGLE_PAGESPEED_KEY', ''),
+
     'geoip_database' => (function () {
         $val = env('STATALOG_GEOIP_DATABASE', '');
         if ($val === '') {

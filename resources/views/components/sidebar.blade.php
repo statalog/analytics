@@ -11,6 +11,9 @@
 
     $behaviourRoutes = ['user.entry-exit*','user.visit-depth*','user.new-vs-returning*','user.time-on-page*','user.performance*'];
     $behaviourOpen   = collect($behaviourRoutes)->contains(fn($p) => request()->routeIs($p));
+
+    $seoRoutes = ['user.seo.*'];
+    $seoOpen   = collect($seoRoutes)->contains(fn($p) => request()->routeIs($p));
 @endphp
 <aside class="sidebar">
     <a href="{{ route('user.overview') }}" class="sidebar-brand">
@@ -150,6 +153,35 @@
         <a href="{{ route('user.bots') }}" class="nav-link {{ request()->routeIs('user.bots*') ? 'active' : '' }}">
             <i class="bi bi-robot"></i> Bots
         </a>
+
+        {{-- SEO Tools dropdown --}}
+        <div class="nav-group {{ $seoOpen ? 'open' : '' }}" data-nav-group>
+            <div class="nav-group-toggle" onclick="toggleNavGroup(this.parentElement)">
+                <i class="bi bi-map nav-gi"></i> SEO Tools
+                <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+            <div class="nav-group-items">
+                <a href="{{ route('user.seo.sitemap') }}" class="nav-link {{ request()->routeIs('user.seo.sitemap*') ? 'active' : '' }}">
+                    <i class="bi bi-diagram-2"></i> Sitemap
+                </a>
+                <a href="{{ route('user.seo.robots') }}" class="nav-link {{ request()->routeIs('user.seo.robots*') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-code"></i> Robots.txt
+                </a>
+                <a href="{{ route('user.seo.broken-links') }}" class="nav-link {{ request()->routeIs('user.seo.broken-links*') ? 'active' : '' }}">
+                    <i class="bi bi-link-45deg"></i> Broken Links
+                </a>
+                <a href="{{ route('user.seo.redirect-checker') }}" class="nav-link {{ request()->routeIs('user.seo.redirect-checker*') ? 'active' : '' }}">
+                    <i class="bi bi-arrow-left-right"></i> Redirect Checker
+                </a>
+                <a href="{{ route('user.seo.meta-tags') }}" class="nav-link {{ request()->routeIs('user.seo.meta-tags*') ? 'active' : '' }}">
+                    <i class="bi bi-tags"></i> Meta Tags
+                </a>
+                <a href="{{ route('user.seo.core-web-vitals') }}" class="nav-link {{ request()->routeIs('user.seo.core-web-vitals*') ? 'active' : '' }}">
+                    <i class="bi bi-speedometer2"></i> Core Web Vitals
+                </a>
+            </div>
+        </div>
+
         {{-- Cloud injects AI Insights, Email reports, Heatmaps, etc. here. --}}
         @if(view()->exists('cloud::partials.tools'))
             @include('cloud::partials.tools')

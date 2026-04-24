@@ -700,6 +700,23 @@ class AnalyticsRepository
         );
     }
 
+    // --- SEO Tools ---
+
+    public function getTopPageUrls(string $siteId, int $limit = 100): array
+    {
+        $rows = $this->query(
+            "SELECT url, count() AS hits
+             FROM pageviews
+             WHERE site_id = :site_id AND is_bot = 0 AND url != ''
+               AND timestamp >= now() - INTERVAL 30 DAY
+             GROUP BY url
+             ORDER BY hits DESC
+             LIMIT {$limit}",
+            ['site_id' => $siteId]
+        );
+        return array_column($rows, 'url');
+    }
+
     // --- Channels / Acquisition ---
 
     public function getReferrerDomainStats(string $siteId, string $from, string $to): array
