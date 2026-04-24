@@ -62,5 +62,9 @@
         </a>
     </div>
     @endforeach
+
+    @if(view()->exists('cloud::partials.configuration-cards'))
+        @include('cloud::partials.configuration-cards')
+    @endif
 </div>
 @endsection

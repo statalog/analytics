@@ -21,8 +21,10 @@
 
 namespace App\Providers;
 
+use App\Contracts\ApiKeyValidator;
 use App\Repositories\AnalyticsRepository;
 use App\Services\BotFilterService;
+use App\Services\EnvApiKeyValidator;
 use App\Services\GeoIpService;
 use App\Services\SettingsService;
 use App\Services\UserAgentService;
@@ -33,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(ApiKeyValidator::class, EnvApiKeyValidator::class);
         $this->app->singleton(AnalyticsRepository::class);
         $this->app->singleton(BotFilterService::class);
         $this->app->singleton(GeoIpService::class);

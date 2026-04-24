@@ -21,6 +21,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Contracts\ApiKeyContext;
 use App\Http\Controllers\Controller;
 use App\Models\Site;
 use App\Repositories\AnalyticsRepository;
@@ -42,7 +43,18 @@ class StatsController extends Controller
             return response()->json(['error' => 'site_id is required.'], 422);
         }
 
-        $site = Site::where('site_id', $siteId)->first();
+        $query = Site::where('site_id', $siteId);
+
+        // Cloud: scope to the key owner's sites and enforce per-site key restriction.
+        $context = app()->bound(ApiKeyContext::class) ? app(ApiKeyContext::class) : null;
+        if ($context && !$context->isOss()) {
+            $query->where('user_id', $context->userId);
+            if ($context->siteId !== null && $context->siteId !== $siteId) {
+                return response()->json(['error' => 'This API key does not have access to this site.'], 403);
+            }
+        }
+
+        $site = $query->first();
         if (!$site) {
             return response()->json(['error' => 'Site not found.'], 404);
         }

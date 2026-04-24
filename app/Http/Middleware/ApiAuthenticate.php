@@ -21,35 +21,41 @@
 
 namespace App\Http\Middleware;
 
+use App\Contracts\ApiKeyContext;
+use App\Contracts\ApiKeyValidator;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiAuthenticate
 {
+    public function __construct(private readonly ApiKeyValidator $validator) {}
+
     public function handle(Request $request, Closure $next): Response
     {
-        $configured = config('statalog.api_key', '');
+        $key = $this->extractKey($request);
 
-        if ($configured === '' || $configured === null) {
-            return response()->json(['error' => 'API access is not enabled. Set STATALOG_API_KEY in your .env file.'], 403);
+        if ($key === '') {
+            return response()->json(['error' => 'Missing API key. Pass via Authorization: Bearer or ?api_key=.'], 401);
         }
 
-        $provided = $this->extractKey($request);
+        $context = $this->validator->validate($key);
 
-        if ($provided === '' || !hash_equals($configured, $provided)) {
-            return response()->json(['error' => 'Invalid or missing API key.'], 401);
+        if ($context === null) {
+            return response()->json(['error' => 'Invalid or expired API key.'], 401);
         }
+
+        // Bind the resolved context so controllers can scope data to the key owner.
+        app()->instance(ApiKeyContext::class, $context);
 
         return $next($request);
     }
 
     private function extractKey(Request $request): string
     {
-        // Accept: Authorization: Bearer {key}  OR  ?api_key={key}
-        $header = $request->bearerToken() ?? '';
-        if ($header !== '') {
-            return $header;
+        $bearer = $request->bearerToken() ?? '';
+        if ($bearer !== '') {
+            return $bearer;
         }
 
         return trim($request->query('api_key', ''));
