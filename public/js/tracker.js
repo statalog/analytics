@@ -44,9 +44,22 @@
             });
         }
 
+        function applyDarknessOverlay(opacity) {
+            var el = document.getElementById('_st_darkness');
+            if (opacity <= 0) { if (el) el.remove(); return; }
+            if (!el) {
+                el = document.createElement('div');
+                el.id = '_st_darkness';
+                el.style.cssText = 'position:fixed;inset:0;background:#000;pointer-events:none;z-index:2147483646';
+                if (document.body) document.body.appendChild(el);
+            }
+            el.style.opacity = opacity;
+        }
+
         window.addEventListener('message', function (ev) {
-            if (!ev.data || ev.data.type !== 'statalog_heatmap') return;
-            renderHeatmapOverlay(ev.data.clicks || []);
+            if (!ev.data) return;
+            if (ev.data.type === 'statalog_heatmap') renderHeatmapOverlay(ev.data.clicks || []);
+            if (ev.data.type === 'statalog_darkness') applyDarknessOverlay(ev.data.opacity || 0);
         });
 
         function signalReady() {
