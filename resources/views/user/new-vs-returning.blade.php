@@ -29,12 +29,12 @@ function loadData() {
     var params = new URLSearchParams(window.location.search);
     fetch('{{ route("user.new-vs-returning.data") }}?' + params.toString())
         .then(function(r) { return r.json(); })
-        .then(function(data) { render(data); });
+        .then(function(data) { render(data.segments || []); });
 }
 
 function render(data) {
-    var newVal = parseInt((data.find(function(r) { return r.is_new_visitor == 1; }) || {}).visitors || 0);
-    var retVal = parseInt((data.find(function(r) { return r.is_new_visitor == 0; }) || {}).visitors || 0);
+    var newVal = parseInt((data.find(function(r) { return r.segment === 'New'; }) || {}).visitors || 0);
+    var retVal = parseInt((data.find(function(r) { return r.segment === 'Returning'; }) || {}).visitors || 0);
     var total = newVal + retVal;
 
     var ctx = document.getElementById('nvr-chart').getContext('2d');
