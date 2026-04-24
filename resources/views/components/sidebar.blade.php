@@ -76,6 +76,9 @@
         <a href="{{ route('user.channels') }}" class="nav-link {{ request()->routeIs('user.channels*') ? 'active' : '' }}">
             <i class="bi bi-diagram-3"></i> Channels
         </a>
+        <a href="{{ route('user.search-engines') }}" class="nav-link {{ request()->routeIs('user.search-engines*') ? 'active' : '' }}">
+            <i class="bi bi-search"></i> Search Engines
+        </a>
 
         {{-- Behaviour dropdown --}}
         <div class="nav-group {{ $behaviourOpen ? 'open' : '' }}" data-nav-group>

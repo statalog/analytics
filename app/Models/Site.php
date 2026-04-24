@@ -46,16 +46,21 @@ class Site extends Model
         'public_token',
         'public_password',
         'public_sections',
+        'gsc_refresh_token',
+        'gsc_access_token',
+        'gsc_token_expires_at',
+        'gsc_site_url',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_active'        => 'boolean',
-            'track_subdomains' => 'boolean',
-            'track_bots'       => 'boolean',
-            'is_public'        => 'boolean',
-            'public_sections'  => 'array',
+            'is_active'           => 'boolean',
+            'track_subdomains'    => 'boolean',
+            'track_bots'          => 'boolean',
+            'is_public'           => 'boolean',
+            'public_sections'     => 'array',
+            'gsc_token_expires_at' => 'datetime',
         ];
     }
 
