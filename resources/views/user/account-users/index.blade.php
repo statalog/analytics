@@ -90,10 +90,10 @@
                         </td>
                         <td style="font-size:0.8125rem;color:var(--pa-text-muted)">{{ $inv->expires_at->format('M j') }}</td>
                         <td class="text-end">
-                            <form method="POST" action="{{ route('user.invitations.destroy', $inv) }}" class="d-inline"
-                                  onsubmit="return confirm('Revoke invitation for {{ $inv->email }}?')">
+                            <form method="POST" action="{{ route('user.invitations.destroy', $inv) }}" class="d-inline delete-form">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="btn-pa-outline" style="padding:0.2rem 0.5rem;font-size:0.8125rem;color:var(--pa-danger)">
+                                <button type="button" class="btn-pa-outline" style="padding:0.2rem 0.5rem;font-size:0.8125rem;color:var(--pa-danger)"
+                                        onclick="confirmDelete(this.closest('form'), 'Revoke invitation?', 'This will revoke the invitation sent to <strong>{{ $inv->email }}</strong>. They will no longer be able to use the link.', 'Revoke invitation')">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
                             </form>
@@ -144,10 +144,10 @@
                                 @endif
                             </td>
                             <td class="text-end">
-                                <form method="POST" action="{{ route('user.account-users.destroy', $m) }}" class="d-inline"
-                                      onsubmit="return confirm('Remove {{ $m->user?->email }}\'s access?')">
+                                <form method="POST" action="{{ route('user.account-users.destroy', $m) }}" class="d-inline delete-form">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn-pa-outline" style="padding:0.2rem 0.5rem;font-size:0.8125rem;color:var(--pa-danger)">
+                                    <button type="button" class="btn-pa-outline" style="padding:0.2rem 0.5rem;font-size:0.8125rem;color:var(--pa-danger)"
+                                            onclick="confirmDelete(this.closest('form'), 'Remove member?', 'This will remove <strong>{{ $m->user?->name ?? $m->user?->email }}</strong> from your account. They will lose all access immediately.', 'Remove member')">
                                         <i class="bi bi-x-lg"></i>
                                     </button>
                                 </form>
@@ -163,8 +163,44 @@
 </div>
 @endsection
 
+{{-- Confirmation modal --}}
+<div id="delete-modal" style="display:none;position:fixed;inset:0;z-index:1050;background:rgba(0,0,0,0.45);align-items:center;justify-content:center">
+    <div style="background:var(--pa-card-bg);border:1px solid var(--pa-border);border-radius:1rem;padding:2rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+        <h6 id="delete-modal-title" style="font-family:'Space Grotesk',sans-serif;font-weight:700;margin-bottom:0.75rem"></h6>
+        <p id="delete-modal-body" style="color:var(--pa-text-muted);font-size:0.9375rem;margin-bottom:1.5rem;line-height:1.6"></p>
+        <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+            <button type="button" class="btn-pa-outline" onclick="closeDeleteModal()">Cancel</button>
+            <button type="button" id="delete-modal-confirm" class="btn-pa-primary" style="background:var(--pa-danger);border-color:var(--pa-danger)"></button>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
 <script>
+var _deleteForm = null;
+
+function confirmDelete(form, title, body, btnLabel) {
+    _deleteForm = form;
+    document.getElementById('delete-modal-title').textContent = title;
+    document.getElementById('delete-modal-body').innerHTML = body;
+    document.getElementById('delete-modal-confirm').textContent = btnLabel;
+    var modal = document.getElementById('delete-modal');
+    modal.style.display = 'flex';
+}
+
+function closeDeleteModal() {
+    document.getElementById('delete-modal').style.display = 'none';
+    _deleteForm = null;
+}
+
+document.getElementById('delete-modal-confirm').addEventListener('click', function() {
+    if (_deleteForm) _deleteForm.submit();
+});
+
+document.getElementById('delete-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
+});
+
 function toggleSiteSelector(role) {
     var el = document.getElementById('site-selector');
     if (el) el.style.display = role === 'viewer' ? 'block' : 'none';
