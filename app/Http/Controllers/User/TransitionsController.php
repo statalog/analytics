@@ -23,7 +23,7 @@ class TransitionsController extends Controller
         $site = $this->getCurrentSite($request);
         if (!$site) return redirect()->route('user.sites.create');
 
-        $topUrls = $this->analytics->analyticsFor($site)->getTopPageUrls($site->site_id, 60);
+        $topUrls = $this->analyticsFor($site)->getTopPageUrls($site->site_id, 60);
 
         return view('user.transitions', [
             'site'    => $site,
@@ -44,7 +44,7 @@ class TransitionsController extends Controller
         }
 
         return response()->json(
-            $this->analytics->analyticsFor($site)
+            $this->analyticsFor($site)
                 ->getPageTransitions($site->site_id, $from, $to, $url)
         );
     }
