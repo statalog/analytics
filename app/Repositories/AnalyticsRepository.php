@@ -717,6 +717,79 @@ class AnalyticsRepository
         return array_column($rows, 'url');
     }
 
+    public function getPageTransitions(string $siteId, string $from, string $to, string $url): array
+    {
+        $key = "transitions:{$siteId}:{$from}:{$to}:" . md5($url);
+        return Cache::remember($key, 300, function () use ($siteId, $from, $to, $url) {
+            $totals = $this->query(
+                "SELECT count() AS total FROM pageviews
+                 WHERE site_id = :site_id AND is_bot = 0
+                   AND timestamp >= :from AND timestamp <= :to AND url = :url",
+                ['site_id' => $siteId, 'from' => $from, 'to' => $to, 'url' => $url]
+            );
+            $total = (int) ($totals[0]['total'] ?? 0);
+            if ($total === 0) {
+                return ['total' => 0, 'entries' => 0, 'exits' => 0, 'from_pages' => [], 'to_pages' => []];
+            }
+
+            $fromRows = $this->query(
+                "WITH t AS (
+                     SELECT url,
+                         lagInFrame(url, 1, '') OVER (
+                             PARTITION BY session_id ORDER BY timestamp
+                             ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+                         ) AS prev_url
+                     FROM pageviews
+                     WHERE site_id = :site_id AND is_bot = 0
+                       AND timestamp >= :from AND timestamp <= :to AND url != ''
+                 )
+                 SELECT prev_url, count() AS hits FROM t
+                 WHERE url = :url
+                 GROUP BY prev_url ORDER BY hits DESC LIMIT 21",
+                ['site_id' => $siteId, 'from' => $from, 'to' => $to, 'url' => $url]
+            );
+
+            $toRows = $this->query(
+                "WITH t AS (
+                     SELECT url,
+                         leadInFrame(url, 1, '') OVER (
+                             PARTITION BY session_id ORDER BY timestamp
+                             ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+                         ) AS next_url
+                     FROM pageviews
+                     WHERE site_id = :site_id AND is_bot = 0
+                       AND timestamp >= :from AND timestamp <= :to AND url != ''
+                 )
+                 SELECT next_url, count() AS hits FROM t
+                 WHERE url = :url
+                 GROUP BY next_url ORDER BY hits DESC LIMIT 21",
+                ['site_id' => $siteId, 'from' => $from, 'to' => $to, 'url' => $url]
+            );
+
+            $entries = 0;
+            $fromPages = [];
+            foreach ($fromRows as $row) {
+                if ($row['prev_url'] === '') {
+                    $entries = (int) $row['hits'];
+                } else {
+                    $fromPages[] = ['url' => $row['prev_url'], 'hits' => (int) $row['hits']];
+                }
+            }
+
+            $exits = 0;
+            $toPages = [];
+            foreach ($toRows as $row) {
+                if ($row['next_url'] === '') {
+                    $exits = (int) $row['hits'];
+                } else {
+                    $toPages[] = ['url' => $row['next_url'], 'hits' => (int) $row['hits']];
+                }
+            }
+
+            return compact('total', 'entries', 'exits', 'fromPages', 'toPages');
+        });
+    }
+
     // --- Channels / Acquisition ---
 
     public function getReferrerDomainStats(string $siteId, string $from, string $to): array

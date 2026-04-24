@@ -9,7 +9,7 @@
     $acquisitionRoutes = ['user.channels*','user.search-engines*','user.websites*','user.social-networks*','user.ai-sources*','user.campaigns*'];
     $acquisitionOpen   = collect($acquisitionRoutes)->contains(fn($p) => request()->routeIs($p));
 
-    $behaviourRoutes = ['user.entry-exit*','user.visit-depth*','user.new-vs-returning*','user.time-on-page*','user.performance*'];
+    $behaviourRoutes = ['user.entry-exit*','user.visit-depth*','user.new-vs-returning*','user.time-on-page*','user.performance*','user.transitions*'];
     $behaviourOpen   = collect($behaviourRoutes)->contains(fn($p) => request()->routeIs($p));
 
     $seoRoutes = ['user.seo.*'];
@@ -127,6 +127,9 @@
                 </a>
                 <a href="{{ route('user.performance') }}" class="nav-link {{ request()->routeIs('user.performance*') ? 'active' : '' }}">
                     <i class="bi bi-speedometer"></i> Performance
+                </a>
+                <a href="{{ route('user.transitions') }}" class="nav-link {{ request()->routeIs('user.transitions*') ? 'active' : '' }}">
+                    <i class="bi bi-shuffle"></i> Page Transitions
                 </a>
             </div>
         </div>

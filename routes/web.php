@@ -23,6 +23,7 @@ use App\Http\Controllers\User\DevicesController;
 use App\Http\Controllers\User\LocationsController;
 use App\Http\Controllers\User\PagesController;
 use App\Http\Controllers\User\TimeOfDayController;
+use App\Http\Controllers\User\TransitionsController;
 use App\Http\Controllers\User\TimeOnPageController;
 use App\Http\Controllers\User\TwoFactorController;
 use App\Http\Controllers\User\VisitDepthController;
@@ -129,6 +130,10 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/devices/data',    [DevicesController::class, 'data'])->name('devices.data');
     Route::get('/time-of-day',     [TimeOfDayController::class, 'index'])->name('time-of-day');
     Route::get('/time-of-day/data',[TimeOfDayController::class, 'data'])->name('time-of-day.data');
+
+    // Page Transitions
+    Route::get('/transitions',      [TransitionsController::class, 'index'])->name('transitions');
+    Route::get('/transitions/data', [TransitionsController::class, 'data'])->name('transitions.data');
 
     // Funnels
     Route::get('/funnels',                  [FunnelController::class, 'index'])->name('funnels.index');
