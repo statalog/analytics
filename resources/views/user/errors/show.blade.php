@@ -6,7 +6,7 @@
         <a href="{{ route('user.errors') }}" style="color:var(--pa-text-muted);text-decoration:none"><i class="bi bi-arrow-left"></i></a>
         Error detail
     </h4>
-    @include('components.date-range-picker')
+    @include('components.date-range-picker', ['botFilter' => false])
 </div>
 
 <div id="detail"><div class="text-center py-5"><div class="spinner-border text-secondary" role="status"></div></div></div>

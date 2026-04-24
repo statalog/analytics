@@ -5,7 +5,7 @@
     <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
         <i class="bi bi-diagram-3 me-2" style="color:var(--pa-primary)"></i>Channels
     </h4>
-    @include('components.date-range-picker')
+    @include('components.date-range-picker', ['botFilter' => false])
 </div>
 
 <div class="pa-card" style="padding:0">

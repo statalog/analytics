@@ -5,7 +5,7 @@
     <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
         <i class="bi bi-bug me-2" style="color:var(--pa-primary)"></i>Errors
     </h4>
-    @include('components.date-range-picker')
+    @include('components.date-range-picker', ['botFilter' => false])
 </div>
 
 <div class="row g-3 mb-4" id="error-stats">

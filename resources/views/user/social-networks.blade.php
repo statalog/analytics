@@ -5,7 +5,7 @@
     <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
         <i class="bi bi-share me-2" style="color:var(--pa-primary)"></i>Social Networks
     </h4>
-    @include('components.date-range-picker')
+    @include('components.date-range-picker', ['botFilter' => false])
 </div>
 @include('user.partials.referrer-table', [
     'dataRoute'    => 'user.social-networks.data',

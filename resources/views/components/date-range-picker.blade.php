@@ -7,7 +7,8 @@
     if ($currentSiteId && auth()->check()) {
         $currentSite = auth()->user()->sites()->where('site_id', $currentSiteId)->first();
     }
-    $siteTracksBots = (bool) ($currentSite?->track_bots ?? false);
+    $showBotFilter = $botFilter ?? true;
+    $siteTracksBots = $showBotFilter && (bool) ($currentSite?->track_bots ?? false);
     $ranges = [
         'today'      => __('analytics.range_today'),
         'yesterday'  => __('analytics.range_yesterday'),
