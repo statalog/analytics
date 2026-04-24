@@ -6,7 +6,10 @@
     $audienceRoutes = ['user.visitor-log*','user.pages*','user.locations*','user.devices*','user.time-of-day*','user.visitor-map*'];
     $audienceOpen   = collect($audienceRoutes)->contains(fn($p) => request()->routeIs($p));
 
-    $behaviourRoutes = ['user.campaigns*','user.entry-exit*','user.visit-depth*','user.new-vs-returning*','user.time-on-page*','user.performance*'];
+    $acquisitionRoutes = ['user.channels*','user.search-engines*','user.websites*','user.social-networks*','user.ai-sources*','user.campaigns*'];
+    $acquisitionOpen   = collect($acquisitionRoutes)->contains(fn($p) => request()->routeIs($p));
+
+    $behaviourRoutes = ['user.entry-exit*','user.visit-depth*','user.new-vs-returning*','user.time-on-page*','user.performance*'];
     $behaviourOpen   = collect($behaviourRoutes)->contains(fn($p) => request()->routeIs($p));
 @endphp
 <aside class="sidebar">
@@ -72,13 +75,33 @@
             </div>
         </div>
 
-        {{-- Acquisition --}}
-        <a href="{{ route('user.channels') }}" class="nav-link {{ request()->routeIs('user.channels*') ? 'active' : '' }}">
-            <i class="bi bi-diagram-3"></i> Channels
-        </a>
-        <a href="{{ route('user.search-engines') }}" class="nav-link {{ request()->routeIs('user.search-engines*') ? 'active' : '' }}">
-            <i class="bi bi-search"></i> Search Engines
-        </a>
+        {{-- Acquisition dropdown --}}
+        <div class="nav-group {{ $acquisitionOpen ? 'open' : '' }}" data-nav-group>
+            <div class="nav-group-toggle" onclick="toggleNavGroup(this.parentElement)">
+                <i class="bi bi-diagram-3 nav-gi"></i> Acquisition
+                <i class="bi bi-chevron-right nav-arrow"></i>
+            </div>
+            <div class="nav-group-items">
+                <a href="{{ route('user.channels') }}" class="nav-link {{ request()->routeIs('user.channels*') ? 'active' : '' }}">
+                    <i class="bi bi-grid"></i> All Channels
+                </a>
+                <a href="{{ route('user.search-engines') }}" class="nav-link {{ request()->routeIs('user.search-engines*') ? 'active' : '' }}">
+                    <i class="bi bi-search"></i> Search Engines
+                </a>
+                <a href="{{ route('user.websites') }}" class="nav-link {{ request()->routeIs('user.websites*') ? 'active' : '' }}">
+                    <i class="bi bi-link-45deg"></i> Websites
+                </a>
+                <a href="{{ route('user.social-networks') }}" class="nav-link {{ request()->routeIs('user.social-networks*') ? 'active' : '' }}">
+                    <i class="bi bi-share"></i> Social Networks
+                </a>
+                <a href="{{ route('user.ai-sources') }}" class="nav-link {{ request()->routeIs('user.ai-sources*') ? 'active' : '' }}">
+                    <i class="bi bi-robot"></i> AI Assistants
+                </a>
+                <a href="{{ route('user.campaigns') }}" class="nav-link {{ request()->routeIs('user.campaigns*') ? 'active' : '' }}">
+                    <i class="bi bi-megaphone"></i> {{ __('app.nav_campaigns') }}
+                </a>
+            </div>
+        </div>
 
         {{-- Behaviour dropdown --}}
         <div class="nav-group {{ $behaviourOpen ? 'open' : '' }}" data-nav-group>
@@ -87,9 +110,6 @@
                 <i class="bi bi-chevron-right nav-arrow"></i>
             </div>
             <div class="nav-group-items">
-                <a href="{{ route('user.campaigns') }}" class="nav-link {{ request()->routeIs('user.campaigns*') ? 'active' : '' }}">
-                    <i class="bi bi-megaphone"></i> {{ __('app.nav_campaigns') }}
-                </a>
                 <a href="{{ route('user.entry-exit') }}" class="nav-link {{ request()->routeIs('user.entry-exit*') ? 'active' : '' }}">
                     <i class="bi bi-door-open"></i> {{ __('app.nav_entry_exit') }}
                 </a>

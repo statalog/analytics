@@ -31,6 +31,9 @@ use App\Http\Controllers\User\PerformanceController;
 use App\Http\Controllers\User\VisitorMapController;
 use App\Http\Controllers\User\ChannelsController;
 use App\Http\Controllers\User\SearchEnginesController;
+use App\Http\Controllers\User\WebsitesController;
+use App\Http\Controllers\User\SocialNetworksController;
+use App\Http\Controllers\User\AiSourcesController;
 use Illuminate\Support\Facades\Route;
 
 // Root: authed users go to dashboard. Guests see the cloud landing page
@@ -111,6 +114,12 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/channels/data',         [ChannelsController::class, 'data'])->name('channels.data');
     Route::get('/search-engines',        [SearchEnginesController::class, 'index'])->name('search-engines');
     Route::get('/search-engines/data',   [SearchEnginesController::class, 'data'])->name('search-engines.data');
+    Route::get('/websites',              [WebsitesController::class, 'index'])->name('websites');
+    Route::get('/websites/data',         [WebsitesController::class, 'data'])->name('websites.data');
+    Route::get('/social-networks',       [SocialNetworksController::class, 'index'])->name('social-networks');
+    Route::get('/social-networks/data',  [SocialNetworksController::class, 'data'])->name('social-networks.data');
+    Route::get('/ai-sources',            [AiSourcesController::class, 'index'])->name('ai-sources');
+    Route::get('/ai-sources/data',       [AiSourcesController::class, 'data'])->name('ai-sources.data');
     Route::get('/pages',           [PagesController::class, 'index'])->name('pages');
     Route::get('/pages/data',      [PagesController::class, 'data'])->name('pages.data');
     Route::get('/locations',       [LocationsController::class, 'index'])->name('locations');
