@@ -87,6 +87,30 @@
             </div>
         </div>
 
+        @if($site->track_bots)
+        <div class="pa-card mb-4" style="border-color:#f59e0b">
+            <h6 class="mb-2" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
+                <i class="bi bi-robot me-2" style="color:#f59e0b"></i>Bot tracking snippet
+            </h6>
+            <p style="font-size:0.8125rem;color:var(--pa-text-muted);margin-bottom:0.75rem">
+                You have <strong>Store bot traffic</strong> enabled. To capture bots and crawlers (Googlebot, GPTBot, etc.)
+                that don't execute JavaScript, replace your current tracking code on your website with this extended snippet.
+                It adds a <code>&lt;noscript&gt;</code> pixel image that crawlers fetch when parsing your HTML.
+            </p>
+            <div style="position:relative">
+                <pre id="bot-snippet-code" style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius);padding:0.875rem 2.5rem 0.875rem 0.875rem;font-size:0.8125rem;overflow-x:auto;white-space:pre-wrap;word-break:break-all;margin:0">{{ $site->bot_tracking_snippet }}</pre>
+                <button type="button" onclick="copyBotSnippet()" title="Copy code"
+                        style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--pa-text-muted);cursor:pointer;padding:0.25rem">
+                    <i class="bi bi-clipboard" id="bot-snippet-icon"></i>
+                </button>
+            </div>
+            <p style="font-size:0.75rem;color:var(--pa-text-muted);margin-top:0.6rem;margin-bottom:0">
+                <i class="bi bi-info-circle me-1"></i>Replace <code>PAGE_URL</code> with the actual URL of each page (e.g. using a server-side variable).
+                Without this snippet, all bot counters will remain zero.
+            </p>
+        </div>
+        @endif
+
         {{-- Public dashboard --}}
         <div class="pa-card">
             <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
@@ -227,6 +251,15 @@ function copySnippet() {
     var text = document.getElementById('snippet-code').textContent;
     navigator.clipboard.writeText(text).then(function() {
         var icon = document.getElementById('snippet-icon');
+        icon.className = 'bi bi-check-lg';
+        setTimeout(function() { icon.className = 'bi bi-clipboard'; }, 2000);
+    });
+}
+function copyBotSnippet() {
+    var el = document.getElementById('bot-snippet-code');
+    if (!el) return;
+    navigator.clipboard.writeText(el.textContent).then(function() {
+        var icon = document.getElementById('bot-snippet-icon');
         icon.className = 'bi bi-check-lg';
         setTimeout(function() { icon.className = 'bi bi-clipboard'; }, 2000);
     });
