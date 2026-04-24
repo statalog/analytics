@@ -3,7 +3,7 @@
     $currentSiteId = session('current_site_id');
     $currentSite = $currentSiteId ? $sites->firstWhere('site_id', $currentSiteId) : $sites->first();
 
-    $audienceRoutes = ['user.pages*','user.locations*','user.devices*','user.time-of-day*'];
+    $audienceRoutes = ['user.visitor-log*','user.pages*','user.locations*','user.devices*','user.time-of-day*'];
     $audienceOpen   = collect($audienceRoutes)->contains(fn($p) => request()->routeIs($p));
 
     $behaviourRoutes = ['user.campaigns*','user.entry-exit*','user.visit-depth*','user.new-vs-returning*','user.time-on-page*'];
@@ -51,6 +51,9 @@
                 <i class="bi bi-chevron-right nav-arrow"></i>
             </div>
             <div class="nav-group-items">
+                <a href="{{ route('user.visitor-log') }}" class="nav-link {{ request()->routeIs('user.visitor-log*') ? 'active' : '' }}">
+                    <i class="bi bi-person-lines-fill"></i> Visitors
+                </a>
                 <a href="{{ route('user.pages') }}" class="nav-link {{ request()->routeIs('user.pages*') ? 'active' : '' }}">
                     <i class="bi bi-file-earmark-text"></i> Pages
                 </a>

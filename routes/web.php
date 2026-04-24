@@ -26,6 +26,7 @@ use App\Http\Controllers\User\TimeOfDayController;
 use App\Http\Controllers\User\TimeOnPageController;
 use App\Http\Controllers\User\TwoFactorController;
 use App\Http\Controllers\User\VisitDepthController;
+use App\Http\Controllers\User\VisitorLogController;
 use Illuminate\Support\Facades\Route;
 
 // Root: authed users go to dashboard. Guests see the cloud landing page
@@ -95,6 +96,8 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/time-on-page/data', [TimeOnPageController::class, 'data'])->name('time-on-page.data');
 
     // Audience detail reports
+    Route::get('/visitors',         [VisitorLogController::class, 'index'])->name('visitor-log');
+    Route::get('/visitors/data',   [VisitorLogController::class, 'data'])->name('visitor-log.data');
     Route::get('/pages',           [PagesController::class, 'index'])->name('pages');
     Route::get('/pages/data',      [PagesController::class, 'data'])->name('pages.data');
     Route::get('/locations',       [LocationsController::class, 'index'])->name('locations');

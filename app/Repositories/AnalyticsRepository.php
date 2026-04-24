@@ -659,6 +659,47 @@ class AnalyticsRepository
         );
     }
 
+    // --- Visitor Log ---
+
+    public function getVisitorLog(string $siteId, string $from, string $to, int $limit = 25, int $offset = 0): array
+    {
+        return $this->query(
+            "SELECT
+                session_id,
+                visitor_id,
+                min(timestamp) AS first_seen,
+                any(country) AS country,
+                any(city) AS city,
+                any(device_type) AS device_type,
+                any(browser) AS browser,
+                any(os) AS os,
+                countIf(url != '') AS pages,
+                greatest(dateDiff('second', min(timestamp), max(timestamp)), max(visit_duration)) AS duration,
+                argMinIf(url, timestamp, url != '') AS entry_page,
+                anyIf(referrer_domain, referrer_domain != '') AS referrer,
+                anyIf(utm_source, utm_source != '') AS utm_source,
+                anyIf(utm_medium, utm_medium != '') AS utm_medium,
+                anyIf(utm_campaign, utm_campaign != '') AS utm_campaign
+            FROM pageviews
+            WHERE site_id = :site_id" . $this->sd() . " AND timestamp >= :from AND timestamp <= :to
+            GROUP BY session_id, visitor_id
+            HAVING pages > 0
+            ORDER BY first_seen DESC
+            LIMIT {$limit} OFFSET {$offset}",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+    }
+
+    public function countVisitorSessions(string $siteId, string $from, string $to): int
+    {
+        $rows = $this->query(
+            "SELECT uniq(session_id) AS total FROM pageviews
+             WHERE site_id = :site_id" . $this->sd() . " AND url != '' AND timestamp >= :from AND timestamp <= :to",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+        return (int) ($rows[0]['total'] ?? 0);
+    }
+
     // --- Funnel ---
 
     public function getFunnelData(string $siteId, array $stepPaths, string $from, string $to): array
