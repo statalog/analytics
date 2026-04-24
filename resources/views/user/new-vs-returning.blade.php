@@ -6,11 +6,13 @@
     @include('components.date-range-picker')
 </div>
 
-<div class="row g-4">
+<div class="row g-4 mb-4">
     <div class="col-md-4">
-        <div class="pa-card" style="height:300px">
+        <div class="pa-card" style="height:260px;display:flex;flex-direction:column">
             <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">Distribution</h6>
-            <canvas id="nvr-chart"></canvas>
+            <div style="flex:1;position:relative">
+                <canvas id="nvr-donut"></canvas>
+            </div>
         </div>
     </div>
     <div class="col-md-8">
@@ -19,42 +21,138 @@
         </div>
     </div>
 </div>
+
+<div class="pa-card">
+    <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">Over time</h6>
+    <div style="height:220px;position:relative">
+        <canvas id="nvr-line"></canvas>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
-var nvrChart = null;
+var donutChart = null;
+var lineChart  = null;
 
 function loadData() {
     var params = new URLSearchParams(window.location.search);
     fetch('{{ route("user.new-vs-returning.data") }}?' + params.toString())
         .then(function(r) { return r.json(); })
-        .then(function(data) { render(data.segments || []); });
+        .then(function(data) {
+            renderDistribution(data.segments || []);
+            renderTimeline(data.chart || []);
+        });
 }
 
-function render(data) {
-    var newVal = parseInt((data.find(function(r) { return r.segment === 'New'; }) || {}).visitors || 0);
-    var retVal = parseInt((data.find(function(r) { return r.segment === 'Returning'; }) || {}).visitors || 0);
-    var total = newVal + retVal;
+function renderDistribution(rows) {
+    // Normalize: segment may be 'New'/'Returning' or numeric 0/1
+    var newRow = rows.find(function(r) {
+        return r.segment === 'New' || r.segment === 1 || r.segment === '1';
+    }) || {};
+    var retRow = rows.find(function(r) {
+        return r.segment === 'Returning' || r.segment === 0 || r.segment === '0';
+    }) || {};
 
-    var ctx = document.getElementById('nvr-chart').getContext('2d');
-    if (nvrChart) nvrChart.destroy();
-    nvrChart = new Chart(ctx, {
+    var newVal = parseInt(newRow.visitors || 0);
+    var retVal = parseInt(retRow.visitors || 0);
+    var total  = newVal + retVal;
+
+    // Donut
+    var ctx = document.getElementById('nvr-donut').getContext('2d');
+    if (donutChart) donutChart.destroy();
+    donutChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['{{ __("analytics.label_new") }}', '{{ __("analytics.label_returning") }}'],
-            datasets: [{ data: [newVal, retVal], backgroundColor: ['#0e7dd5', '#38bdf8'], borderWidth: 0 }]
+            labels: ['New', 'Returning'],
+            datasets: [{
+                data: total > 0 ? [newVal, retVal] : [1, 1],
+                backgroundColor: total > 0 ? ['#0e7dd5', '#38bdf8'] : ['#e5e7eb', '#e5e7eb'],
+                borderWidth: 0,
+                hoverOffset: 4,
+            }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '68%',
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16, font: { size: 12 } } },
+                tooltip: { enabled: total > 0 }
+            }
+        }
     });
 
-    var html = '<table class="pa-table"><thead><tr><th>Visitor Type</th><th style="text-align:right">{{ __("analytics.col_visitors") }}</th><th style="text-align:right">Share</th></tr></thead><tbody>';
-    [['{{ __("analytics.label_new") }}', newVal], ['{{ __("analytics.label_returning") }}', retVal]].forEach(function(row) {
-        var pct = total > 0 ? Math.round(row[1] / total * 100) : 0;
-        html += '<tr><td>' + row[0] + '</td><td style="text-align:right">' + row[1].toLocaleString() + '</td><td style="text-align:right">' + pct + '%</td></tr>';
+    // Table
+    var html = '<table class="pa-table" style="width:100%">'
+        + '<thead><tr><th>Visitor Type</th><th style="text-align:right">Visitors</th><th style="text-align:right">Sessions</th><th style="text-align:right">Share</th></tr></thead><tbody>';
+
+    [[newRow, 'New', '#0e7dd5'], [retRow, 'Returning', '#38bdf8']].forEach(function(item) {
+        var row = item[0]; var label = item[1]; var color = item[2];
+        var v = parseInt(row.visitors || 0);
+        var s = parseInt(row.sessions || 0);
+        var pct = total > 0 ? Math.round(v / total * 100) : 0;
+        html += '<tr>'
+            + '<td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:' + color + ';margin-right:8px"></span>' + label + '</td>'
+            + '<td style="text-align:right">' + v.toLocaleString() + '</td>'
+            + '<td style="text-align:right">' + s.toLocaleString() + '</td>'
+            + '<td style="text-align:right">'
+            + '<div class="d-flex align-items-center justify-content-end gap-2">'
+            + '<div style="width:80px;height:4px;border-radius:2px;background:var(--pa-border)">'
+            + '<div style="width:' + pct + '%;height:100%;border-radius:2px;background:' + color + '"></div></div>'
+            + pct + '%</div></td>'
+            + '</tr>';
     });
     html += '</tbody></table>';
     document.getElementById('nvr-table').innerHTML = html;
+}
+
+function renderTimeline(rows) {
+    var labels   = rows.map(function(r) { return r.date; });
+    var newData  = rows.map(function(r) { return parseInt(r.new_visitors || 0); });
+    var retData  = rows.map(function(r) { return parseInt(r.returning_visitors || 0); });
+
+    var ctx = document.getElementById('nvr-line').getContext('2d');
+    if (lineChart) lineChart.destroy();
+    lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'New',
+                    data: newData,
+                    borderColor: '#0e7dd5',
+                    backgroundColor: 'rgba(14,125,213,0.08)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: labels.length > 30 ? 0 : 3,
+                    borderWidth: 2,
+                },
+                {
+                    label: 'Returning',
+                    data: retData,
+                    borderColor: '#38bdf8',
+                    backgroundColor: 'rgba(56,189,248,0.06)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: labels.length > 30 ? 0 : 3,
+                    borderWidth: 2,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                x: { grid: { display: false }, ticks: { maxTicksLimit: 10, font: { size: 11 } } },
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 11 } } }
+            },
+            plugins: { legend: { labels: { boxWidth: 12, font: { size: 12 } } } }
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', loadData);
