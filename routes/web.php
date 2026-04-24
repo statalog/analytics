@@ -29,6 +29,7 @@ use App\Http\Controllers\User\VisitDepthController;
 use App\Http\Controllers\User\VisitorLogController;
 use App\Http\Controllers\User\PerformanceController;
 use App\Http\Controllers\User\VisitorMapController;
+use App\Http\Controllers\User\ChannelsController;
 use Illuminate\Support\Facades\Route;
 
 // Root: authed users go to dashboard. Guests see the cloud landing page
@@ -105,6 +106,8 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/visitor-map',       [VisitorMapController::class, 'index'])->name('visitor-map');
     Route::get('/visitor-map/data',  [VisitorMapController::class, 'data'])->name('visitor-map.data');
     Route::get('/visitor-map/live',  [VisitorMapController::class, 'liveData'])->name('visitor-map.live');
+    Route::get('/channels',          [ChannelsController::class, 'index'])->name('channels');
+    Route::get('/channels/data',     [ChannelsController::class, 'data'])->name('channels.data');
     Route::get('/pages',           [PagesController::class, 'index'])->name('pages');
     Route::get('/pages/data',      [PagesController::class, 'data'])->name('pages.data');
     Route::get('/locations',       [LocationsController::class, 'index'])->name('locations');

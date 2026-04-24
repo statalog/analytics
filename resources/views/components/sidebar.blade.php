@@ -72,6 +72,11 @@
             </div>
         </div>
 
+        {{-- Acquisition --}}
+        <a href="{{ route('user.channels') }}" class="nav-link {{ request()->routeIs('user.channels*') ? 'active' : '' }}">
+            <i class="bi bi-diagram-3"></i> Channels
+        </a>
+
         {{-- Behaviour dropdown --}}
         <div class="nav-group {{ $behaviourOpen ? 'open' : '' }}" data-nav-group>
             <div class="nav-group-toggle" onclick="toggleNavGroup(this.parentElement)">

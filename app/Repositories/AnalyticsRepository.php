@@ -700,6 +700,30 @@ class AnalyticsRepository
         );
     }
 
+    // --- Channels / Acquisition ---
+
+    public function getReferrerDomainStats(string $siteId, string $from, string $to): array
+    {
+        return $this->queryWithCache(
+            "refdomains:{$siteId}:{$from}:{$to}" . $this->sdKey(), 300,
+            "SELECT
+                referrer_domain,
+                anyIf(utm_source, utm_source != '') AS utm_source,
+                uniq(session_id) AS visits,
+                countIf(url != '') AS pageviews,
+                round(countIf(is_bounce = 1) * 100.0 / uniq(session_id), 1) AS bounce_rate,
+                round(countIf(url != '') * 1.0 / uniq(session_id), 2) AS pages_per_visit,
+                round(avg(visit_duration), 0) AS avg_duration
+            FROM pageviews
+            WHERE site_id = :site_id" . $this->sd() . "
+              AND timestamp >= :from AND timestamp <= :to
+            GROUP BY referrer_domain
+            ORDER BY visits DESC
+            LIMIT 2000",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+    }
+
     // --- Visitor Map ---
 
     public function getLiveVisitorMap(string $siteId, int $minutes = 30): array
