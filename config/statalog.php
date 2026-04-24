@@ -39,7 +39,8 @@ return [
 
     'url' => env('STATALOG_URL', 'https://statalog.com'),
 
-    'demo_url' => env('STATALOG_DEMO_URL', ''),
+    'demo_url'   => env('STATALOG_DEMO_URL', ''),
+    'demo_email' => env('STATALOG_DEMO_EMAIL', ''),
 
     /*
     |--------------------------------------------------------------------------

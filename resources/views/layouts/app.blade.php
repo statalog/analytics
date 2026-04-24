@@ -111,6 +111,12 @@
     </div>
 
     <div class="main-content">
+        @if(session()->has('is_demo'))
+        <div style="background:var(--pa-primary);color:#fff;padding:0.4rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:0.8125rem">
+            <span><i class="bi bi-play-circle-fill me-2"></i>You are viewing the <strong>demo account</strong> — live data from statalog.com. Read-only.</span>
+            <a href="{{ route('home') }}" style="color:#fff;font-weight:600;text-decoration:none;font-size:0.75rem;opacity:0.85">Exit demo</a>
+        </div>
+        @endif
         @if(session()->has('impersonator_id'))
         <div style="background:#92400e;color:#fff;padding:0.5rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:0.8125rem">
             <span><i class="bi bi-incognito me-2"></i>You are impersonating <strong>{{ auth()->user()?->email }}</strong></span>
