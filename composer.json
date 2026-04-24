@@ -15,7 +15,8 @@
         "laravel/tinker": "^3.0",
         "maxmind-db/reader": "^1.13",
         "pragmarx/google2fa": "^9.0",
-        "predis/predis": "^3.4"
+        "predis/predis": "^3.4",
+        "statalog/cloud": "dev-main"
     },
     "repositories": [
         { "type": "path", "url": "packages/cloud", "options": { "symlink": true } }
