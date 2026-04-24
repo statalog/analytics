@@ -659,6 +659,47 @@ class AnalyticsRepository
         );
     }
 
+    // --- Performance ---
+
+    public function getPerformanceOverview(string $siteId, string $from, string $to): array
+    {
+        $rows = $this->queryWithCache(
+            "perf_overview:{$siteId}:{$from}:{$to}" . $this->sdKey(), 300,
+            "SELECT
+                avgIf(network_time,        network_time > 0)        AS avg_network,
+                avgIf(server_time,         server_time > 0)         AS avg_server,
+                avgIf(transfer_time,       transfer_time > 0)       AS avg_transfer,
+                avgIf(dom_processing_time, dom_processing_time > 0) AS avg_dom_processing,
+                avgIf(dom_completion_time, dom_completion_time > 0) AS avg_dom_completion,
+                avgIf(on_load_time,        on_load_time > 0)        AS avg_on_load,
+                avgIf(load_time,           load_time > 0)           AS avg_load
+            FROM pageviews
+            WHERE site_id = :site_id" . $this->sd() . " AND url != '' AND timestamp >= :from AND timestamp <= :to",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+        return $rows[0] ?? [];
+    }
+
+    public function getPerformanceOverTime(string $siteId, string $from, string $to, string $timezone = 'UTC'): array
+    {
+        return $this->queryWithCache(
+            "perf_time:{$siteId}:{$from}:{$to}" . $this->sdKey(), 300,
+            "SELECT
+                toDate(timestamp, :tz) AS date,
+                avgIf(network_time,        network_time > 0)        AS avg_network,
+                avgIf(server_time,         server_time > 0)         AS avg_server,
+                avgIf(transfer_time,       transfer_time > 0)       AS avg_transfer,
+                avgIf(dom_processing_time, dom_processing_time > 0) AS avg_dom_processing,
+                avgIf(dom_completion_time, dom_completion_time > 0) AS avg_dom_completion,
+                avgIf(on_load_time,        on_load_time > 0)        AS avg_on_load,
+                avgIf(load_time,           load_time > 0)           AS avg_load
+            FROM pageviews
+            WHERE site_id = :site_id" . $this->sd() . " AND url != '' AND timestamp >= :from AND timestamp <= :to
+            GROUP BY date ORDER BY date ASC",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to, 'tz' => $timezone]
+        );
+    }
+
     // --- Visitor Log ---
 
     public function getVisitorLog(string $siteId, string $from, string $to, int $limit = 25, int $offset = 0): array

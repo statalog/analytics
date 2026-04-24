@@ -157,7 +157,15 @@
         };
 
         if (performance && performance.timing) {
-            payload.load_time = Math.max(0, performance.timing.loadEventEnd - performance.timing.navigationStart);
+            var t = performance.timing;
+            var safe = function(a, b) { return (a > 0 && b > 0 && a >= b) ? a - b : 0; };
+            payload.load_time            = safe(t.loadEventEnd,            t.navigationStart);
+            payload.network_time         = safe(t.responseStart,           t.fetchStart);
+            payload.server_time          = safe(t.responseStart,           t.requestStart);
+            payload.transfer_time        = safe(t.responseEnd,             t.responseStart);
+            payload.dom_processing_time  = safe(t.domComplete,             t.domInteractive);
+            payload.dom_completion_time  = safe(t.domContentLoadedEventEnd,t.navigationStart);
+            payload.on_load_time         = safe(t.loadEventEnd,            t.loadEventStart);
         }
 
         if (data) {

@@ -6,7 +6,7 @@
     $audienceRoutes = ['user.visitor-log*','user.pages*','user.locations*','user.devices*','user.time-of-day*'];
     $audienceOpen   = collect($audienceRoutes)->contains(fn($p) => request()->routeIs($p));
 
-    $behaviourRoutes = ['user.campaigns*','user.entry-exit*','user.visit-depth*','user.new-vs-returning*','user.time-on-page*'];
+    $behaviourRoutes = ['user.campaigns*','user.entry-exit*','user.visit-depth*','user.new-vs-returning*','user.time-on-page*','user.performance*'];
     $behaviourOpen   = collect($behaviourRoutes)->contains(fn($p) => request()->routeIs($p));
 @endphp
 <aside class="sidebar">
@@ -90,6 +90,9 @@
                 </a>
                 <a href="{{ route('user.time-on-page') }}" class="nav-link {{ request()->routeIs('user.time-on-page*') ? 'active' : '' }}">
                     <i class="bi bi-hourglass-split"></i> {{ __('app.nav_time_on_page') }}
+                </a>
+                <a href="{{ route('user.performance') }}" class="nav-link {{ request()->routeIs('user.performance*') ? 'active' : '' }}">
+                    <i class="bi bi-speedometer"></i> Performance
                 </a>
             </div>
         </div>
