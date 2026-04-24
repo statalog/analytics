@@ -355,6 +355,7 @@ h1, h2, h3, h4, h5, h6 {
 .stat-card.stat-card-active {
     border-color: var(--pa-primary);
     box-shadow: 0 0 0 1px var(--pa-primary);
+    border: 2px solid var(--pa-accent);
 }
 
 .stat-card[role="button"]:hover:not(.stat-card-active) {
