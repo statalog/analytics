@@ -33,22 +33,24 @@ class GeoIpService
             $reader = $this->getReader();
 
             if ($reader === null) {
-                return ['country' => '', 'region' => '', 'city' => ''];
+                return ['country' => '', 'region' => '', 'city' => '', 'latitude' => 0.0, 'longitude' => 0.0];
             }
 
             $record = $reader->get($ip);
 
             if ($record === null) {
-                return ['country' => '', 'region' => '', 'city' => ''];
+                return ['country' => '', 'region' => '', 'city' => '', 'latitude' => 0.0, 'longitude' => 0.0];
             }
 
             return [
-                'country' => $record['country']['iso_code'] ?? '',
-                'region'  => $record['subdivisions'][0]['iso_code'] ?? '',
-                'city'    => $record['city']['names']['en'] ?? '',
+                'country'   => $record['country']['iso_code'] ?? '',
+                'region'    => $record['subdivisions'][0]['iso_code'] ?? '',
+                'city'      => $record['city']['names']['en'] ?? '',
+                'latitude'  => (float) ($record['location']['latitude'] ?? 0),
+                'longitude' => (float) ($record['location']['longitude'] ?? 0),
             ];
         } catch (\Throwable) {
-            return ['country' => '', 'region' => '', 'city' => ''];
+            return ['country' => '', 'region' => '', 'city' => '', 'latitude' => 0.0, 'longitude' => 0.0];
         }
     }
 

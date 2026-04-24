@@ -28,6 +28,7 @@ use App\Http\Controllers\User\TwoFactorController;
 use App\Http\Controllers\User\VisitDepthController;
 use App\Http\Controllers\User\VisitorLogController;
 use App\Http\Controllers\User\PerformanceController;
+use App\Http\Controllers\User\VisitorMapController;
 use Illuminate\Support\Facades\Route;
 
 // Root: authed users go to dashboard. Guests see the cloud landing page
@@ -101,6 +102,9 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/visitors/data',    [VisitorLogController::class, 'data'])->name('visitor-log.data');
     Route::get('/performance',      [PerformanceController::class, 'index'])->name('performance');
     Route::get('/performance/data', [PerformanceController::class, 'data'])->name('performance.data');
+    Route::get('/visitor-map',       [VisitorMapController::class, 'index'])->name('visitor-map');
+    Route::get('/visitor-map/data',  [VisitorMapController::class, 'data'])->name('visitor-map.data');
+    Route::get('/visitor-map/live',  [VisitorMapController::class, 'liveData'])->name('visitor-map.live');
     Route::get('/pages',           [PagesController::class, 'index'])->name('pages');
     Route::get('/pages/data',      [PagesController::class, 'data'])->name('pages.data');
     Route::get('/locations',       [LocationsController::class, 'index'])->name('locations');

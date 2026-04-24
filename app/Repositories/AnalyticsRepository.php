@@ -700,6 +700,54 @@ class AnalyticsRepository
         );
     }
 
+    // --- Visitor Map ---
+
+    public function getLiveVisitorMap(string $siteId, int $minutes = 30): array
+    {
+        return $this->query(
+            "SELECT
+                latitude,
+                longitude,
+                any(country) AS country,
+                any(city)    AS city,
+                count()      AS hits
+            FROM pageviews
+            WHERE site_id = :site_id
+              AND is_bot = 0
+              AND latitude != 0
+              AND longitude != 0
+              AND timestamp >= now() - INTERVAL :minutes MINUTE
+            GROUP BY latitude, longitude
+            ORDER BY hits DESC
+            LIMIT 500",
+            ['site_id' => $siteId, 'minutes' => $minutes]
+        );
+    }
+
+    public function getVisitorMapPoints(string $siteId, string $from, string $to): array
+    {
+        return $this->queryWithCache(
+            "map_points:{$siteId}:{$from}:{$to}" . $this->sdKey(), 300,
+            "SELECT
+                latitude,
+                longitude,
+                any(country) AS country,
+                any(city)    AS city,
+                count()      AS hits
+            FROM pageviews
+            WHERE site_id = :site_id" . $this->sd() . "
+              AND latitude != 0
+              AND longitude != 0
+              AND url != ''
+              AND timestamp >= :from
+              AND timestamp <= :to
+            GROUP BY latitude, longitude
+            ORDER BY hits DESC
+            LIMIT 2000",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+        );
+    }
+
     // --- Visitor Log ---
 
     public function getVisitorLog(string $siteId, string $from, string $to, int $limit = 25, int $offset = 0): array

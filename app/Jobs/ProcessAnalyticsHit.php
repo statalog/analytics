@@ -194,6 +194,8 @@ class ProcessAnalyticsHit implements ShouldQueue
             'country'         => $geo['country'],
             'region'          => $geo['region'],
             'city'            => $geo['city'],
+            'latitude'        => (float) ($geo['latitude'] ?? 0),
+            'longitude'       => (float) ($geo['longitude'] ?? 0),
             'utm_source'      => $this->payload['utm_source'] ?? '',
             'utm_medium'      => $this->payload['utm_medium'] ?? '',
             'utm_campaign'    => $this->payload['utm_campaign'] ?? '',
