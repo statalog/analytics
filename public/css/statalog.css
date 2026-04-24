@@ -146,6 +146,21 @@ h1, h2, h3, h4, h5, h6 {
     transition: transform 0.3s ease;
     display: flex;
     flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.28);
 }
 
 .sidebar .sidebar-brand {

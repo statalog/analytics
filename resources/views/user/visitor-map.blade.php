@@ -97,6 +97,11 @@ function loadMapData(from, to) {
 
 document.addEventListener('DOMContentLoaded', function() {
     initMap();
+    // Load with current URL params (set by date range picker) or sensible defaults
+    var params = new URLSearchParams(window.location.search);
+    var from = params.get('from') || '{{ now()->subDays(7)->format("Y-m-d") }} 00:00:00';
+    var to   = params.get('to')   || '{{ now()->format("Y-m-d") }} 23:59:59';
+    loadMapData(from, to);
 });
 
 document.addEventListener('dateRangeChanged', function(e) {
