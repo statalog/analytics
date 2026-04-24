@@ -33,7 +33,7 @@ function render(rows) {
     html += '</tr></thead><tbody>';
     rows.forEach(function(row) {
         html += '<tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:400px">' + (row.url || '-').replace(/^https?:\/\//, '') + '</td>';
-        html += '<td style="text-align:right;font-variant-numeric:tabular-nums">' + fmtDuration(row.avg_duration) + '</td>';
+        html += '<td style="text-align:right;font-variant-numeric:tabular-nums">' + fmtDuration(row.avg_time) + '</td>';
         html += '<td style="text-align:right">' + (row.pageviews || 0).toLocaleString() + '</td></tr>';
     });
     if (!rows.length) html += '<tr><td colspan="3" class="text-center" style="color:var(--pa-text-muted)">No data</td></tr>';
