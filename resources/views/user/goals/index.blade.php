@@ -14,6 +14,7 @@
                 <th>{{ __('analytics.col_target_path') }}</th>
                 <th>{{ __('analytics.col_match_type') }}</th>
                 <th style="text-align:right">{{ __('analytics.col_completions') }}</th>
+                <th style="text-align:right">Revenue</th>
                 <th>{{ __('analytics.label_actions') }}</th>
             </tr>
         </thead>
@@ -24,6 +25,13 @@
                 <td><code style="color:var(--pa-primary);font-size:0.8125rem">{{ $goal['target_path'] }}</code></td>
                 <td style="color:var(--pa-text-muted);font-size:0.8125rem">{{ $goal['match_type'] }}</td>
                 <td style="text-align:right;font-variant-numeric:tabular-nums">{{ number_format($goal['completions']) }}</td>
+                <td style="text-align:right;font-variant-numeric:tabular-nums">
+                    @if($goal['monetary_value'] > 0)
+                        ${{ number_format($goal['revenue'], 2) }}
+                    @else
+                        <span style="color:var(--pa-text-muted)">—</span>
+                    @endif
+                </td>
                 <td>
                     <div class="d-flex gap-1">
                         <a href="{{ route('user.goals.report', $goal['id']) }}" class="btn-pa-outline" style="padding:0.25rem 0.5rem;font-size:0.75rem"><i class="bi bi-graph-up"></i></a>

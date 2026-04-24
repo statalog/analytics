@@ -21,6 +21,9 @@
 
 namespace App\Jobs;
 
+use App\Events\GoalConverted;
+use App\Models\Goal;
+use App\Models\GoalCompletion;
 use App\Models\Site;
 use App\Repositories\AnalyticsRepository;
 use App\Services\BotFilterService;
@@ -173,6 +176,10 @@ class ProcessAnalyticsHit implements ShouldQueue
         $isBounce     = $this->resolveIsBounce($sessionId, $siteId);
         $isNewVisitor = $this->resolveIsNewVisitor($visitorId, $siteId);
 
+        if (!$isBot && $path !== '') {
+            $this->checkGoals($siteId, $site, $path, $rawUrl, $visitorId, $sessionId);
+        }
+
         $analytics->insertPageview([
             'site_id'         => $siteId,
             'timestamp'       => date('Y-m-d H:i:s'),
@@ -229,6 +236,8 @@ class ProcessAnalyticsHit implements ShouldQueue
                 return null;
             }
             return [
+                'id'               => $site->id,
+                'user_id'          => $site->user_id,
                 'domain'           => $site->domain,
                 'track_subdomains' => (bool) $site->track_subdomains,
                 'track_bots'       => (bool) $site->track_bots,
@@ -255,6 +264,61 @@ class ProcessAnalyticsHit implements ShouldQueue
         }
 
         return false;
+    }
+
+    private function checkGoals(string $siteUuid, array $site, string $path, string $url, string $visitorId, string $sessionId): void
+    {
+        $goals = $this->getSiteGoals($site['id']);
+        foreach ($goals as $goal) {
+            if (!$this->goalMatchesPath($goal, $path)) {
+                continue;
+            }
+            $dedupKey = "gc:{$siteUuid}:{$sessionId}:{$goal['id']}";
+            if (Cache::has($dedupKey)) {
+                continue;
+            }
+            Cache::put($dedupKey, 1, 1800);
+
+            GoalCompletion::create([
+                'user_id'        => $site['user_id'],
+                'site_id'        => $site['id'],
+                'goal_id'        => $goal['id'],
+                'visitor_id'     => $visitorId,
+                'session_id'     => $sessionId,
+                'monetary_value' => (float) ($goal['monetary_value'] ?? 0),
+            ]);
+
+            event(new GoalConverted(
+                userId:        $site['user_id'],
+                siteId:        $site['id'],
+                siteUuid:      $siteUuid,
+                goalId:        $goal['id'],
+                goalName:      $goal['name'],
+                monetaryValue: (float) ($goal['monetary_value'] ?? 0),
+                visitorId:     $visitorId,
+                sessionId:     $sessionId,
+                url:           $url,
+            ));
+        }
+    }
+
+    private function getSiteGoals(int $siteId): array
+    {
+        return Cache::remember("site_goals:{$siteId}", 300, function () use ($siteId) {
+            return Goal::where('site_id', $siteId)
+                ->get(['id', 'name', 'match_type', 'target_path', 'monetary_value'])
+                ->toArray();
+        });
+    }
+
+    private function goalMatchesPath(array $goal, string $path): bool
+    {
+        return match ($goal['match_type']) {
+            'exact'       => $path === $goal['target_path'],
+            'starts_with' => str_starts_with($path, $goal['target_path']),
+            'contains'    => str_contains($path, $goal['target_path']),
+            default       => false,
+        };
     }
 
     private function resolveIsBounce(string $sessionId, string $siteId): int

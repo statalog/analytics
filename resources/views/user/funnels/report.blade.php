@@ -18,6 +18,21 @@
 
 @php $maxVisitors = collect($steps)->max('visitors') ?: 1; @endphp
 @foreach($steps as $i => $step)
+
+{{-- Time between steps indicator --}}
+@if($i > 0 && $step['avg_time_secs'] !== null && $step['avg_time_secs'] > 0)
+@php
+    $secs = $step['avg_time_secs'];
+    if ($secs < 60)       $timeLabel = $secs . 's';
+    elseif ($secs < 3600) $timeLabel = round($secs / 60, 1) . 'm';
+    else                  $timeLabel = round($secs / 3600, 1) . 'h';
+@endphp
+<div class="d-flex align-items-center gap-2 mb-2" style="padding-left:1rem;color:var(--pa-text-muted)">
+    <i class="bi bi-clock" style="font-size:0.75rem"></i>
+    <span style="font-size:0.8125rem">avg <strong style="color:var(--pa-text)">{{ $timeLabel }}</strong> to reach this step</span>
+</div>
+@endif
+
 <div class="funnel-step">
     <div class="funnel-info">
         <div class="funnel-label">{{ $step['label'] }}</div>

@@ -36,7 +36,13 @@ class GoalCompletion extends Model
         'goal_id',
         'visitor_id',
         'session_id',
+        'monetary_value',
     ];
+
+    protected function casts(): array
+    {
+        return ['monetary_value' => 'decimal:2'];
+    }
 
     public function site(): BelongsTo
     {

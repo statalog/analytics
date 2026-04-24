@@ -45,15 +45,18 @@ class GoalController extends Controller
         [$from, $to] = $this->getDateRange($request);
 
         $goalsData = $goals->map(function ($goal) use ($from, $to) {
-            $completions = GoalCompletion::where('goal_id', $goal->id)
+            $row = GoalCompletion::where('goal_id', $goal->id)
                 ->whereBetween('created_at', [$from, $to])
-                ->count();
+                ->selectRaw('count(*) as completions, sum(monetary_value) as revenue')
+                ->first();
             return [
-                'id'          => $goal->id,
-                'name'        => $goal->name,
-                'target_path' => $goal->target_path,
-                'match_type'  => $goal->match_type,
-                'completions' => $completions,
+                'id'             => $goal->id,
+                'name'           => $goal->name,
+                'target_path'    => $goal->target_path,
+                'match_type'     => $goal->match_type,
+                'monetary_value' => $goal->monetary_value,
+                'completions'    => (int) ($row->completions ?? 0),
+                'revenue'        => (float) ($row->revenue ?? 0),
             ];
         });
 
@@ -165,14 +168,16 @@ class GoalController extends Controller
 
         $completions = GoalCompletion::where('goal_id', $goal->id)
             ->whereBetween('created_at', [$from, $to])
-            ->selectRaw('DATE(created_at) as date, count(*) as completions')
+            ->selectRaw('DATE(created_at) as date, count(*) as completions, sum(monetary_value) as revenue')
             ->groupBy('date')
             ->orderBy('date')
             ->get();
 
         return response()->json([
-            'chart' => $completions,
-            'total' => $completions->sum('completions'),
+            'chart'            => $completions,
+            'total'            => $completions->sum('completions'),
+            'total_revenue'    => round($completions->sum('revenue'), 2),
+            'has_revenue'      => $goal->monetary_value > 0,
         ]);
     }
 }

@@ -153,8 +153,10 @@ class FunnelController extends Controller
         $funnel->load('steps');
         [$from, $to] = $this->getDateRange($request);
 
-        $stepPaths  = $funnel->steps->pluck('path')->toArray();
-        $stepCounts = $this->analyticsFor($site, $request->input('hostname'))->getFunnelData($site->site_id, $stepPaths, $from, $to);
+        $stepPaths    = $funnel->steps->pluck('path')->toArray();
+        $repo         = $this->analyticsFor($site, $request->input('hostname'));
+        $stepCounts   = $repo->getFunnelData($site->site_id, $stepPaths, $from, $to);
+        $stepTimings  = $repo->getFunnelStepTimings($site->site_id, $stepPaths, $from, $to);
 
         $steps = [];
         foreach ($funnel->steps as $i => $step) {
@@ -169,6 +171,7 @@ class FunnelController extends Controller
                 'visitors'        => $count,
                 'dropoff'         => $dropoff,
                 'conversion_rate' => $convRate,
+                'avg_time_secs'   => $i > 0 ? ($stepTimings[$i - 1] ?? null) : null,
             ];
         }
 

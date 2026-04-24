@@ -938,6 +938,38 @@ class AnalyticsRepository
         return $results;
     }
 
+    public function getFunnelStepTimings(string $siteId, array $stepPaths, string $from, string $to): array
+    {
+        if (count($stepPaths) < 2) {
+            return [];
+        }
+
+        $timings = [];
+        for ($i = 0; $i < count($stepPaths) - 1; $i++) {
+            $p1 = addslashes($stepPaths[$i]);
+            $p2 = addslashes($stepPaths[$i + 1]);
+
+            $rows = $this->query(
+                "SELECT avg(t2 - t1) as avg_secs
+                 FROM (
+                     SELECT
+                         session_id,
+                         minIf(toUnixTimestamp(timestamp), url LIKE '%{$p1}%') as t1,
+                         minIf(toUnixTimestamp(timestamp), url LIKE '%{$p2}%') as t2
+                     FROM pageviews
+                     WHERE site_id = :site_id" . $this->sd() . " AND timestamp >= :from AND timestamp <= :to
+                     GROUP BY session_id
+                     HAVING t1 > 0 AND t2 > 0 AND t2 >= t1
+                 )",
+                ['site_id' => $siteId, 'from' => $from, 'to' => $to]
+            );
+
+            $timings[] = (int) round($rows[0]['avg_secs'] ?? 0);
+        }
+
+        return $timings;
+    }
+
     // --- Custom Events ---
 
     public function getCustomEvents(string $siteId, string $from, string $to): array
