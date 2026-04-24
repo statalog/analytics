@@ -28,7 +28,7 @@ function loadData() {
 }
 
 function render(rows) {
-    var labels = rows.map(function(r) { return r.pages_visited + ' page' + (r.pages_visited !== 1 ? 's' : ''); });
+    var labels = rows.map(function(r) { return r.depth + ' page' + (r.depth === '1' ? '' : 's'); });
     var values = rows.map(function(r) { return parseInt(r.sessions || 0); });
     var ctx = document.getElementById('depth-chart').getContext('2d');
     if (depthChart) depthChart.destroy();
@@ -48,7 +48,7 @@ function render(rows) {
     var html = '<table class="pa-table"><thead><tr><th>Pages Visited</th><th style="text-align:right">{{ __("analytics.col_sessions") }}</th><th style="text-align:right">Share</th></tr></thead><tbody>';
     rows.forEach(function(row) {
         var pct = total > 0 ? Math.round(parseInt(row.sessions || 0) / total * 100) : 0;
-        html += '<tr><td>' + row.pages_visited + ' page' + (row.pages_visited !== 1 ? 's' : '') + '</td>';
+        html += '<tr><td>' + row.depth + ' page' + (row.depth === '1' ? '' : 's') + '</td>';
         html += '<td style="text-align:right">' + parseInt(row.sessions || 0).toLocaleString() + '</td>';
         html += '<td style="text-align:right">' + pct + '%</td></tr>';
     });
