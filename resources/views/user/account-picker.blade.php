@@ -11,7 +11,7 @@
     <style>
     body { background: var(--pa-bg); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; padding: 2rem 1rem; }
     .picker-wrap { width: 100%; max-width: 520px; }
-    .picker-logo { display: block; margin: 0 auto 2rem; height: 32px; }
+    .picker-logo { display: block; margin: 0 auto 2rem; }
     .picker-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.375rem; }
     .picker-sub { color: var(--pa-text-muted); font-size: 0.9375rem; text-align: center; margin-bottom: 2rem; }
     .account-card { display: flex; align-items: center; gap: 1rem; width: 100%; text-align: left; padding: 1rem 1.25rem; background: var(--pa-card-bg); border: 1px solid var(--pa-border); border-radius: 0.875rem; cursor: pointer; transition: border-color .15s, box-shadow .15s; margin-bottom: 0.75rem; }

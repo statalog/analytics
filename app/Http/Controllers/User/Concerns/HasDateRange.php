@@ -65,7 +65,27 @@ trait HasDateRange
 
     protected function getCurrentSite(Request $request)
     {
-        $user = $request->user();
+        $user          = $request->user();
+        $activeOwnerId = session('active_owner_id');
+
+        if ($activeOwnerId) {
+            $membership = \App\Models\AccountUser::where('owner_id', $activeOwnerId)
+                ->where('user_id', $user->id)
+                ->with('siteAccess')
+                ->first();
+
+            if (!$membership) {
+                $request->session()->forget('active_owner_id');
+                $sitesQuery = $user->sites();
+            } elseif ($membership->isViewer() && $membership->siteAccess->isNotEmpty()) {
+                $allowedIds = $membership->siteAccess->pluck('id');
+                $sitesQuery = \App\Models\User::find($activeOwnerId)->sites()->whereIn('id', $allowedIds);
+            } else {
+                $sitesQuery = \App\Models\User::find($activeOwnerId)->sites();
+            }
+        } else {
+            $sitesQuery = $user->sites();
+        }
 
         if ($request->has('switch_site')) {
             session(['current_site_id' => $request->input('switch_site')]);
@@ -74,13 +94,13 @@ trait HasDateRange
         $currentSiteId = session('current_site_id');
 
         if ($currentSiteId) {
-            $site = $user->sites()->where('site_id', $currentSiteId)->first();
+            $site = (clone $sitesQuery)->where('site_id', $currentSiteId)->first();
             if ($site) {
                 return $site;
             }
         }
 
-        $site = $user->sites()->first();
+        $site = $sitesQuery->first();
         if ($site) {
             session(['current_site_id' => $site->site_id]);
         }

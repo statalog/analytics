@@ -91,6 +91,7 @@ class AccountUserController extends Controller
 
         if ($ownerId === 0 || $ownerId === $user->id) {
             $request->session()->forget('active_owner_id');
+            $request->session()->forget('current_site_id');
             return redirect()->route('user.dashboard');
         }
 
@@ -98,6 +99,7 @@ class AccountUserController extends Controller
         abort_unless($valid, 403);
 
         $request->session()->put('active_owner_id', $ownerId);
+        $request->session()->forget('current_site_id');
 
         return redirect()->route('user.dashboard');
     }
