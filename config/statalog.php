@@ -39,6 +39,8 @@ return [
 
     'url' => env('STATALOG_URL', 'https://statalog.com'),
 
+    'demo_url' => env('STATALOG_DEMO_URL', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Accent Color Scheme
