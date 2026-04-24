@@ -23,12 +23,11 @@ var currentPage = 1;
 var totalPages  = 1;
 
 function visitorAvatar(id) {
-    if (!id) return '<span style="width:28px;height:28px;display:inline-block;flex-shrink:0"></span>';
+    if (!id) return '<span style="width:24px;height:24px;display:inline-block;flex-shrink:0"></span>';
     var hash = 0;
-    for (var i = 0; i < Math.min(id.length, 12); i++) { hash = id.charCodeAt(i) + ((hash << 5) - hash); }
-    var hue = Math.abs(hash) % 360;
-    var label = id.substring(0, 4).toUpperCase();
-    return '<span title="Visitor ' + label + '" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:hsl(' + hue + ',60%,48%);color:#fff;font-size:0.55rem;font-weight:700;flex-shrink:0;font-family:monospace;letter-spacing:0">' + label + '</span>';
+    for (var i = 0; i < id.length; i++) { hash = id.charCodeAt(i) + ((hash << 5) - hash); }
+    var hue = (Math.abs(hash) * 137.508) % 360;
+    return '<span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:hsl(' + hue + ',65%,45%);flex-shrink:0"></span>';
 }
 
 function flag(code) {
