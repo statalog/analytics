@@ -51,7 +51,7 @@ function render(data) {
     if (eventChart) eventChart.destroy();
     eventChart = new Chart(ctx, {
         type: 'bar',
-        data: { labels: labels, datasets: [{ label: 'Occurrences', data: values, backgroundColor: '#0e7dd5', borderRadius: 4, barPercentage: 0.6 }] },
+        data: { labels: labels, datasets: [{ label: 'Occurrences', data: values, backgroundColor: paColor(), borderRadius: 4, barPercentage: 0.6 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
             scales: { x: { grid: { display: false }, ticks: { color: '#6B7290' } }, y: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#6B7290' }, beginAtZero: true } }
         }

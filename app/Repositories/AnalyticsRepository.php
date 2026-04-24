@@ -275,7 +275,7 @@ class AnalyticsRepository
     {
         return $this->queryWithCache(
             "top_pages:{$siteId}:{$from}:{$to}:{$limit}" . $this->sdKey(), 300,
-            "SELECT url, count() as pageviews FROM pageviews WHERE site_id = :site_id" . $this->sd() . " AND timestamp >= :from AND timestamp <= :to GROUP BY url ORDER BY pageviews DESC LIMIT {$limit}",
+            "SELECT url, count() as pageviews FROM pageviews WHERE site_id = :site_id" . $this->sd() . " AND url != '' AND timestamp >= :from AND timestamp <= :to GROUP BY url ORDER BY pageviews DESC LIMIT {$limit}",
             ['site_id' => $siteId, 'from' => $from, 'to' => $to]
         );
     }
@@ -286,9 +286,9 @@ class AnalyticsRepository
             "page_breakdown:{$siteId}:{$from}:{$to}:{$limit}" . $this->sdKey(), 300,
             "SELECT
                 path,
-                count() AS pageviews,
-                uniq(visitor_id) AS unique_visitors,
-                round(avg(is_bounce) * 100) AS bounce_rate,
+                countIf(url != '') AS pageviews,
+                uniqIf(visitor_id, url != '') AS unique_visitors,
+                round(avgIf(is_bounce, url != '') * 100) AS bounce_rate,
                 round(avgIf(visit_duration, visit_duration > 0)) AS avg_time
              FROM pageviews
              WHERE site_id = :site_id" . $this->sd() . "
@@ -447,7 +447,7 @@ class AnalyticsRepository
         return (int) ($rows[0]['cnt'] ?? 0);
     }
 
-    public function getRecentVisits(string $siteId, int $limit = 20, ?string $hostname = null): array
+    public function getRecentVisits(string $siteId, int $limit = 60, ?string $hostname = null, int $minutes = 30): array
     {
         $hf = $hostname ? " AND domain(url) = :hostname" : '';
         $params = ['site_id' => $siteId];
@@ -456,7 +456,7 @@ class AnalyticsRepository
         }
 
         return $this->query(
-            "SELECT timestamp, url, country, city, device_type, browser, referrer, utm_source, utm_medium, utm_campaign, visitor_id FROM pageviews WHERE site_id = :site_id" . $this->sd() . " AND url != ''{$hf} ORDER BY timestamp DESC LIMIT {$limit}",
+            "SELECT timestamp, url, country, city, device_type, browser, referrer, utm_source, utm_medium, utm_campaign, visitor_id FROM pageviews WHERE site_id = :site_id" . $this->sd() . " AND url != '' AND timestamp >= now() - INTERVAL {$minutes} MINUTE{$hf} ORDER BY timestamp DESC LIMIT {$limit}",
             $params
         );
     }
@@ -518,7 +518,7 @@ class AnalyticsRepository
             "entry:{$siteId}:{$from}:{$to}:{$limit}" . $this->sdKey(), 300,
             "SELECT
                 entry_page,
-                count() as sessions,
+                count() as entries,
                 round(countIf(pv_count = 1) * 100.0 / count(), 1) as bounce_rate,
                 round(avg(duration)) as avg_duration
             FROM (
@@ -713,6 +713,22 @@ class AnalyticsRepository
              ORDER BY hits DESC
              LIMIT {$limit}",
             ['site_id' => $siteId]
+        );
+        return array_column($rows, 'url');
+    }
+
+    public function searchPageUrls(string $siteId, string $query, int $limit = 25): array
+    {
+        $rows = $this->query(
+            "SELECT url, count() AS hits
+             FROM pageviews
+             WHERE site_id = :site_id AND is_bot = 0 AND url != ''
+               AND url ILIKE :q
+               AND timestamp >= now() - INTERVAL 90 DAY
+             GROUP BY url
+             ORDER BY hits DESC
+             LIMIT {$limit}",
+            ['site_id' => $siteId, 'q' => '%' . $query . '%']
         );
         return array_column($rows, 'url');
     }

@@ -26,8 +26,8 @@ function render(data) {
     var html = '<div class="row g-3">';
 
     html += col('Device type', deviceTable(data.devices));
-    html += col('Browsers', barTable(data.browsers, 'browser', 'visitors'));
-    html += col('Operating systems', barTable(data.os, 'os', 'visitors'));
+    html += col('Browsers', barTable(data.browsers, 'browser', 'visitors', browserIcon));
+    html += col('Operating systems', barTable(data.os, 'os', 'visitors', osIcon));
     html += col('Screen resolutions', barTable(data.resolutions, 'screen_resolution', 'cnt'));
 
     html += '</div>';
@@ -55,14 +55,35 @@ function deviceTable(rows) {
     return html + '</tbody></table>';
 }
 
-function barTable(rows, labelKey, valueKey) {
+function browserIcon(name) {
+    var b = (name || '').toLowerCase();
+    if (b === 'chrome')  return '<i class="bi bi-browser-chrome me-2 icon-primary"></i>';
+    if (b === 'firefox') return '<i class="bi bi-browser-firefox me-2 icon-primary"></i>';
+    if (b === 'safari')  return '<i class="bi bi-browser-safari me-2 icon-primary"></i>';
+    if (b === 'edge')    return '<i class="bi bi-browser-edge me-2 icon-primary"></i>';
+    return '<i class="bi bi-window me-2 icon-primary"></i>';
+}
+
+function osIcon(name) {
+    var o = (name || '').toLowerCase();
+    if (o === 'windows')                      return '<i class="bi bi-windows me-2 icon-primary"></i>';
+    if (o === 'macos' || o === 'macintosh')   return '<i class="bi bi-apple me-2 icon-primary"></i>';
+    if (o === 'ios' || o === 'iphone')        return '<i class="bi bi-apple me-2 icon-primary"></i>';
+    if (o === 'android')                      return '<i class="bi bi-android2 me-2 icon-primary"></i>';
+    if (o === 'linux')                        return '<i class="bi bi-ubuntu me-2 icon-primary"></i>';
+    if (o === 'chrome os')                    return '<i class="bi bi-browser-chrome me-2 icon-primary"></i>';
+    return '<i class="bi bi-question-circle me-2 icon-primary"></i>';
+}
+
+function barTable(rows, labelKey, valueKey, iconFn) {
     if (!rows || !rows.length) return '<div class="text-center py-4 text-muted">No data.</div>';
     var max = rows.reduce(function(m, r) { return Math.max(m, +r[valueKey]); }, 1);
     var html = '<table class="pa-table"><thead><tr><th>Name</th><th class="text-end">Visitors</th></tr></thead><tbody>';
     rows.forEach(function(r) {
         var pct = Math.round((+r[valueKey] / max) * 100);
+        var icon = iconFn ? iconFn(r[labelKey]) : '';
         html += '<tr><td>'
-              + '<div class="fw-medium">' + escHtml(r[labelKey] || '—') + '</div>'
+              + '<div class="fw-medium">' + icon + escHtml(r[labelKey] || '—') + '</div>'
               + '<div style="background:var(--pa-input-bg);border-radius:3px;height:4px;margin-top:3px">'
               + '<div style="background:var(--pa-primary);height:100%;width:' + pct + '%;border-radius:3px"></div></div>'
               + '</td><td class="text-num">' + (+r[valueKey]).toLocaleString() + '</td></tr>';

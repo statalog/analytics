@@ -30,12 +30,20 @@
                 <i class="bi bi-list" style="font-size:1.4rem"></i>
             </button>
             <a href="{{ route('home') }}" class="topbar-brand">{{ __('app.name') }}</a>
+            @if($topbarSite ?? null)
+            <span class="d-none d-lg-flex align-items-center gap-1 text-sm" style="color:var(--pa-text-muted);border-left:1px solid var(--pa-border);padding-left:1rem">
+                <i class="bi bi-globe2" style="font-size:0.75rem"></i>
+                <span style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $topbarSite->name }}</span>
+            </span>
+            @endif
         </div>
         @php
             $me = auth()->user();
             $accountsUserIsMemberOf = \App\Models\AccountUser::where('user_id', $me->id)->with('owner')->get();
             $activeOwnerId = session('active_owner_id');
             $activeAccount = $activeOwnerId ? \App\Models\User::find($activeOwnerId) : null;
+            $topbarSites = $me->sites ?? collect();
+            $topbarSite  = ($sid = session('current_site_id')) ? $topbarSites->firstWhere('site_id', $sid) : $topbarSites->first();
         @endphp
 
         <div class="d-flex align-items-center gap-3">
@@ -73,7 +81,7 @@
             @endif
 
             <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">
-                <i class="bi bi-sun-fill" id="theme-icon"></i>
+                <i class="bi bi-sun-fill" id="theme-icon" style="color:var(--pa-warning)"></i>
             </button>
             <div class="dropdown">
                 <button class="btn-pa-outline dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" style="padding:0.375rem 0.75rem">
@@ -142,9 +150,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('select.js-searchable').forEach(function (el) {
-                new TomSelect(el, { maxOptions: 1000 });
+                new TomSelect(el, { maxOptions: 1000, openOnFocus: false });
             });
         });
+    </script>
+    <script>
+    // Returns the accent color (or an rgba version) from the CSS variable --pa-primary.
+    function paColor(alpha) {
+        var hex = getComputedStyle(document.documentElement).getPropertyValue('--pa-primary').trim();
+        if (alpha === undefined || alpha >= 1) return hex;
+        var r = parseInt(hex.slice(1,3), 16), g = parseInt(hex.slice(3,5), 16), b = parseInt(hex.slice(5,7), 16);
+        return 'rgba('+r+','+g+','+b+','+alpha+')';
+    }
     </script>
     <script>
     function toggleSidebar() {

@@ -43,13 +43,46 @@ class UserAgentService
             $parsed = ['browser' => null, 'version' => null, 'platform' => null];
         }
 
+        $browser = $parsed['browser'] ?? '';
+        $os      = $parsed['platform'] ?? '';
+
+        if ($browser === '' || $browser === null) {
+            $browser = $this->detectBrowserFallback($userAgent);
+        }
+        if ($os === '' || $os === null) {
+            $os = $this->detectOsFallback($userAgent);
+        }
+
         return [
-            'browser'         => $parsed['browser'] ?? '',
+            'browser'         => $browser,
             'browser_version' => $parsed['version'] ?? '',
-            'os'              => $parsed['platform'] ?? '',
+            'os'              => $os,
             'os_version'      => '',
             'device_type'     => $this->detectDeviceType($userAgent, $screenWidth),
         ];
+    }
+
+    private function detectOsFallback(string $ua): string
+    {
+        if (str_contains($ua, 'Windows NT'))          return 'Windows';
+        if (str_contains($ua, 'Macintosh') || str_contains($ua, 'Mac OS X')) return 'macOS';
+        if (str_contains($ua, 'CrOS'))                return 'Chrome OS';
+        if (str_contains($ua, 'Android'))             return 'Android';
+        if (str_contains($ua, 'iPhone') || str_contains($ua, 'iPad') || str_contains($ua, 'iPod')) return 'iOS';
+        if (str_contains($ua, 'Linux'))               return 'Linux';
+        return '';
+    }
+
+    private function detectBrowserFallback(string $ua): string
+    {
+        if (str_contains($ua, 'SamsungBrowser'))      return 'Samsung Browser';
+        if (str_contains($ua, 'YaBrowser'))           return 'Yandex';
+        if (str_contains($ua, 'OPR/') || str_contains($ua, 'OPiOS/')) return 'Opera';
+        if (preg_match('/Edg[eA]?\//i', $ua))         return 'Edge';
+        if (str_contains($ua, 'Chrome'))              return 'Chrome';
+        if (str_contains($ua, 'Firefox'))             return 'Firefox';
+        if (str_contains($ua, 'Safari'))              return 'Safari';
+        return '';
     }
 
     private function detectDeviceType(string $userAgent, int $screenWidth): string

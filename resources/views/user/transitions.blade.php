@@ -10,19 +10,12 @@
 
 <div class="pa-card mb-3">
     <div class="d-flex gap-2 flex-wrap align-items-center">
-        <input type="text" id="url-input" class="form-control" list="url-suggestions"
-               placeholder="https://example.com/page" style="max-width:520px"
-               onkeydown="if(event.key==='Enter')runCheck()">
-        <datalist id="url-suggestions">
-            @foreach($topUrls as $u)
-                <option value="{{ $u }}">
-            @endforeach
-        </datalist>
-        <button onclick="runCheck()" class="btn btn-sm btn-primary" id="btn-check">
+        <select id="url-input" style="max-width:520px;min-width:320px"></select>
+        <button onclick="runCheck()" class="btn-pa-primary" id="btn-check">
             <i class="bi bi-play-fill me-1"></i>Analyse
         </button>
     </div>
-    <div style="font-size:0.8rem;color:var(--pa-text-muted);margin-top:0.5rem">
+    <div class="text-sm-muted mt-2">
         Shows the pages visitors came from and went to for any page on your site.
     </div>
 </div>
@@ -62,7 +55,8 @@ function pageRow(item, total, color) {
 }
 
 function runCheck() {
-    var url = document.getElementById('url-input').value.trim();
+    var sel = document.getElementById('url-input');
+    var url = (sel.tomselect ? sel.tomselect.getValue() : sel.value || '').trim();
     if (!url) return;
 
     var btn = document.getElementById('btn-check');
@@ -164,14 +158,30 @@ function runCheck() {
         });
 }
 
-// Auto-run if a URL was pre-filled (e.g. navigating from the Pages report)
-(function() {
-    var params = new URLSearchParams(window.location.search);
-    var preUrl = params.get('url');
+document.addEventListener('DOMContentLoaded', function() {
+    var searchUrl = @json(route('user.transitions.search'));
+    var preUrl = new URLSearchParams(window.location.search).get('url');
+
+    var ts = new TomSelect('#url-input', {
+        maxOptions: 25,
+        openOnFocus: false,
+        placeholder: 'Type to search pages…',
+        load: function(query, callback) {
+            if (!query.length) return callback();
+            fetch(searchUrl + '?q=' + encodeURIComponent(query))
+                .then(function(r) { return r.json(); })
+                .then(callback)
+                .catch(function() { callback(); });
+        },
+        onChange: function(value) { if (value) runCheck(); },
+    });
+
+    // Pre-fill if navigating from another page
     if (preUrl) {
-        document.getElementById('url-input').value = preUrl;
+        ts.addOption({ value: preUrl, text: preUrl.replace(/^https?:\/\//, '') });
+        ts.setValue(preUrl, true);
         runCheck();
     }
-})();
+});
 </script>
 @endpush

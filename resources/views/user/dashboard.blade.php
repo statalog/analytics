@@ -13,11 +13,6 @@
         </div>
     </div>
 
-    {{-- AI Insights widget (cloud package only). --}}
-    @if(Route::has('user.dashboard.ai-insight'))
-        @include('cloud::partials.dashboard-ai-widget')
-    @endif
-
     <div class="pa-card mb-4">
         <h6 class="mb-3 font-heading">{{ __('analytics.chart_traffic_overview') }}</h6>
         <div style="position:relative;height:300px">
@@ -84,11 +79,30 @@ function getSourceIcon(source) {
 
 function getBrowserIcon(browser) {
     var b = (browser || '').toLowerCase();
-    if (b === 'chrome')  return '<i class="bi bi-browser-chrome me-1"></i>';
-    if (b === 'firefox') return '<i class="bi bi-browser-firefox me-1"></i>';
-    if (b === 'safari')  return '<i class="bi bi-browser-safari me-1"></i>';
-    if (b === 'edge')    return '<i class="bi bi-browser-edge me-1"></i>';
+    if (b === 'chrome')          return '<i class="bi bi-browser-chrome me-1"></i>';
+    if (b === 'firefox')         return '<i class="bi bi-browser-firefox me-1"></i>';
+    if (b === 'safari')          return '<i class="bi bi-browser-safari me-1"></i>';
+    if (b === 'edge')            return '<i class="bi bi-browser-edge me-1"></i>';
     return '<i class="bi bi-window me-1"></i>';
+}
+
+function getDeviceIcon(device) {
+    var d = (device || '').toLowerCase();
+    if (d === 'mobile')  return '<i class="bi bi-phone me-1"></i>';
+    if (d === 'tablet')  return '<i class="bi bi-tablet me-1"></i>';
+    if (d === 'desktop') return '<i class="bi bi-display me-1"></i>';
+    return '<i class="bi bi-question-circle me-1"></i>';
+}
+
+function getOsIcon(os) {
+    var o = (os || '').toLowerCase();
+    if (o === 'windows')   return '<i class="bi bi-windows me-1"></i>';
+    if (o === 'macos' || o === 'macintosh') return '<i class="bi bi-apple me-1"></i>';
+    if (o === 'ios' || o === 'iphone')      return '<i class="bi bi-apple me-1"></i>';
+    if (o === 'android')   return '<i class="bi bi-android2 me-1"></i>';
+    if (o === 'linux')     return '<i class="bi bi-ubuntu me-1"></i>';
+    if (o === 'chrome os') return '<i class="bi bi-browser-chrome me-1"></i>';
+    return '<i class="bi bi-question-circle me-1"></i>';
 }
 
 function renderLocationsCard(locationData) {
@@ -128,8 +142,8 @@ function initLocationMap() {
     try {
         __locMap = new jsVectorMap({
             selector: '#locations-map', map: 'world',
-            series: { regions: [{ values: values, scale: ['#93c5fd', '#0e7dd5'], normalizeFunction: 'polynomial' }] },
-            regionStyle: { initial: { fill: 'var(--pa-border)', stroke: 'var(--pa-bg)', strokeWidth: 0.3 }, hover: { fill: '#0e7dd5', cursor: 'pointer' } },
+            series: { regions: [{ values: values, scale: [paColor(0.2), paColor()], normalizeFunction: 'polynomial' }] },
+            regionStyle: { initial: { fill: 'var(--pa-border)', stroke: 'var(--pa-bg)', strokeWidth: 0.3 }, hover: { fill: paColor(), cursor: 'pointer' } },
             backgroundColor: 'transparent', zoomOnScroll: false,
         });
     } catch(e) {}
@@ -144,9 +158,9 @@ function loadDashboardData() {
             renderDetailCard('card-pages',    __t.topPages,   data.topPages || [],   'url',    'pageviews', function(r) { return (r.url || __t.unknown).replace(/^https?:\/\//, ''); });
             renderDetailCard('card-sources',  __t.sources,    data.sources || [],    'source', 'visits',    function(r) { return getSourceIcon(r.source) + (r.source || __t.unknown); });
             renderLocationsCard(data.locations || []);
-            renderDetailCard('card-devices',  __t.devices,    data.devices || [],    'device', 'visitors');
+            renderDetailCard('card-devices',  __t.devices,    data.devices || [],    'device', 'visitors',  function(r) { return getDeviceIcon(r.device) + (r.device || __t.unknown); });
             renderDetailCard('card-browsers', __t.browsers,   data.browsers || [],   'browser','visitors',  function(r) { return getBrowserIcon(r.browser) + (r.browser || __t.unknown); });
-            renderDetailCard('card-os',       __t.os,         data.os || [],         'os',     'visitors');
+            renderDetailCard('card-os',       __t.os,         data.os || [],         'os',     'visitors',  function(r) { return getOsIcon(r.os) + (r.os || __t.unknown); });
             renderDetailCard('card-resolutions', __t.resolutions, data.resolutions || [], 'screen_resolution', 'cnt');
         });
 }
@@ -221,7 +235,7 @@ function renderChart(metric) {
     if (mainChart) mainChart.destroy();
     mainChart = new Chart(ctx, {
         type: 'line',
-        data: { labels: labels, datasets: [{ label: metric, data: values, borderColor: '#0e7dd5', backgroundColor: 'rgba(14,125,213,0.1)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointHoverRadius: 5 }] },
+        data: { labels: labels, datasets: [{ label: metric, data: values, borderColor: paColor(), backgroundColor: paColor(0.1), fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointHoverRadius: 5 }] },
         options: { responsive: true, maintainAspectRatio: false,
             plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) {
                 if (isBounce) return c.parsed.y + '%';

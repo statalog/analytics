@@ -23,12 +23,20 @@ class TransitionsController extends Controller
         $site = $this->getCurrentSite($request);
         if (!$site) return redirect()->route('user.sites.create');
 
-        $topUrls = $this->analyticsFor($site)->getTopPageUrls($site->site_id, 60);
+        return view('user.transitions', ['site' => $site]);
+    }
 
-        return view('user.transitions', [
-            'site'    => $site,
-            'topUrls' => $topUrls,
-        ]);
+    public function search(Request $request)
+    {
+        $site = $this->getCurrentSite($request);
+        if (!$site) return response()->json([]);
+
+        $q = trim($request->input('q', ''));
+        if ($q === '') return response()->json([]);
+
+        $urls = $this->analyticsFor($site)->searchPageUrls($site->site_id, $q);
+
+        return response()->json(array_map(fn($url) => ['value' => $url, 'text' => preg_replace('#^https?://#', '', $url)], $urls));
     }
 
     public function data(Request $request)

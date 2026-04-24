@@ -196,7 +196,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .sidebar .sidebar-brand {
-    padding: 0.875rem 1.25rem;
+    padding: 0.95rem 1.25rem;
     border-bottom: 1px solid var(--pa-sidebar-border);
     font-family: 'Space Grotesk', sans-serif;
     font-size: 1.1rem;
@@ -226,7 +226,7 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--pa-sidebar-text);
     padding: 0.5rem 2rem 0.5rem 0.75rem;
     border-radius: var(--pa-radius);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -269,7 +269,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.45rem 1.25rem;
     color: var(--pa-sidebar-link);
     text-decoration: none;
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     font-weight: 500;
     transition: all 0.15s ease;
     border-left: 3px solid transparent;
@@ -303,7 +303,7 @@ h1, h2, h3, h4, h5, h6 {
     gap: 0.5rem;
     padding: 0.45rem 1.25rem;
     color: var(--pa-sidebar-link);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
     user-select: none;
@@ -355,13 +355,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .stat-card .stat-icon {
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     border-radius: var(--pa-radius);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3.5rem;    
+    font-size: 3rem;    
     color: var(--pa-primary);
 }
 
@@ -401,7 +401,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .detail-card .detail-card-header {
-    padding: 0.875rem 1.25rem;
+    padding: 0.95rem 1.25rem;
     border-bottom: 1px solid var(--pa-border);
     display: flex;
     justify-content: space-between;
@@ -421,7 +421,7 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     padding: 0.5rem 1.25rem;
     border-bottom: 1px solid var(--pa-row-border);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
 }
 
 .detail-row:last-child { border-bottom: none; }
@@ -460,7 +460,7 @@ h1, h2, h3, h4, h5, h6 {
 .pa-table tbody td {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--pa-row-border);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
 }
 
 .pa-table tbody tr:hover { background: var(--pa-hover-bg); }
@@ -472,7 +472,7 @@ h1, h2, h3, h4, h5, h6 {
     border: none;
     padding: 0.5rem 1.125rem;
     border-radius: var(--pa-radius);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     font-weight: 500;
     transition: background 0.15s;
     cursor: pointer;
@@ -490,7 +490,7 @@ h1, h2, h3, h4, h5, h6 {
     border: none;
     padding: 0.5rem 1.125rem;
     border-radius: var(--pa-radius);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     font-weight: 500;
     transition: background 0.15s;
     cursor: pointer;
@@ -508,7 +508,7 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid var(--pa-danger);
     padding: 0.5rem 1.125rem;
     border-radius: var(--pa-radius);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     font-weight: 500;
     transition: all 0.15s;
     cursor: pointer;
@@ -526,7 +526,7 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid var(--pa-border);
     padding: 0.5rem 1.125rem;
     border-radius: var(--pa-radius);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     transition: all 0.15s;
     cursor: pointer;
     text-decoration: none;
@@ -544,7 +544,7 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--pa-text);
     padding: 0.5rem 0.75rem;
     border-radius: var(--pa-radius);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     width: 100%;
     display: block;
 }
@@ -583,9 +583,9 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Alerts ── */
 .pa-alert {
-    padding: 0.875rem 1.25rem;
+    padding: 0.95rem 1.25rem;
     border-radius: var(--pa-radius);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     margin-bottom: 1rem;
 }
 
@@ -676,7 +676,7 @@ input:checked + .toggle-track + .toggle-dot { transform: translate(18px, -50%); 
 .pa-status-badge.warning { background: rgba(245,158,11,0.1); color: var(--pa-warning); }
 
 /* ── Breadcrumb ── */
-.pa-breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+.pa-breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; }
 .pa-breadcrumb a { color: var(--pa-text-muted); text-decoration: none; }
 .pa-breadcrumb a:hover { color: var(--pa-primary); }
 .pa-breadcrumb .separator { color: var(--pa-text-muted); }
@@ -684,7 +684,7 @@ input:checked + .toggle-track + .toggle-dot { transform: translate(18px, -50%); 
 
 /* ── Funnel visualization ── */
 .funnel-step { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; flex-wrap: wrap; }
-.funnel-step .funnel-bar { height: 2.75rem; background: var(--pa-primary); border-radius: var(--pa-radius); display: flex; align-items: center; padding: 0 1rem; color: #fff; font-weight: 600; font-size: 0.875rem; min-width: 80px; transition: width 0.5s ease; }
+.funnel-step .funnel-bar { height: 2.75rem; background: var(--pa-primary); border-radius: var(--pa-radius); display: flex; align-items: center; padding: 0 1rem; color: #fff; font-weight: 600; font-size: 0.95rem; min-width: 80px; transition: width 0.5s ease; }
 .funnel-step .funnel-info { flex-shrink: 0; min-width: 200px; }
 .funnel-step .funnel-label { font-weight: 600; font-size: 0.9rem; }
 .funnel-step .funnel-stats { font-size: 0.75rem; color: var(--pa-text-muted); }
@@ -819,7 +819,7 @@ input:checked + .toggle-track + .toggle-dot { transform: translate(18px, -50%); 
 
 .auth-subheading {
     color: var(--pa-text-muted);
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     margin-bottom: 1.5rem;
 }
 
@@ -835,7 +835,7 @@ input:checked + .toggle-track + .toggle-dot { transform: translate(18px, -50%); 
     background: var(--pa-input-bg);
     border: 1px solid var(--pa-border);
     color: var(--pa-text);
-    padding: 0.625rem 0.875rem;
+    padding: 0.625rem 0.95rem;
     border-radius: var(--pa-radius);
     font-size: 0.9375rem;
     width: 100%;
@@ -877,7 +877,7 @@ input:checked + .toggle-track + .toggle-dot { transform: translate(18px, -50%); 
 .auth-link {
     color: var(--pa-primary);
     text-decoration: none;
-    font-size: 0.875rem;
+    font-size: 0.95rem;
 }
 
 .auth-link:hover { text-decoration: underline; }

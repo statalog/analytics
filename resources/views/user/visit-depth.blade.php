@@ -34,7 +34,7 @@ function render(rows) {
     if (depthChart) depthChart.destroy();
     depthChart = new Chart(ctx, {
         type: 'bar',
-        data: { labels: labels, datasets: [{ label: 'Sessions', data: values, backgroundColor: '#0e7dd5', borderRadius: 4, barPercentage: 0.6 }] },
+        data: { labels: labels, datasets: [{ label: 'Sessions', data: values, backgroundColor: paColor(), borderRadius: 4, barPercentage: 0.6 }] },
         options: { responsive: true, maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {

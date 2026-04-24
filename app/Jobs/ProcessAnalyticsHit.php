@@ -148,12 +148,14 @@ class ProcessAnalyticsHit implements ShouldQueue
         if ($type === 'heartbeat') {
             $duration = (int) ($this->payload['duration'] ?? 0);
             if ($sessionId !== '' && $duration > 0) {
+                $hbPath = parse_url($rawUrl, PHP_URL_PATH) ?? '';
                 $analytics->insertPageview([
                     'site_id'        => $siteId,
                     'timestamp'      => date('Y-m-d H:i:s'),
                     'session_id'     => $sessionId,
                     'visitor_id'     => $visitorId,
                     'url'            => '',
+                    'path'           => $hbPath,
                     'visit_duration' => $duration,
                     'is_bot'         => $isBot ? 1 : 0,
                     'bot_name'       => $botName,

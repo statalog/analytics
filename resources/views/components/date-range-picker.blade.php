@@ -9,6 +9,7 @@
     }
     $showBotFilter = $botFilter ?? true;
     $siteTracksBots = $showBotFilter && (bool) ($currentSite?->track_bots ?? false);
+    $siteTracksSubdomains = (bool) ($currentSite?->track_subdomains ?? false);
     $ranges = [
         'today'      => __('analytics.range_today'),
         'yesterday'  => __('analytics.range_yesterday'),
@@ -41,11 +42,13 @@
     </div>
     @endif
 
+    @if($siteTracksSubdomains)
     <div id="hostname-filter-wrap" style="display:none">
         <select id="hostname-filter" class="pa-input" style="font-size:0.8125rem;padding:0.35rem 0.6rem;width:auto;min-width:160px">
             <option value="">All subdomains</option>
         </select>
     </div>
+    @endif
 
     <div class="dropdown">
         <button class="date-range-btn dropdown-toggle" data-bs-toggle="dropdown">
@@ -75,6 +78,7 @@
 
 @once
 @push('scripts')
+@if($siteTracksSubdomains)
 <script>
 (function () {
     var hostnamesUrl = @json(route('user.dashboard.hostnames'));
@@ -117,5 +121,6 @@
     }
 })();
 </script>
+@endif
 @endpush
 @endonce

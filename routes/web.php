@@ -136,8 +136,9 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/time-of-day/data',[TimeOfDayController::class, 'data'])->name('time-of-day.data');
 
     // Page Transitions
-    Route::get('/transitions',      [TransitionsController::class, 'index'])->name('transitions');
-    Route::get('/transitions/data', [TransitionsController::class, 'data'])->name('transitions.data');
+    Route::get('/transitions',        [TransitionsController::class, 'index'])->name('transitions');
+    Route::get('/transitions/search', [TransitionsController::class, 'search'])->name('transitions.search');
+    Route::get('/transitions/data',   [TransitionsController::class, 'data'])->name('transitions.data');
 
     // Funnels
     Route::get('/funnels',                  [FunnelController::class, 'index'])->name('funnels.index');

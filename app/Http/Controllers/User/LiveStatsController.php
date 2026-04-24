@@ -55,13 +55,15 @@ class LiveStatsController extends Controller
         }
 
         $hostname = $request->input('hostname') ?: null;
+        $minutes  = (int) $request->input('minutes', 30);
+        $minutes  = max(5, min(60, $minutes));
         $repo = $this->analyticsFor($site);
 
         $response = [
             'count30' => $repo->getLiveVisitorCount($site->site_id, 30, $hostname),
             'count60' => $repo->getLiveVisitorCount($site->site_id, 60, $hostname),
             'chart'   => $repo->getLiveVisitors($site->site_id, 60, $hostname),
-            'recent'  => $repo->getRecentVisits($site->site_id, 20, $hostname),
+            'recent'  => $repo->getRecentVisits($site->site_id, 60, $hostname, $minutes),
         ];
 
         if ($site->track_subdomains) {

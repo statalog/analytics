@@ -95,12 +95,20 @@ var __t = {
 };
 
 function visitorAvatar(id) {
-    if (!id) return '<span style="width:28px;height:28px;display:inline-block;flex-shrink:0"></span>';
+    if (!id) return '<span style="width:22px;height:22px;display:inline-block;flex-shrink:0"></span>';
     var hash = 0;
     for (var i = 0; i < Math.min(id.length, 12); i++) { hash = id.charCodeAt(i) + ((hash << 5) - hash); }
     var hue = Math.abs(hash) % 360;
-    var label = id.substring(0, 4).toUpperCase();
-    return '<span title="Visitor ' + label + '" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:hsl(' + hue + ',60%,48%);color:#fff;font-size:0.55rem;font-weight:700;flex-shrink:0;font-family:monospace;letter-spacing:0">' + label + '</span>';
+    return '<span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:hsl(' + hue + ',60%,48%);flex-shrink:0"></span>';
+}
+
+function getBrowserIcon(browser) {
+    var b = (browser || '').toLowerCase();
+    if (b === 'chrome')  return '<i class="bi bi-browser-chrome me-1"></i>';
+    if (b === 'firefox') return '<i class="bi bi-browser-firefox me-1"></i>';
+    if (b === 'safari')  return '<i class="bi bi-browser-safari me-1"></i>';
+    if (b === 'edge')    return '<i class="bi bi-browser-edge me-1"></i>';
+    return '<i class="bi bi-window me-1"></i>';
 }
 
 function getLiveReferrer(referrer) {
@@ -142,7 +150,7 @@ function renderChart(chartDataArr, minutes) {
     if (liveChart) liveChart.destroy();
     liveChart = new Chart(ctx, {
         type: 'bar',
-        data: { labels: slotLabels, datasets: [{ label: __t.visitors, data: slotData, backgroundColor: '#0e7dd5', borderRadius: 4, barPercentage: 0.6 }] },
+        data: { labels: slotLabels, datasets: [{ label: __t.visitors, data: slotData, backgroundColor: paColor(), borderRadius: 4, barPercentage: 0.6 }] },
         options: { responsive: true, maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
@@ -158,6 +166,8 @@ function setChartInterval(minutes) {
     document.getElementById('btn-30').classList.toggle('active', minutes === 30);
     document.getElementById('btn-60').classList.toggle('active', minutes === 60);
     if (lastData) renderChart(lastData.chart || [], minutes);
+    loadLiveData();
+    if (activeTab === 'map') loadLiveMapData();
 }
 
 function onSubdomainChange() {
@@ -166,9 +176,9 @@ function onSubdomainChange() {
 }
 
 function loadLiveData() {
-    var url = '{{ route("user.live.data") }}';
-    if (__currentHostname) url += '?hostname=' + encodeURIComponent(__currentHostname);
-    fetch(url)
+    var params = new URLSearchParams({ minutes: chartInterval });
+    if (__currentHostname) params.set('hostname', __currentHostname);
+    fetch('{{ route("user.live.data") }}?' + params.toString())
         .then(function(r) { return r.json(); })
         .then(function(data) {
             lastData = data;
@@ -206,7 +216,7 @@ function loadLiveData() {
                 rows += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">' + (v.url || '').replace(/^https?:\/\//, '') + '</td>';
                 rows += '<td><span style="display:inline-flex;align-items:center;gap:5px">' + (v.country ? '<img src="/img/flags/' + v.country.toLowerCase() + '.svg" width="20" height="20" style="border-radius:2px;object-fit:cover;flex-shrink:0" onerror="this.style.display=\'none\'">' : '') + (v.country || '') + (!__hideCities && v.city ? ', ' + v.city : '') + '</span></td>';
                 rows += '<td><i class="bi bi-' + deviceIcon + ' me-1"></i>' + (v.device_type || 'Desktop') + '</td>';
-                rows += '<td>' + (v.browser || '') + '</td>';
+                rows += '<td>' + getBrowserIcon(v.browser) + (v.browser || '') + '</td>';
                 rows += '<td>' + getLiveReferrer(v.referrer) + '</td>';
                 rows += '</tr>';
             });
@@ -237,7 +247,7 @@ function renderLiveMap(points) {
     if (!liveMap) return;
     liveMarkerGroup.clearLayers();
     if (!points || points.length === 0) {
-        document.getElementById('live-map-count').textContent = 'No visitors with location data in the last 30 minutes';
+        document.getElementById('live-map-count').textContent = 'No visitors with location data in the last ' + chartInterval + ' minutes';
         return;
     }
     var maxHits = Math.max.apply(null, points.map(function(p) { return parseInt(p.hits) || 1; }));
@@ -258,13 +268,13 @@ function renderLiveMap(points) {
     });
     if (bounds.length > 0) liveMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 8 });
     var total = points.reduce(function(s, p) { return s + (parseInt(p.hits) || 0); }, 0);
-    document.getElementById('live-map-count').textContent = total + ' visitor' + (total === 1 ? '' : 's') + ' at ' + points.length + ' location' + (points.length === 1 ? '' : 's') + ' (last 30 min)';
+    document.getElementById('live-map-count').textContent = total + ' visitor' + (total === 1 ? '' : 's') + ' at ' + points.length + ' location' + (points.length === 1 ? '' : 's') + ' (last ' + chartInterval + ' min)';
 }
 
 function loadLiveMapData() {
-    var url = '{{ route("user.visitor-map.live") }}';
-    if (__currentHostname) url += '?hostname=' + encodeURIComponent(__currentHostname);
-    fetch(url)
+    var params = new URLSearchParams({ minutes: chartInterval });
+    if (__currentHostname) params.set('hostname', __currentHostname);
+    fetch('{{ route("user.visitor-map.live") }}?' + params.toString())
         .then(function(r) { return r.json(); })
         .then(function(data) { renderLiveMap(data.points || []); });
 }

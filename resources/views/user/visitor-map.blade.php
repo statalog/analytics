@@ -60,8 +60,8 @@ function renderPoints(points) {
 
         var circle = L.circleMarker([lat, lng], {
             radius: r,
-            fillColor: '#0e7dd5',
-            color: '#0a5fa3',
+            fillColor: paColor(),
+            color: paColor(0.8),
             weight: 1,
             opacity: 0.8,
             fillOpacity: opacity

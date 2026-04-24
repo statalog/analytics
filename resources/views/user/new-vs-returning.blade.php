@@ -81,7 +81,7 @@ function renderDistribution(rows) {
             labels: ['New', 'Returning'],
             datasets: [{
                 data: total > 0 ? [newVal, retVal] : [1, 1],
-                backgroundColor: total > 0 ? ['#0e7dd5', '#38bdf8'] : ['#e5e7eb', '#e5e7eb'],
+                backgroundColor: total > 0 ? [paColor(), paColor(0.45)] : ['#e5e7eb', '#e5e7eb'],
                 borderWidth: 0,
                 hoverOffset: 4,
             }]
@@ -101,7 +101,7 @@ function renderDistribution(rows) {
     var html = '<table class="pa-table" style="width:100%">'
         + '<thead><tr><th>Visitor Type</th><th class="text-end">Visitors</th><th class="text-end">Sessions</th><th class="text-end">Share</th></tr></thead><tbody>';
 
-    [[newRow, 'New', '#0e7dd5'], [retRow, 'Returning', '#38bdf8']].forEach(function(item) {
+    [[newRow, 'New', paColor()], [retRow, 'Returning', paColor(0.45)]].forEach(function(item) {
         var row = item[0]; var label = item[1]; var color = item[2];
         var v = parseInt(row.visitors || 0);
         var s = parseInt(row.sessions || 0);
@@ -136,8 +136,8 @@ function renderTimeline(rows) {
                 {
                     label: 'New',
                     data: newData,
-                    borderColor: '#0e7dd5',
-                    backgroundColor: 'rgba(14,125,213,0.08)',
+                    borderColor: paColor(),
+                    backgroundColor: paColor(0.08),
                     fill: true,
                     tension: 0.4,
                     pointRadius: labels.length > 30 ? 0 : 3,
@@ -146,8 +146,8 @@ function renderTimeline(rows) {
                 {
                     label: 'Returning',
                     data: retData,
-                    borderColor: '#38bdf8',
-                    backgroundColor: 'rgba(56,189,248,0.06)',
+                    borderColor: paColor(0.55),
+                    backgroundColor: paColor(0.04),
                     fill: true,
                     tension: 0.4,
                     pointRadius: labels.length > 30 ? 0 : 3,
