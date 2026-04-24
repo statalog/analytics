@@ -12,9 +12,14 @@ use App\Mail\InvitationMail;
 use App\Models\AccountUser;
 use App\Models\Invitation;
 use App\Models\Site;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class InvitationController extends Controller
@@ -25,9 +30,9 @@ class InvitationController extends Controller
         $owner = $request->user();
 
         $data = $request->validate([
-            'email'    => ['required', 'email', 'max:255'],
-            'role'     => ['required', 'in:admin,viewer'],
-            'site_ids' => ['nullable', 'array'],
+            'email'      => ['required', 'email', 'max:255'],
+            'role'       => ['required', 'in:admin,viewer'],
+            'site_ids'   => ['nullable', 'array'],
             'site_ids.*' => ['integer'],
         ]);
 
@@ -36,7 +41,7 @@ class InvitationController extends Controller
         }
 
         // Already a member?
-        $existing = \App\Models\User::where('email', $data['email'])->first();
+        $existing = User::where('email', $data['email'])->first();
         if ($existing && AccountUser::where('owner_id', $owner->id)->where('user_id', $existing->id)->exists()) {
             return back()->withInput()->with('error', 'This person already has access to your account.');
         }
@@ -78,36 +83,83 @@ class InvitationController extends Controller
         $invitation = Invitation::with('owner')->where('token', $token)->firstOrFail();
 
         if ($invitation->accepted_at) {
-            return redirect()->route('user.dashboard')
-                ->with('status', 'This invitation has already been accepted.');
+            return redirect()->route('login')
+                ->with('status', 'This invitation has already been accepted. Please log in.');
         }
 
         if ($invitation->isExpired()) {
             return view('user.account-users.accept', ['invitation' => $invitation, 'expired' => true]);
         }
 
-        // If not logged in, store the token and redirect to login.
-        if (!auth()->check()) {
-            session(['invite_token' => $token]);
-            return redirect()->route('login')
-                ->with('status', 'Please sign in (or create an account) to accept the invitation.');
+        // Record first open.
+        if (!$invitation->opened_at) {
+            $invitation->update(['opened_at' => now()]);
         }
 
-        $user = auth()->user();
+        // If already logged in with the correct email, accept immediately.
+        if (auth()->check() && strtolower(auth()->user()->email) === $invitation->email) {
+            return view('user.account-users.accept', ['invitation' => $invitation, 'confirm' => true]);
+        }
 
-        // Logged in but wrong email.
-        if (strtolower($user->email) !== $invitation->email) {
+        // If the invited email already has an account, send them to login.
+        $userExists = User::where('email', $invitation->email)->exists();
+        if ($userExists) {
+            session(['invite_token' => $token]);
             return view('user.account-users.accept', [
                 'invitation'  => $invitation,
-                'wrong_email' => true,
-                'user_email'  => $user->email,
+                'user_exists' => true,
             ]);
         }
 
-        return view('user.account-users.accept', ['invitation' => $invitation]);
+        // New user — show registration form.
+        return view('user.account-users.accept', [
+            'invitation'  => $invitation,
+            'user_exists' => false,
+        ]);
     }
 
-    /** POST — accept the invitation. */
+    /** POST — register a new user via invitation. */
+    public function register(string $token): RedirectResponse
+    {
+        $invitation = Invitation::with('owner')->where('token', $token)->firstOrFail();
+
+        abort_unless($invitation->isPending(), 422, 'This invitation is no longer valid.');
+
+        // Validate registration fields.
+        $data = request()->validate([
+            'name'     => ['required', 'string', 'max:255'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        // Guard: email must not already exist (race condition check).
+        if (User::where('email', $invitation->email)->exists()) {
+            return redirect()->route('invitations.show', $token)
+                ->with('error', 'An account with this email already exists. Please log in instead.');
+        }
+
+        // Create the user.
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $invitation->email,
+            'password' => Hash::make($data['password']),
+        ]);
+
+        event(new Registered($user));
+
+        // Accept the invitation.
+        $this->applyInvitation($invitation, $user);
+
+        Auth::login($user);
+
+        // Switch into the inviting account.
+        session(['active_owner_id' => $invitation->owner_id]);
+        cookie()->queue('statalog_account_' . $user->id, $invitation->owner_id, 60 * 24 * 30);
+
+        return redirect()->route('user.dashboard')
+            ->with('success', 'Welcome! You now have access to ' . $invitation->owner->name . '\'s account.');
+    }
+
+    /** POST — accept the invitation (logged-in user). */
     public function accept(string $token): RedirectResponse
     {
         $invitation = Invitation::with('owner')->where('token', $token)->firstOrFail();
@@ -117,28 +169,8 @@ class InvitationController extends Controller
         $user = auth()->user();
         abort_unless(strtolower($user->email) === $invitation->email, 403, 'This invitation was sent to a different email address.');
 
-        // Already a member? Just accept silently.
-        $member = AccountUser::firstOrCreate(
-            ['owner_id' => $invitation->owner_id, 'user_id' => $user->id],
-            ['role' => $invitation->role],
-        );
+        $this->applyInvitation($invitation, $user);
 
-        if ($member->wasRecentlyCreated) {
-            $member->update(['role' => $invitation->role]);
-
-            // Apply per-site restriction if specified.
-            if ($invitation->siteIds() !== null) {
-                $validIds = Site::where('user_id', $invitation->owner_id)
-                    ->whereIn('id', $invitation->siteIds())
-                    ->pluck('id')
-                    ->toArray();
-                $member->siteAccess()->sync($validIds);
-            }
-        }
-
-        $invitation->update(['accepted_at' => now()]);
-
-        // Switch into the new account immediately.
         session(['active_owner_id' => $invitation->owner_id]);
         cookie()->queue('statalog_account_' . $user->id, $invitation->owner_id, 60 * 24 * 30);
 
@@ -153,5 +185,28 @@ class InvitationController extends Controller
         $invitation->delete();
 
         return redirect()->route('user.account-users.index')->with('success', 'Invitation revoked.');
+    }
+
+    /** Shared logic: create AccountUser record and mark invitation accepted. */
+    private function applyInvitation(Invitation $invitation, User $user): void
+    {
+        $member = AccountUser::firstOrCreate(
+            ['owner_id' => $invitation->owner_id, 'user_id' => $user->id],
+            ['role' => $invitation->role],
+        );
+
+        if (!$member->wasRecentlyCreated) {
+            $member->update(['role' => $invitation->role]);
+        }
+
+        if ($invitation->siteIds() !== null) {
+            $validIds = Site::where('user_id', $invitation->owner_id)
+                ->whereIn('id', $invitation->siteIds())
+                ->pluck('id')
+                ->toArray();
+            $member->siteAccess()->sync($validIds);
+        }
+
+        $invitation->update(['accepted_at' => now()]);
     }
 }

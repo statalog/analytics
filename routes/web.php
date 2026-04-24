@@ -244,8 +244,9 @@ Route::middleware('guest')->group(function () {
 });
 
 // Public invitation accept page (no auth required)
-Route::get('/invite/{token}',  [InvitationController::class, 'show'])->name('invitations.show');
-Route::post('/invite/{token}', [InvitationController::class, 'accept'])->name('invitations.accept')->middleware('auth');
+Route::get('/invite/{token}',          [InvitationController::class, 'show'])->name('invitations.show');
+Route::post('/invite/{token}/register',[InvitationController::class, 'register'])->name('invitations.register');
+Route::post('/invite/{token}',         [InvitationController::class, 'accept'])->name('invitations.accept')->middleware('auth');
 
 // Public shared dashboards — read-only analytics at /share/{token}
 Route::get('/share/{token}',         [PublicDashboardController::class, 'show'])->name('public.dashboard');

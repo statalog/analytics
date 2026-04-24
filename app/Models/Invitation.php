@@ -13,10 +13,11 @@ use Illuminate\Support\Str;
 
 class Invitation extends Model
 {
-    protected $fillable = ['owner_id', 'email', 'role', 'sites_json', 'token', 'accepted_at', 'expires_at'];
+    protected $fillable = ['owner_id', 'email', 'role', 'sites_json', 'token', 'accepted_at', 'opened_at', 'expires_at'];
 
     protected $casts = [
         'accepted_at' => 'datetime',
+        'opened_at'   => 'datetime',
         'expires_at'  => 'datetime',
     ];
 

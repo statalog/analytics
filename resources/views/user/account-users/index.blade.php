@@ -11,12 +11,6 @@
     Invite people to your analytics by email. <strong>Admins</strong> can manage everything. <strong>Viewers</strong> see reports only.
 </p>
 
-@if(session('success'))
-    <div class="pa-alert success mb-3">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="pa-alert danger mb-3">{{ session('error') }}</div>
-@endif
 
 <div class="row g-4" style="max-width:1100px">
 
@@ -78,13 +72,22 @@
             </div>
             <table class="pa-table">
                 <thead>
-                    <tr><th>Email</th><th>Role</th><th>Expires</th><th></th></tr>
+                    <tr><th>Email</th><th>Role</th><th>Status</th><th>Expires</th><th></th></tr>
                 </thead>
                 <tbody>
                     @foreach($invitations as $inv)
                     <tr>
                         <td style="font-weight:500">{{ $inv->email }}</td>
                         <td style="font-size:0.8125rem">{{ ucfirst($inv->role) }}</td>
+                        <td style="font-size:0.8125rem">
+                            @if($inv->accepted_at)
+                                <span style="color:#22c55e"><i class="bi bi-check-circle-fill me-1"></i>Accepted {{ $inv->accepted_at->format('M j') }}</span>
+                            @elseif($inv->opened_at)
+                                <span style="color:var(--pa-primary)"><i class="bi bi-envelope-open me-1"></i>Opened {{ $inv->opened_at->diffForHumans() }}</span>
+                            @else
+                                <span style="color:var(--pa-text-muted)"><i class="bi bi-envelope me-1"></i>Not opened</span>
+                            @endif
+                        </td>
                         <td style="font-size:0.8125rem;color:var(--pa-text-muted)">{{ $inv->expires_at->format('M j') }}</td>
                         <td class="text-end">
                             <form method="POST" action="{{ route('user.invitations.destroy', $inv) }}" class="d-inline"
