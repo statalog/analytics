@@ -37,7 +37,7 @@
     --pa-accent: var(--pa-primary);
     --pa-hover-bg: color-mix(in srgb, var(--pa-primary) 4%, transparent);
 
-    --pa-bg: #FCFCFA;
+    --pa-bg: #fbf8f0;
     --pa-bg-alt: #f8f5ee;
     --pa-card-bg: #FFFFFF;
 
@@ -312,7 +312,6 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--pa-card-bg);
     border-radius: var(--pa-radius-lg);
     padding: 1.25rem;
-    box-shadow: var(--pa-shadow);
 }
 
 /* ── Stat cards ── */
