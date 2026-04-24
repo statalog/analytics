@@ -1,21 +1,41 @@
 @extends('layouts.app')
 @section('title', 'Team members')
 @section('content')
-<div class="d-flex align-items-center justify-content-between mb-4">
+<div class="d-flex align-items-center justify-content-between mb-3">
     <h4 class="mb-0 font-heading-bold">
         <i class="bi bi-people me-2 icon-primary"></i>Team members
     </h4>
 </div>
 
-<p style="color:var(--pa-text-muted);max-width:720px;margin-bottom:1.5rem">
-    Invite people to your analytics by email. <strong>Admins</strong> can manage everything. <strong>Viewers</strong> see reports only.
-</p>
+<div class="pa-card mb-4" style="background:var(--pa-input-bg);border-color:var(--pa-border)">
+    <div class="row g-3 align-items-start">
+        <div class="col-md-8">
+            <div style="font-weight:600;margin-bottom:0.375rem">Invite people to your analytics workspace</div>
+            <div style="color:var(--pa-text-muted);font-size:0.875rem;line-height:1.65">
+                Send an invitation by email — the recipient will receive a link they must click to accept.
+                If they don't have a Statalog account yet, they'll be prompted to create one first.
+                Once accepted, they appear under <strong>Active members</strong> below.
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div style="display:flex;flex-direction:column;gap:0.5rem">
+                <div style="font-size:0.8125rem;display:flex;align-items:flex-start;gap:0.5rem">
+                    <i class="bi bi-person-fill-gear icon-primary" style="margin-top:0.1rem;flex-shrink:0"></i>
+                    <span><strong>Admin</strong> — full access, can manage sites, members, and settings</span>
+                </div>
+                <div style="font-size:0.8125rem;display:flex;align-items:flex-start;gap:0.5rem">
+                    <i class="bi bi-eye-fill" style="color:var(--pa-text-muted);margin-top:0.1rem;flex-shrink:0"></i>
+                    <span><strong>Viewer</strong> — read-only access to reports and dashboards</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-<div class="row g-4" style="max-width:1100px">
+<div class="row g-4">
 
     {{-- Invite form --}}
-    <div class="col-md-4">
+    <div class="col-md-4 col-lg-3">
         <div class="pa-card">
             <h6 class="mb-3 font-heading-bold">Invite by email</h6>
             <form method="POST" action="{{ route('user.invitations.store') }}" id="invite-form">
@@ -39,20 +59,29 @@
                 @if($sites->count())
                 <div id="site-selector" style="display:none;margin-bottom:1rem">
                     <label class="auth-label">Site access</label>
-                    <div style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:8px;padding:0.5rem 0.75rem;max-height:180px;overflow-y:auto">
-                        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;padding:0.25rem 0;cursor:pointer;color:var(--pa-text-muted)">
-                            <input type="checkbox" id="all-sites-cb" checked onchange="toggleAllSites(this.checked)" style="accent-color:var(--pa-primary)">
-                            All sites
+                    <div style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:8px;overflow:hidden">
+                        {{-- All sites row --}}
+                        <label style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;border-bottom:1px solid var(--pa-border)">
+                            <span style="font-size:0.875rem;color:var(--pa-text-muted)">All sites</span>
+                            <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
+                                <input type="checkbox" id="all-sites-cb" checked onchange="toggleAllSites(this.checked)"
+                                       style="opacity:0;width:0;height:0;position:absolute">
+                                <span class="toggle-track"></span><span class="toggle-dot"></span>
+                            </span>
                         </label>
-                        <hr style="margin:0.25rem 0;border-color:var(--pa-border)">
+                        {{-- Individual sites --}}
                         @foreach($sites as $site)
-                        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;padding:0.25rem 0;cursor:pointer">
-                            <input type="checkbox" name="site_ids[]" value="{{ $site->id }}" class="site-cb" style="accent-color:var(--pa-primary)">
-                            {{ $site->name }}
+                        <label style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer{{ !$loop->last ? ';border-bottom:1px solid var(--pa-border)' : '' }}">
+                            <span style="font-size:0.875rem">{{ $site->name }}</span>
+                            <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
+                                <input type="checkbox" name="site_ids[]" value="{{ $site->id }}" class="site-cb"
+                                       style="opacity:0;width:0;height:0;position:absolute">
+                                <span class="toggle-track"></span><span class="toggle-dot"></span>
+                            </span>
                         </label>
                         @endforeach
                     </div>
-                    <div style="font-size:0.75rem;color:var(--pa-text-muted);margin-top:0.35rem">Leave "All sites" checked to grant access to everything.</div>
+                    <div style="font-size:0.75rem;color:var(--pa-text-muted);margin-top:0.35rem">Leave "All sites" on to grant access to everything.</div>
                 </div>
                 @endif
 
@@ -61,7 +90,7 @@
         </div>
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-8 col-lg-9">
 
         {{-- Pending invitations --}}
         @if($invitations->count())
@@ -205,8 +234,15 @@ function toggleSiteSelector(role) {
     var el = document.getElementById('site-selector');
     if (el) el.style.display = role === 'viewer' ? 'block' : 'none';
 }
+
 function toggleAllSites(checked) {
-    document.querySelectorAll('.site-cb').forEach(function(cb) { cb.checked = false; cb.disabled = checked; });
+    document.querySelectorAll('.site-cb').forEach(function(cb) {
+        cb.checked = false;
+        cb.disabled = checked;
+        // keep toggle visuals in sync with disabled state
+        var track = cb.parentElement ? cb.parentElement.querySelector('.toggle-track') : null;
+        if (track) track.style.opacity = checked ? '0.4' : '';
+    });
 }
 
 // Init
@@ -216,7 +252,6 @@ function toggleAllSites(checked) {
     var allCb = document.getElementById('all-sites-cb');
     if (allCb) toggleAllSites(allCb.checked);
 
-    // If no specific sites checked, keep all-sites checked on submit
     document.getElementById('invite-form').addEventListener('submit', function() {
         var allCb = document.getElementById('all-sites-cb');
         if (!allCb || allCb.checked) {
