@@ -285,21 +285,15 @@ class AnalyticsRepository
         return $this->queryWithCache(
             "page_breakdown:{$siteId}:{$from}:{$to}:{$limit}" . $this->sdKey(), 300,
             "SELECT
-                p.path AS path,
-                countIf(p.url != '') AS pageviews,
-                uniqIf(p.visitor_id, p.url != '') AS unique_visitors,
-                round(avgIf(p.is_bounce, p.url != '') * 100) AS bounce_rate,
-                round(avgIf(s.duration, p.url != '' AND s.duration > 0)) AS avg_time
-             FROM pageviews p
-             LEFT JOIN (
-                 SELECT session_id,
-                        greatest(dateDiff('second', min(timestamp), max(timestamp)), max(visit_duration)) AS duration
-                 FROM pageviews
-                 WHERE site_id = :site_id AND timestamp >= :from AND timestamp <= :to
-                 GROUP BY session_id
-             ) s ON p.session_id = s.session_id
-             WHERE p.site_id = :site_id" . $this->sd() . "
-               AND p.path != '' AND p.timestamp >= :from AND p.timestamp <= :to
+                path,
+                countIf(url != '') AS pageviews,
+                uniqIf(visitor_id, url != '') AS unique_visitors,
+                round(avgIf(is_bounce, url != '') * 100) AS bounce_rate,
+                round(avgIf(visit_duration, visit_duration > 0)) AS avg_time
+             FROM pageviews
+             WHERE site_id = :site_id" . $this->sd() . "
+               AND timestamp >= :from AND timestamp <= :to
+               AND path != ''
              GROUP BY path
              ORDER BY pageviews DESC
              LIMIT {$limit}",
