@@ -64,17 +64,19 @@
                         <label style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;border-bottom:1px solid var(--pa-border)">
                             <span style="font-size:0.875rem;color:var(--pa-text-muted)">All sites</span>
                             <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
-                                <input type="checkbox" id="all-sites-cb" checked onchange="toggleAllSites(this.checked)"
+                                <input type="checkbox" id="all-sites-cb" checked onchange="onAllSitesChange(this.checked)"
                                        style="opacity:0;width:0;height:0;position:absolute">
                                 <span class="toggle-track"></span><span class="toggle-dot"></span>
                             </span>
                         </label>
-                        {{-- Individual sites --}}
+                        {{-- Individual sites — never disabled; clicking one auto-unchecks "All sites" --}}
                         @foreach($sites as $site)
-                        <label style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer{{ !$loop->last ? ';border-bottom:1px solid var(--pa-border)' : '' }}">
+                        <label id="site-row-{{ $site->id }}"
+                               style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;opacity:0.4{{ !$loop->last ? ';border-bottom:1px solid var(--pa-border)' : '' }}">
                             <span style="font-size:0.875rem">{{ $site->name }}</span>
                             <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
                                 <input type="checkbox" name="site_ids[]" value="{{ $site->id }}" class="site-cb"
+                                       onclick="onSiteCbClick()"
                                        style="opacity:0;width:0;height:0;position:absolute">
                                 <span class="toggle-track"></span><span class="toggle-dot"></span>
                             </span>
@@ -157,19 +159,28 @@
                                 <div class="text-xs-muted">{{ $m->user?->email }}</div>
                             </td>
                             <td>
-                                <form method="POST" action="{{ route('user.account-users.update', $m) }}" class="d-inline">
+                                <form method="POST" action="{{ route('user.account-users.update', $m) }}" class="d-inline member-role-form" data-member="{{ $m->id }}">
                                     @csrf @method('PUT')
+                                    <input type="hidden" name="sites" value="">{{-- placeholder updated by JS --}}
                                     <select name="role" class="pa-input" style="padding:0.25rem 0.5rem;font-size:0.8125rem" onchange="this.form.submit()">
                                         <option value="viewer" {{ $m->role === 'viewer' ? 'selected' : '' }}>Viewer</option>
                                         <option value="admin"  {{ $m->role === 'admin'  ? 'selected' : '' }}>Admin</option>
                                     </select>
                                 </form>
                             </td>
-                            <td class="text-sm-muted">
-                                @if($m->isAdmin() || $m->siteAccess->count() === 0)
-                                    All sites
+                            <td>
+                                @if($m->isAdmin())
+                                    <span class="text-sm-muted">All sites</span>
                                 @else
-                                    {{ $m->siteAccess->count() }} / {{ $sites->count() }} sites
+                                    <button type="button" class="btn-pa-outline"
+                                            style="font-size:0.8125rem;padding:0.2rem 0.6rem"
+                                            onclick="openAccessModal({{ $m->id }}, '{{ addslashes($m->user?->name ?? $m->user?->email) }}', {{ json_encode($m->siteAccess->pluck('id')) }})">
+                                        @if($m->siteAccess->count() === 0)
+                                            All sites <i class="bi bi-pencil ms-1" style="font-size:0.7rem"></i>
+                                        @else
+                                            {{ $m->siteAccess->count() }} / {{ $sites->count() }} sites <i class="bi bi-pencil ms-1" style="font-size:0.7rem"></i>
+                                        @endif
+                                    </button>
                                 @endif
                             </td>
                             <td class="text-end">
@@ -190,7 +201,50 @@
 
     </div>
 </div>
-@endsection
+
+{{-- Site access edit modal --}}
+<div id="access-modal-backdrop" class="pa-modal-backdrop" data-pa-modal-backdrop="access-modal"></div>
+<div id="access-modal" class="pa-modal" data-pa-modal="access-modal" aria-hidden="true" style="max-width:420px">
+    <div style="padding:1.5rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+            <h6 class="mb-0 font-heading-bold">Edit site access — <span id="access-modal-name"></span></h6>
+            <button type="button" data-pa-modal-close style="background:none;border:none;font-size:1.25rem;color:var(--pa-text-muted);cursor:pointer;line-height:1">&times;</button>
+        </div>
+        <form method="POST" id="access-modal-form">
+            @csrf @method('PUT')
+            <input type="hidden" name="role" value="viewer">
+            <div style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:8px;overflow:hidden;margin-bottom:1rem">
+                {{-- All sites --}}
+                <label style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;border-bottom:1px solid var(--pa-border)">
+                    <span style="font-size:0.875rem;color:var(--pa-text-muted)">All sites</span>
+                    <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
+                        <input type="checkbox" id="modal-all-sites-cb" checked onchange="onModalAllSitesChange(this.checked)"
+                               style="opacity:0;width:0;height:0;position:absolute">
+                        <span class="toggle-track"></span><span class="toggle-dot"></span>
+                    </span>
+                </label>
+                {{-- Individual sites --}}
+                @foreach($sites as $site)
+                <label id="modal-site-row-{{ $site->id }}"
+                       style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;opacity:0.4{{ !$loop->last ? ';border-bottom:1px solid var(--pa-border)' : '' }}">
+                    <span style="font-size:0.875rem">{{ $site->name }}</span>
+                    <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
+                        <input type="checkbox" name="sites[]" value="{{ $site->id }}" class="modal-site-cb"
+                               onclick="onModalSiteCbClick()"
+                               style="opacity:0;width:0;height:0;position:absolute">
+                        <span class="toggle-track"></span><span class="toggle-dot"></span>
+                    </span>
+                </label>
+                @endforeach
+            </div>
+            <div style="font-size:0.75rem;color:var(--pa-text-muted);margin-bottom:1.25rem">Leave "All sites" on to grant access to everything.</div>
+            <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+                <button type="button" class="btn-pa-outline" data-pa-modal-close>Cancel</button>
+                <button type="submit" class="btn-pa-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 {{-- Confirmation modal --}}
 <div id="delete-modal" style="display:none;position:fixed;inset:0;z-index:1050;background:rgba(0,0,0,0.45);align-items:center;justify-content:center">
@@ -206,6 +260,81 @@
 
 @push('scripts')
 <script>
+// ── Invite form site selector ──────────────────────────────────────────────
+function onAllSitesChange(checked) {
+    document.querySelectorAll('.site-cb').forEach(function(cb) {
+        cb.checked = false;
+        var row = document.getElementById('site-row-' + cb.value);
+        if (row) row.style.opacity = checked ? '0.4' : '1';
+    });
+}
+
+function onSiteCbClick() {
+    var allCb = document.getElementById('all-sites-cb');
+    if (allCb && allCb.checked) {
+        allCb.checked = false;
+        onAllSitesChange(false);
+    }
+}
+
+function toggleSiteSelector(role) {
+    var el = document.getElementById('site-selector');
+    if (el) el.style.display = role === 'viewer' ? 'block' : 'none';
+}
+
+// ── Access modal site selector ─────────────────────────────────────────────
+function onModalAllSitesChange(checked) {
+    document.querySelectorAll('.modal-site-cb').forEach(function(cb) {
+        cb.checked = false;
+        var row = document.getElementById('modal-site-row-' + cb.value);
+        if (row) row.style.opacity = checked ? '0.4' : '1';
+    });
+}
+
+function onModalSiteCbClick() {
+    var allCb = document.getElementById('modal-all-sites-cb');
+    if (allCb && allCb.checked) {
+        allCb.checked = false;
+        onModalAllSitesChange(false);
+    }
+}
+
+// ── Access modal open ──────────────────────────────────────────────────────
+function openAccessModal(memberId, memberName, currentSiteIds) {
+    document.getElementById('access-modal-name').textContent = memberName;
+    document.getElementById('access-modal-form').action =
+        '{{ url("account/account-users") }}/' + memberId;
+
+    // Reset to "All sites"
+    var allCb = document.getElementById('modal-all-sites-cb');
+    allCb.checked = true;
+    onModalAllSitesChange(true);
+
+    if (currentSiteIds && currentSiteIds.length > 0) {
+        // Uncheck "All sites", enable rows, check specific sites
+        allCb.checked = false;
+        onModalAllSitesChange(false);
+        currentSiteIds.forEach(function(id) {
+            var cb = document.querySelector('.modal-site-cb[value="' + id + '"]');
+            if (cb) cb.checked = true;
+        });
+    }
+
+    window.paModal.open('access-modal');
+}
+
+// Override form action to use proper route
+document.getElementById('access-modal-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var allCb = document.getElementById('modal-all-sites-cb');
+    // If "All sites" is checked, uncheck all individual sites before submitting
+    if (allCb && allCb.checked) {
+        document.querySelectorAll('.modal-site-cb').forEach(function(cb) { cb.checked = false; });
+    }
+    this.submit();
+});
+
+// ── Delete modal ───────────────────────────────────────────────────────────
 var _deleteForm = null;
 
 function confirmDelete(form, title, body, btnLabel) {
@@ -213,8 +342,7 @@ function confirmDelete(form, title, body, btnLabel) {
     document.getElementById('delete-modal-title').textContent = title;
     document.getElementById('delete-modal-body').innerHTML = body;
     document.getElementById('delete-modal-confirm').textContent = btnLabel;
-    var modal = document.getElementById('delete-modal');
-    modal.style.display = 'flex';
+    document.getElementById('delete-modal').style.display = 'flex';
 }
 
 function closeDeleteModal() {
@@ -230,34 +358,11 @@ document.getElementById('delete-modal').addEventListener('click', function(e) {
     if (e.target === this) closeDeleteModal();
 });
 
-function toggleSiteSelector(role) {
-    var el = document.getElementById('site-selector');
-    if (el) el.style.display = role === 'viewer' ? 'block' : 'none';
-}
-
-function toggleAllSites(checked) {
-    document.querySelectorAll('.site-cb').forEach(function(cb) {
-        cb.checked = false;
-        cb.disabled = checked;
-        // keep toggle visuals in sync with disabled state
-        var track = cb.parentElement ? cb.parentElement.querySelector('.toggle-track') : null;
-        if (track) track.style.opacity = checked ? '0.4' : '';
-    });
-}
-
-// Init
+// ── Init ───────────────────────────────────────────────────────────────────
 (function() {
     var role = document.getElementById('role-select');
     if (role) toggleSiteSelector(role.value);
-    var allCb = document.getElementById('all-sites-cb');
-    if (allCb) toggleAllSites(allCb.checked);
-
-    document.getElementById('invite-form').addEventListener('submit', function() {
-        var allCb = document.getElementById('all-sites-cb');
-        if (!allCb || allCb.checked) {
-            document.querySelectorAll('.site-cb').forEach(function(cb) { cb.disabled = true; });
-        }
-    });
 })();
 </script>
 @endpush
+@endsection
