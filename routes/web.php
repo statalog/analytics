@@ -71,16 +71,16 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/dashboard/data', [DashboardController::class, 'data'])->name('dashboard.data');
     Route::get('/dashboard/chart', [DashboardController::class, 'chart'])->name('dashboard.chart');
 
-    // Sites
-    Route::get('/sites', [SiteController::class, 'index'])->name('sites.index');
+    // Sites — static routes must come before {site} wildcard
+    Route::get('/sites',        [SiteController::class, 'index'])->name('sites.index');
+    Route::get('/sites/create', [SiteController::class, 'create'])->name('sites.create');
     Route::get('/sites/{site}', [SiteController::class, 'show'])->name('sites.show');
 
     // Write routes — blocked for viewers
     Route::middleware('not-viewer')->group(function () {
 
-    Route::get('/sites/create', [SiteController::class, 'create'])->name('sites.create');
-    Route::post('/sites', [SiteController::class, 'store'])->name('sites.store');
-    Route::put('/sites/{site}', [SiteController::class, 'update'])->name('sites.update');
+    Route::post('/sites',          [SiteController::class, 'store'])->name('sites.store');
+    Route::put('/sites/{site}',    [SiteController::class, 'update'])->name('sites.update');
     Route::delete('/sites/{site}', [SiteController::class, 'destroy'])->name('sites.destroy');
 
     // Live Stats
