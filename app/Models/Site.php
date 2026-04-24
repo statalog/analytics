@@ -101,7 +101,7 @@ class Site extends Model
             ? url('/js/t/' . $this->site_id . '.js')
             : url('/js/tracker.js');
 
-        $pixel = url('/api/pixel') . '?site=' . urlencode($this->site_id) . '&url=PAGE_URL';
+        $pixel = url('/api/pixel') . '?site=' . urlencode($this->site_id);
 
         return '<script async src="' . $src . '"></script>' . "\n"
             . '<noscript><img src="' . $pixel . '" width="1" height="1" alt="" style="position:absolute;border:0" /></noscript>';

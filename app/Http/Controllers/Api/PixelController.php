@@ -34,7 +34,8 @@ class PixelController extends Controller
     public function track(Request $request): Response
     {
         $siteId = trim($request->query('site', ''));
-        $url    = trim($request->query('url', ''));
+        $url    = trim($request->query('url', ''))
+               ?: trim($request->header('Referer', ''));
 
         if ($siteId !== '') {
             ProcessAnalyticsHit::dispatch(
