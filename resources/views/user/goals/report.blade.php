@@ -4,7 +4,7 @@
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <div class="d-flex align-items-center gap-3">
         <a href="{{ route('user.goals.index') }}" class="btn-pa-outline" style="padding:0.25rem 0.5rem"><i class="bi bi-arrow-left"></i></a>
-        <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ $goal->name }}</h4>
+        <h4 class="mb-0 font-heading-bold">{{ $goal->name }}</h4>
     </div>
     @include('components.date-range-picker')
 </div>
@@ -36,7 +36,7 @@
 </div>
 
 <div class="pa-card mb-4">
-    <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">{{ __('analytics.trend_over_time') }}</h6>
+    <h6 class="mb-3 font-heading">{{ __('analytics.trend_over_time') }}</h6>
     <div style="height:250px"><canvas id="goal-chart"></canvas></div>
 </div>
 @endsection

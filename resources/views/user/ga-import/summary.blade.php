@@ -4,8 +4,8 @@
 <div class="d-flex align-items-center gap-3 mb-4">
     <a href="{{ route('user.ga-import') }}" class="btn-pa-outline" style="padding:0.25rem 0.5rem"><i class="bi bi-arrow-left"></i></a>
     <div>
-        <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ $site->name }}</h4>
-        <div style="font-size:0.8125rem;color:var(--pa-text-muted)">Historical data imported from Google Analytics</div>
+        <h4 class="mb-0 font-heading-bold">{{ $site->name }}</h4>
+        <div class="text-sm-muted">Historical data imported from Google Analytics</div>
     </div>
 </div>
 
@@ -33,7 +33,7 @@
 
 @if($daily->count())
 <div class="pa-card mb-4" style="max-width:1000px">
-    <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">Pageviews per day</h6>
+    <h6 class="mb-3 font-heading">Pageviews per day</h6>
     <div style="height:220px"><canvas id="daily-chart"></canvas></div>
 </div>
 @endif
@@ -41,14 +41,14 @@
 <div class="row g-4" style="max-width:1000px">
     <div class="col-md-6">
         <div class="pa-card">
-            <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">Top pages</h6>
+            <h6 class="mb-3 font-heading">Top pages</h6>
             <table class="pa-table">
                 <thead><tr><th>Page</th><th class="text-end">Pageviews</th></tr></thead>
                 <tbody>
                     @forelse($pages as $p)
                         <tr><td>{{ \Illuminate\Support\Str::limit($p->page_path, 55) }}</td><td class="text-end">{{ number_format($p->pageviews) }}</td></tr>
                     @empty
-                        <tr><td colspan="2" class="text-center py-3" style="color:var(--pa-text-muted)">No data</td></tr>
+                        <tr><td colspan="2" class="text-center py-3 text-muted">No data</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -56,14 +56,14 @@
     </div>
     <div class="col-md-6">
         <div class="pa-card">
-            <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">Top sources</h6>
+            <h6 class="mb-3 font-heading">Top sources</h6>
             <table class="pa-table">
                 <thead><tr><th>Source</th><th class="text-end">Visitors</th></tr></thead>
                 <tbody>
                     @forelse($sources as $s)
                         <tr><td>{{ $s->source ?: '(direct)' }}</td><td class="text-end">{{ number_format($s->visitors) }}</td></tr>
                     @empty
-                        <tr><td colspan="2" class="text-center py-3" style="color:var(--pa-text-muted)">No data</td></tr>
+                        <tr><td colspan="2" class="text-center py-3 text-muted">No data</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -71,14 +71,14 @@
     </div>
     <div class="col-md-6">
         <div class="pa-card">
-            <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">Top countries</h6>
+            <h6 class="mb-3 font-heading">Top countries</h6>
             <table class="pa-table">
                 <thead><tr><th>Country</th><th class="text-end">Visitors</th></tr></thead>
                 <tbody>
                     @forelse($countries as $c)
                         <tr><td>{{ $c->country ?: 'Unknown' }}</td><td class="text-end">{{ number_format($c->visitors) }}</td></tr>
                     @empty
-                        <tr><td colspan="2" class="text-center py-3" style="color:var(--pa-text-muted)">No data</td></tr>
+                        <tr><td colspan="2" class="text-center py-3 text-muted">No data</td></tr>
                     @endforelse
                 </tbody>
             </table>

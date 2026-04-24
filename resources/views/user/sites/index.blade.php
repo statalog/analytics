@@ -2,8 +2,8 @@
 @section('title', __('sites.page_index'))
 @section('content')
 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-globe me-2" style="color:var(--pa-primary)"></i>{{ __('sites.page_index') }}
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-globe me-2 icon-primary"></i>{{ __('sites.page_index') }}
     </h4>
     <div class="d-flex align-items-center gap-2">
         @if($sites->count())
@@ -18,7 +18,7 @@
 @if($sites->isEmpty())
 <div class="pa-card text-center py-5">
     <i class="bi bi-globe" style="font-size:2.5rem;color:var(--pa-primary);opacity:.35"></i>
-    <h5 class="mt-3 mb-2" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('sites.no_sites') }}</h5>
+    <h5 class="mt-3 mb-2 font-heading-bold">{{ __('sites.no_sites') }}</h5>
     <p style="color:var(--pa-text-muted);max-width:360px;margin:0 auto 1.5rem">{{ __('sites.no_sites_cta') }}</p>
     <a href="{{ route('user.sites.create') }}" class="btn-pa-primary">
         <i class="bi bi-plus-lg me-1"></i>{{ __('sites.btn_add_site') }}
@@ -40,7 +40,7 @@
     <div class="pa-card" style="padding:1rem 1.125rem">
         <div class="d-flex justify-content-between align-items-start">
             <div style="font-size:0.75rem;color:var(--pa-text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.375rem">{{ $card['label'] }}</div>
-            <i class="bi bi-{{ $card['icon'] }}" style="color:var(--pa-text-muted);opacity:0.5;font-size:0.9rem"></i>
+            <i class="bi bi-{{ $card['icon'] }} icon-muted"></i>
         </div>
         <div style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:1.1">{{ $card['value'] }}</div>
         @if($card['trend'] !== null)
@@ -62,7 +62,7 @@
         <div class="d-flex justify-content-between align-items-start mb-2">
             <div style="min-width:0">
                 <div style="font-weight:600;font-family:'Space Grotesk',sans-serif;font-size:0.9375rem;color:var(--pa-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ $site->name }}</div>
-                <div style="font-size:0.8125rem;color:var(--pa-text-muted)">{{ $site->domain }}</div>
+                <div class="text-sm-muted">{{ $site->domain }}</div>
             </div>
             <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-2" style="position:relative;z-index:2">
                 @if($stat['visitors'] > 0 && $trend !== null)

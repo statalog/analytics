@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex align-items-center gap-3 mb-4">
     <a href="{{ route('user.goals.index') }}" class="btn-pa-outline" style="padding:0.25rem 0.5rem"><i class="bi bi-arrow-left"></i></a>
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('analytics.page_edit_goal') }}: {{ $goal->name }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ __('analytics.page_edit_goal') }}: {{ $goal->name }}</h4>
 </div>
 
 <div class="pa-card" style="max-width:600px">

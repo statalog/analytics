@@ -31,7 +31,7 @@
             <button type="submit" class="auth-btn">{{ __('auth.btn_register') }}</button>
         </form>
 
-        <div class="text-center mt-3" style="font-size:0.875rem;color:var(--pa-text-muted)">
+        <div class="text-center mt-3 text-sm-muted">
             <a href="{{ route('login') }}" class="auth-link">{{ __('auth.link_login') }}</a>
         </div>
     </div>

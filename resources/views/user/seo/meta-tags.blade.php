@@ -2,8 +2,8 @@
 @section('title', 'Meta Tags Preview')
 @section('content')
 <div class="d-flex align-items-center gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-map me-2" style="color:var(--pa-primary)"></i>SEO Tools
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-map me-2 icon-primary"></i>SEO Tools
     </h4>
 </div>
 @include('user.seo._nav')
@@ -44,7 +44,7 @@ function runCheck() {
                 data.issues.forEach(function(i) {
                     var cls = i.level === 'error' ? 'danger' : i.level === 'warning' ? 'warning' : 'info';
                     var icon = i.level === 'error' ? 'exclamation-octagon-fill' : i.level === 'warning' ? 'exclamation-triangle-fill' : 'info-circle-fill';
-                    html += '<div class="alert alert-' + cls + ' mb-2 d-flex gap-2 align-items-start py-2"><i class="bi bi-' + icon + ' mt-1 flex-shrink-0"></i><span style="font-size:0.875rem">' + i.message + '</span></div>';
+                    html += '<div class="alert alert-' + cls + ' mb-2 d-flex gap-2 align-items-start py-2"><i class="bi bi-' + icon + ' mt-1 flex-shrink-0"></i><span class="text-sm">' + i.message + '</span></div>';
                 });
                 html += '</div>';
             }
@@ -65,7 +65,7 @@ function runCheck() {
                 html += '<div style="padding:0.75rem">';
                 html += '<div style="font-size:0.75rem;color:var(--pa-text-muted);text-transform:uppercase;letter-spacing:0.05em">' + escHtml(new URL(data.final || url).hostname) + '</div>';
                 html += '<div style="font-weight:600;margin:2px 0">' + escHtml(data.ogTitle || data.title || '') + '</div>';
-                html += '<div style="font-size:0.875rem;color:var(--pa-text-muted)">' + escHtml(data.ogDesc || data.description || '') + '</div>';
+                html += '<div class="text-sm-muted">' + escHtml(data.ogDesc || data.description || '') + '</div>';
                 html += '</div></div></div>';
             }
 
@@ -85,7 +85,7 @@ function runCheck() {
                 var cls = !t[1] ? ' style="color:var(--pa-text-muted)"' : '';
                 html += '<tr><td style="font-family:monospace;font-size:0.8125rem;white-space:nowrap">' + t[0] + '</td>';
                 html += '<td style="font-size:0.8125rem;max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"' + cls + '>' + (t[1] ? escHtml(t[1]) : '—') + '</td>';
-                html += '<td style="font-size:0.8125rem;color:var(--pa-text-muted)">' + (t[1] ? t[1].length : '—') + '</td></tr>';
+                html += '<td class="text-sm-muted">' + (t[1] ? t[1].length : '—') + '</td></tr>';
             });
             html += '</tbody></table></div>';
 

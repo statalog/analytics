@@ -2,7 +2,7 @@
 @section('title', __('analytics.page_dashboard'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('analytics.page_dashboard') }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ __('analytics.page_dashboard') }}</h4>
     @include('components.date-range-picker')
 </div>
 
@@ -19,12 +19,12 @@
     @endif
 
     <div class="pa-card mb-4">
-        <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">{{ __('analytics.chart_traffic_overview') }}</h6>
+        <h6 class="mb-3 font-heading">{{ __('analytics.chart_traffic_overview') }}</h6>
         <div style="position:relative;height:300px">
             <canvas id="main-chart"></canvas>
             <div id="chart-no-data" style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;color:var(--pa-text-muted)">
                 <i class="bi bi-graph-up" style="font-size:2rem;opacity:0.4"></i>
-                <div class="mt-2" style="font-size:0.875rem">{{ __('analytics.no_data_period') }}</div>
+                <div class="mt-2 text-sm">{{ __('analytics.no_data_period') }}</div>
             </div>
         </div>
     </div>
@@ -99,7 +99,7 @@ function renderLocationsCard(locationData) {
     html += '<div style="display:flex;gap:4px"><button class="date-range-btn active" id="loc-btn-table" onclick="switchLocTab(\'table\')"><i class="bi bi-list-ul"></i></button>';
     html += '<button class="date-range-btn" id="loc-btn-map" onclick="switchLocTab(\'map\')"><i class="bi bi-globe2"></i></button></div></div>';
     html += '<div id="loc-tab-table" class="detail-card-body">';
-    if (!locationData.length) html += '<div class="detail-row"><span class="detail-label" style="color:var(--pa-text-muted)">' + __t.noData + '</span></div>';
+    if (!locationData.length) html += '<div class="detail-row"><span class="detail-label text-muted">' + __t.noData + '</span></div>';
     locationData.forEach(function(row) {
         var val = parseInt(row.visitors || 0);
         var pct = total > 0 ? Math.round(val / total * 100) : 0;
@@ -178,7 +178,7 @@ function renderDetailCard(id, title, rows, labelKey, valueKey, labelFn) {
     var total = 0;
     rows.forEach(function(r) { total += parseInt(r[valueKey] || 0); });
     var html = '<div class="detail-card"><div class="detail-card-header"><h6>' + title + '</h6></div><div class="detail-card-body">';
-    if (!rows.length) html += '<div class="detail-row"><span class="detail-label" style="color:var(--pa-text-muted)">' + __t.noData + '</span></div>';
+    if (!rows.length) html += '<div class="detail-row"><span class="detail-label text-muted">' + __t.noData + '</span></div>';
     rows.forEach(function(row) {
         var val = parseInt(row[valueKey] || 0);
         var pct = total > 0 ? Math.round(val / total * 100) : 0;

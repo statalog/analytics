@@ -2,8 +2,8 @@
 @section('title', 'Team members')
 @section('content')
 <div class="d-flex align-items-center justify-content-between mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-people me-2" style="color:var(--pa-primary)"></i>Team members
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-people me-2 icon-primary"></i>Team members
     </h4>
 </div>
 
@@ -17,7 +17,7 @@
     {{-- Invite form --}}
     <div class="col-md-4">
         <div class="pa-card">
-            <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Invite by email</h6>
+            <h6 class="mb-3 font-heading-bold">Invite by email</h6>
             <form method="POST" action="{{ route('user.invitations.store') }}" id="invite-form">
                 @csrf
                 <div class="mb-3">
@@ -67,7 +67,7 @@
         @if($invitations->count())
         <div class="pa-card p-0 mb-4">
             <div style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--pa-border);display:flex;align-items:center;justify-content:space-between">
-                <h6 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Pending invitations</h6>
+                <h6 class="mb-0 font-heading-bold">Pending invitations</h6>
                 <span class="badge" style="background:var(--pa-input-bg);color:var(--pa-text-muted);font-size:0.75rem;border-radius:20px;padding:0.2rem 0.6rem">{{ $invitations->count() }}</span>
             </div>
             <table class="pa-table">
@@ -77,18 +77,18 @@
                 <tbody>
                     @foreach($invitations as $inv)
                     <tr>
-                        <td style="font-weight:500">{{ $inv->email }}</td>
-                        <td style="font-size:0.8125rem">{{ ucfirst($inv->role) }}</td>
-                        <td style="font-size:0.8125rem">
+                        <td class="fw-medium">{{ $inv->email }}</td>
+                        <td class="text-sm">{{ ucfirst($inv->role) }}</td>
+                        <td class="text-sm">
                             @if($inv->accepted_at)
                                 <span style="color:#22c55e"><i class="bi bi-check-circle-fill me-1"></i>Accepted {{ $inv->accepted_at->format('M j') }}</span>
                             @elseif($inv->opened_at)
-                                <span style="color:var(--pa-primary)"><i class="bi bi-envelope-open me-1"></i>Opened {{ $inv->opened_at->diffForHumans() }}</span>
+                                <span class="icon-primary"><i class="bi bi-envelope-open me-1"></i>Opened {{ $inv->opened_at->diffForHumans() }}</span>
                             @else
-                                <span style="color:var(--pa-text-muted)"><i class="bi bi-envelope me-1"></i>Not opened</span>
+                                <span class="text-muted"><i class="bi bi-envelope me-1"></i>Not opened</span>
                             @endif
                         </td>
-                        <td style="font-size:0.8125rem;color:var(--pa-text-muted)">{{ $inv->expires_at->format('M j') }}</td>
+                        <td class="text-sm-muted">{{ $inv->expires_at->format('M j') }}</td>
                         <td class="text-end">
                             <form method="POST" action="{{ route('user.invitations.destroy', $inv) }}" class="d-inline delete-form">
                                 @csrf @method('DELETE')
@@ -108,7 +108,7 @@
         {{-- Active members --}}
         <div class="pa-card p-0">
             <div style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--pa-border)">
-                <h6 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Active members</h6>
+                <h6 class="mb-0 font-heading-bold">Active members</h6>
             </div>
             @if($members->isEmpty())
                 <div class="text-center py-5">
@@ -124,8 +124,8 @@
                         @foreach($members as $m)
                         <tr>
                             <td>
-                                <div style="font-weight:500">{{ $m->user?->name ?? '—' }}</div>
-                                <div style="font-size:0.75rem;color:var(--pa-text-muted)">{{ $m->user?->email }}</div>
+                                <div class="fw-medium">{{ $m->user?->name ?? '—' }}</div>
+                                <div class="text-xs-muted">{{ $m->user?->email }}</div>
                             </td>
                             <td>
                                 <form method="POST" action="{{ route('user.account-users.update', $m) }}" class="d-inline">
@@ -136,7 +136,7 @@
                                     </select>
                                 </form>
                             </td>
-                            <td style="font-size:0.8125rem;color:var(--pa-text-muted)">
+                            <td class="text-sm-muted">
                                 @if($m->isAdmin() || $m->siteAccess->count() === 0)
                                     All sites
                                 @else

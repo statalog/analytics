@@ -25,7 +25,7 @@
             <button type="submit" class="btn-pa-primary" style="width:100%">Verify</button>
 
             <div class="mt-3 text-center">
-                <a href="#" onclick="showRecovery(event)" class="auth-link" style="font-size:0.8125rem">Use a recovery code instead</a>
+                <a href="#" onclick="showRecovery(event)" class="auth-link text-sm">Use a recovery code instead</a>
             </div>
         </form>
 
@@ -42,7 +42,7 @@
             <button type="submit" class="btn-pa-primary" style="width:100%">Verify</button>
 
             <div class="mt-3 text-center">
-                <a href="#" onclick="showCode(event)" class="auth-link" style="font-size:0.8125rem">Use authenticator code instead</a>
+                <a href="#" onclick="showCode(event)" class="auth-link text-sm">Use authenticator code instead</a>
             </div>
         </form>
     </div>

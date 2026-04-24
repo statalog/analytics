@@ -2,7 +2,7 @@
 @section('title', __('analytics.page_goals'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('analytics.page_goals') }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ __('analytics.page_goals') }}</h4>
     <a href="{{ route('user.goals.create') }}" class="btn-pa-primary"><i class="bi bi-plus-lg me-1"></i> {{ __('analytics.btn_create_goal') }}</a>
 </div>
 
@@ -13,23 +13,23 @@
                 <th>{{ __('analytics.label_name') }}</th>
                 <th>{{ __('analytics.col_target_path') }}</th>
                 <th>{{ __('analytics.col_match_type') }}</th>
-                <th style="text-align:right">{{ __('analytics.col_completions') }}</th>
-                <th style="text-align:right">Revenue</th>
+                <th class="text-end">{{ __('analytics.col_completions') }}</th>
+                <th class="text-end">Revenue</th>
                 <th>{{ __('analytics.label_actions') }}</th>
             </tr>
         </thead>
         <tbody>
             @forelse($goals as $goal)
             <tr>
-                <td style="font-weight:500">{{ $goal['name'] }}</td>
+                <td class="fw-medium">{{ $goal['name'] }}</td>
                 <td><code style="color:var(--pa-primary);font-size:0.8125rem">{{ $goal['target_path'] }}</code></td>
-                <td style="color:var(--pa-text-muted);font-size:0.8125rem">{{ $goal['match_type'] }}</td>
-                <td style="text-align:right;font-variant-numeric:tabular-nums">{{ number_format($goal['completions']) }}</td>
-                <td style="text-align:right;font-variant-numeric:tabular-nums">
+                <td class="text-sm-muted">{{ $goal['match_type'] }}</td>
+                <td class="text-num">{{ number_format($goal['completions']) }}</td>
+                <td class="text-num">
                     @if($goal['monetary_value'] > 0)
                         ${{ number_format($goal['revenue'], 2) }}
                     @else
-                        <span style="color:var(--pa-text-muted)">—</span>
+                        <span class="text-muted">—</span>
                     @endif
                 </td>
                 <td>

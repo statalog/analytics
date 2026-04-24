@@ -2,8 +2,8 @@
 @section('title', 'Channels')
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-diagram-3 me-2" style="color:var(--pa-primary)"></i>Channels
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-diagram-3 me-2 icon-primary"></i>Channels
     </h4>
     @include('components.date-range-picker', ['botFilter' => false])
 </div>
@@ -46,7 +46,7 @@ function fmtDuration(sec) {
 function renderChannels(data) {
     if (!data || data.length === 0) {
         document.getElementById('channels-container').innerHTML =
-            '<div class="text-center py-5" style="color:var(--pa-text-muted)">No data for selected period</div>';
+            '<div class="text-center py-5 text-muted">No data for selected period</div>';
         return;
     }
 
@@ -54,11 +54,11 @@ function renderChannels(data) {
     html += '<thead><tr>';
     html += '<th style="width:32px"></th>';
     html += '<th>Channel</th>';
-    html += '<th style="text-align:right">Visits</th>';
-    html += '<th style="text-align:right">Pageviews</th>';
-    html += '<th style="text-align:right">Pages / Visit</th>';
-    html += '<th style="text-align:right">Avg Duration</th>';
-    html += '<th style="text-align:right">Bounce Rate</th>';
+    html += '<th class="text-end">Visits</th>';
+    html += '<th class="text-end">Pageviews</th>';
+    html += '<th class="text-end">Pages / Visit</th>';
+    html += '<th class="text-end">Avg Duration</th>';
+    html += '<th class="text-end">Bounce Rate</th>';
     html += '</tr></thead><tbody id="channels-body">';
 
     data.forEach(function(row, idx) {
@@ -76,11 +76,11 @@ function renderChannels(data) {
         html += '<span style="width:28px;height:28px;border-radius:6px;background:' + color + '20;display:inline-flex;align-items:center;justify-content:center;color:' + color + ';font-size:0.875rem"><i class="bi ' + icon + '"></i></span>';
         html += '<strong>' + row.channel + '</strong>';
         html += '</span></td>';
-        html += '<td style="text-align:right;font-weight:600">' + (row.visits || 0).toLocaleString() + '</td>';
-        html += '<td style="text-align:right">' + (row.pageviews || 0).toLocaleString() + '</td>';
-        html += '<td style="text-align:right">' + (row.pages_per_visit || 0) + '</td>';
-        html += '<td style="text-align:right">' + fmtDuration(row.avg_duration) + '</td>';
-        html += '<td style="text-align:right">' + (row.bounce_rate || 0) + '%</td>';
+        html += '<td class="text-end fw-semibold">' + (row.visits || 0).toLocaleString() + '</td>';
+        html += '<td class="text-end">' + (row.pageviews || 0).toLocaleString() + '</td>';
+        html += '<td class="text-end">' + (row.pages_per_visit || 0) + '</td>';
+        html += '<td class="text-end">' + fmtDuration(row.avg_duration) + '</td>';
+        html += '<td class="text-end">' + (row.bounce_rate || 0) + '%</td>';
         html += '</tr>';
 
         if (hasSub) {
@@ -88,9 +88,9 @@ function renderChannels(data) {
             html += '<table class="pa-table" style="width:100%;background:var(--pa-surface)">';
             html += '<thead><tr style="background:var(--pa-surface)">';
             html += '<th style="width:32px"></th><th style="padding-left:48px">Source</th>';
-            html += '<th style="text-align:right">Visits</th><th style="text-align:right">Pageviews</th>';
-            html += '<th style="text-align:right">Pages / Visit</th><th style="text-align:right">Avg Duration</th>';
-            html += '<th style="text-align:right">Bounce Rate</th></tr></thead><tbody>';
+            html += '<th class="text-end">Visits</th><th class="text-end">Pageviews</th>';
+            html += '<th class="text-end">Pages / Visit</th><th class="text-end">Avg Duration</th>';
+            html += '<th class="text-end">Bounce Rate</th></tr></thead><tbody>';
 
             row.sources.forEach(function(src) {
                 html += '<tr>';
@@ -98,11 +98,11 @@ function renderChannels(data) {
                 html += '<td style="padding-left:48px">';
                 html += '<a href="https://' + src.label + '" target="_blank" rel="noopener" style="color:var(--pa-primary);text-decoration:none" onclick="event.stopPropagation()">' + src.label + '</a>';
                 html += '</td>';
-                html += '<td style="text-align:right">' + (src.visits || 0).toLocaleString() + '</td>';
-                html += '<td style="text-align:right">' + (src.pageviews || 0).toLocaleString() + '</td>';
-                html += '<td style="text-align:right">' + (src.pages_per_visit || 0) + '</td>';
-                html += '<td style="text-align:right">' + fmtDuration(src.avg_duration) + '</td>';
-                html += '<td style="text-align:right">' + (src.bounce_rate || 0) + '%</td>';
+                html += '<td class="text-end">' + (src.visits || 0).toLocaleString() + '</td>';
+                html += '<td class="text-end">' + (src.pageviews || 0).toLocaleString() + '</td>';
+                html += '<td class="text-end">' + (src.pages_per_visit || 0) + '</td>';
+                html += '<td class="text-end">' + fmtDuration(src.avg_duration) + '</td>';
+                html += '<td class="text-end">' + (src.bounce_rate || 0) + '%</td>';
                 html += '</tr>';
             });
 

@@ -17,7 +17,7 @@
         <div style="display:flex;align-items:center;gap:0.75rem">
             {{-- Date range picker --}}
             <div class="dropdown">
-                <button class="btn-pa-outline dropdown-toggle" type="button" id="pubRangeBtn" data-bs-toggle="dropdown" aria-expanded="false" style="font-size:0.8125rem">
+                <button class="btn-pa-outline dropdown-toggle text-sm" type="button" id="pubRangeBtn" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-calendar3 me-1"></i><span id="pub-range-label">Last 7 days</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end pa-dropdown" aria-labelledby="pubRangeBtn">
@@ -53,7 +53,7 @@
         {{-- Chart --}}
         <div class="pa-card mb-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <h6 class="mb-0" style="font-family:'Space Grotesk',sans-serif">Traffic Overview</h6>
+                <h6 class="mb-0 font-heading">Traffic Overview</h6>
                 <div class="d-flex gap-2" id="pub-metric-btns">
                     @foreach(['visitors'=>'Visitors','sessions'=>'Sessions','pageviews'=>'Pageviews'] as $m => $l)
                     <button onclick="switchMetric('{{ $m }}')" data-metric="{{ $m }}"
@@ -70,7 +70,7 @@
             <div class="col-lg-6">
                 <div class="detail-card">
                     <div class="detail-card-header"><span>Top Pages</span><span>Pageviews</span></div>
-                    <div id="pub-pages"><div class="text-center py-3" style="color:var(--pa-text-muted)">Loading...</div></div>
+                    <div id="pub-pages"><div class="text-center py-3 text-muted">Loading...</div></div>
                 </div>
             </div>
             @endif
@@ -79,7 +79,7 @@
             <div class="col-lg-6">
                 <div class="detail-card">
                     <div class="detail-card-header"><span>Traffic Sources</span><span>Visitors</span></div>
-                    <div id="pub-sources"><div class="text-center py-3" style="color:var(--pa-text-muted)">Loading...</div></div>
+                    <div id="pub-sources"><div class="text-center py-3 text-muted">Loading...</div></div>
                 </div>
             </div>
             @endif
@@ -88,7 +88,7 @@
             <div class="col-lg-6">
                 <div class="detail-card">
                     <div class="detail-card-header"><span>Locations</span><span>Visitors</span></div>
-                    <div id="pub-locations"><div class="text-center py-3" style="color:var(--pa-text-muted)">Loading...</div></div>
+                    <div id="pub-locations"><div class="text-center py-3 text-muted">Loading...</div></div>
                 </div>
             </div>
             @endif
@@ -97,7 +97,7 @@
             <div class="col-lg-6">
                 <div class="detail-card">
                     <div class="detail-card-header"><span>Devices</span><span>Visitors</span></div>
-                    <div id="pub-devices"><div class="text-center py-3" style="color:var(--pa-text-muted)">Loading...</div></div>
+                    <div id="pub-devices"><div class="text-center py-3 text-muted">Loading...</div></div>
                 </div>
             </div>
             @endif
@@ -106,7 +106,7 @@
             <div class="col-lg-6">
                 <div class="detail-card">
                     <div class="detail-card-header"><span>Browsers</span><span>Visitors</span></div>
-                    <div id="pub-browsers"><div class="text-center py-3" style="color:var(--pa-text-muted)">Loading...</div></div>
+                    <div id="pub-browsers"><div class="text-center py-3 text-muted">Loading...</div></div>
                 </div>
             </div>
             @endif
@@ -115,7 +115,7 @@
             <div class="col-lg-6">
                 <div class="detail-card">
                     <div class="detail-card-header"><span>Operating Systems</span><span>Visitors</span></div>
-                    <div id="pub-os"><div class="text-center py-3" style="color:var(--pa-text-muted)">Loading...</div></div>
+                    <div id="pub-os"><div class="text-center py-3 text-muted">Loading...</div></div>
                 </div>
             </div>
             @endif
@@ -124,7 +124,7 @@
             <div class="col-lg-6">
                 <div class="detail-card">
                     <div class="detail-card-header"><span>Screen Resolutions</span><span>Visitors</span></div>
-                    <div id="pub-resolutions"><div class="text-center py-3" style="color:var(--pa-text-muted)">Loading...</div></div>
+                    <div id="pub-resolutions"><div class="text-center py-3 text-muted">Loading...</div></div>
                 </div>
             </div>
             @endif

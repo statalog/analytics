@@ -2,8 +2,8 @@
 @section('title', 'Core Web Vitals')
 @section('content')
 <div class="d-flex align-items-center gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-map me-2" style="color:var(--pa-primary)"></i>SEO Tools
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-map me-2 icon-primary"></i>SEO Tools
     </h4>
 </div>
 @include('user.seo._nav')
@@ -11,9 +11,9 @@
 @if(!$hasKey)
 <div class="pa-card" style="border:1px dashed var(--pa-border)">
     <div class="d-flex gap-3 align-items-start">
-        <i class="bi bi-key fs-4" style="color:var(--pa-primary)"></i>
+        <i class="bi bi-key fs-4 icon-primary"></i>
         <div>
-            <h6 class="mb-1" style="font-family:'Space Grotesk',sans-serif;font-weight:700">API key required</h6>
+            <h6 class="mb-1 font-heading-bold">API key required</h6>
             <p style="font-size:0.875rem;color:var(--pa-text-muted);margin-bottom:0.75rem">
                 Core Web Vitals uses the free Google PageSpeed Insights API. Add your key to <code>.env</code>:
             </p>
@@ -73,7 +73,7 @@ function runCheck() {
     if (!url) return;
     document.getElementById('btn-check').disabled = true;
     document.getElementById('btn-check').innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Analysing…';
-    document.getElementById('result').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-secondary" role="status"></div><div class="mt-2" style="font-size:0.875rem;color:var(--pa-text-muted)">Running PageSpeed analysis… this takes ~10–20 seconds.</div></div>';
+    document.getElementById('result').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-secondary" role="status"></div><div class="mt-2 text-sm-muted">Running PageSpeed analysis… this takes ~10–20 seconds.</div></div>';
 
     fetch('{{ route("user.seo.core-web-vitals.check") }}?url=' + encodeURIComponent(url) + '&strategy=' + strategy)
         .then(r => r.json())
@@ -87,7 +87,7 @@ function runCheck() {
             var sc = data.score;
             var scColor = sc >= 90 ? '#22c55e' : sc >= 50 ? '#f59e0b' : '#ef4444';
             var html = '<div class="row g-3 mb-3">';
-            html += '<div class="col-md-3"><div class="pa-card text-center"><div style="font-size:2.5rem;font-weight:800;color:' + scColor + '">' + sc + '</div><div style="font-size:0.8125rem;color:var(--pa-text-muted)">Performance Score</div><div style="font-size:0.75rem;color:var(--pa-text-muted);text-transform:capitalize">' + data.strategy + '</div></div></div>';
+            html += '<div class="col-md-3"><div class="pa-card text-center"><div style="font-size:2.5rem;font-weight:800;color:' + scColor + '">' + sc + '</div><div class="text-sm-muted">Performance Score</div><div style="font-size:0.75rem;color:var(--pa-text-muted);text-transform:capitalize">' + data.strategy + '</div></div></div>';
 
             // Field data cards
             if (data.has_field_data) {
@@ -97,14 +97,14 @@ function runCheck() {
                     if (!t) return;
                     var color = catColor(f.category);
                     html += '<div class="col-6 col-md-4"><div style="padding:0.75rem;background:var(--pa-surface);border-radius:8px;border-left:3px solid ' + color + '">';
-                    html += '<div style="font-size:0.75rem;color:var(--pa-text-muted)">' + t.name + '</div>';
+                    html += '<div class="text-xs-muted">' + t.name + '</div>';
                     html += '<div style="font-size:1.25rem;font-weight:700;color:' + color + '">' + fmtVal(key, f.value) + '</div>';
                     html += '<div style="font-size:0.7rem;color:' + color + '">' + catLabel(f.category) + '</div>';
                     html += '</div></div>';
                 });
                 html += '</div></div></div>';
             } else {
-                html += '<div class="col-md-9"><div class="pa-card d-flex align-items-center gap-2"><i class="bi bi-info-circle text-secondary"></i><span style="font-size:0.875rem;color:var(--pa-text-muted)">No field data available — your site may not have enough traffic in the Chrome UX Report yet. Lab data is shown below.</span></div></div>';
+                html += '<div class="col-md-9"><div class="pa-card d-flex align-items-center gap-2"><i class="bi bi-info-circle text-secondary"></i><span class="text-sm-muted">No field data available — your site may not have enough traffic in the Chrome UX Report yet. Lab data is shown below.</span></div></div>';
             }
             html += '</div>';
 
@@ -115,7 +115,7 @@ function runCheck() {
             Object.entries(data.lab).forEach(function([key, val]) {
                 if (!val) return;
                 html += '<div class="col-6 col-md-4"><div style="padding:0.75rem;background:var(--pa-surface);border-radius:8px">';
-                html += '<div style="font-size:0.75rem;color:var(--pa-text-muted)">' + (labLabels[key] || key) + '</div>';
+                html += '<div class="text-xs-muted">' + (labLabels[key] || key) + '</div>';
                 html += '<div style="font-size:1.1rem;font-weight:600">' + val + '</div>';
                 html += '</div></div>';
             });

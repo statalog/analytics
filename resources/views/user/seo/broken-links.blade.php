@@ -2,8 +2,8 @@
 @section('title', 'Broken Links')
 @section('content')
 <div class="d-flex align-items-center gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-map me-2" style="color:var(--pa-primary)"></i>SEO Tools
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-map me-2 icon-primary"></i>SEO Tools
     </h4>
 </div>
 @include('user.seo._nav')
@@ -11,8 +11,8 @@
 <div class="pa-card mb-3">
     <div class="d-flex align-items-center gap-3 flex-wrap">
         <div>
-            <div style="font-size:0.875rem;font-weight:600">Check your top pages for broken links</div>
-            <div style="font-size:0.8125rem;color:var(--pa-text-muted)">Scans the 80 most-visited pages from the last 30 days and checks each for HTTP errors.</div>
+            <div class="fw-semibold text-sm">Check your top pages for broken links</div>
+            <div class="text-sm-muted">Scans the 80 most-visited pages from the last 30 days and checks each for HTTP errors.</div>
         </div>
         <button onclick="runScan()" class="btn btn-sm btn-primary ms-auto" id="btn-scan">
             <i class="bi bi-play-fill me-1"></i>Start Scan
@@ -28,7 +28,7 @@
 function runScan() {
     document.getElementById('btn-scan').disabled = true;
     document.getElementById('btn-scan').innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Scanning…';
-    document.getElementById('result').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-secondary" role="status"></div><div class="mt-2" style="font-size:0.875rem;color:var(--pa-text-muted)">Checking pages… this may take up to 30 seconds.</div></div>';
+    document.getElementById('result').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-secondary" role="status"></div><div class="mt-2 text-sm-muted">Checking pages… this may take up to 30 seconds.</div></div>';
 
     fetch('{{ route("user.seo.broken-links.scan") }}', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' } })
         .then(r => r.json())
@@ -37,7 +37,7 @@ function runScan() {
             document.getElementById('btn-scan').innerHTML = '<i class="bi bi-play-fill me-1"></i>Start Scan';
 
             if (data.error) { document.getElementById('result').innerHTML = '<div class="pa-card"><div class="alert alert-danger mb-0">' + data.error + '</div></div>'; return; }
-            if (data.message) { document.getElementById('result').innerHTML = '<div class="pa-card"><div class="text-center py-3" style="color:var(--pa-text-muted)">' + data.message + '</div></div>'; return; }
+            if (data.message) { document.getElementById('result').innerHTML = '<div class="pa-card"><div class="text-center py-3 text-muted">' + data.message + '</div></div>'; return; }
 
             var html = '<div class="pa-card mb-3"><div class="d-flex gap-4 flex-wrap">';
             html += '<div><div class="stat-value">' + data.scanned + '</div><div class="stat-label">Pages scanned</div></div>';

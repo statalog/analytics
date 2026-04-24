@@ -24,7 +24,7 @@ function refFmtDuration(sec) {
 function renderRefTable(data) {
     if (!data || data.length === 0) {
         document.getElementById('ref-container').innerHTML =
-            '<div class="text-center py-5" style="color:var(--pa-text-muted)">{{ $emptyMessage }}</div>';
+            '<div class="text-center py-5 text-muted">{{ $emptyMessage }}</div>';
         return;
     }
 
@@ -32,12 +32,12 @@ function renderRefTable(data) {
 
     var html = '<table class="pa-table" style="width:100%"><thead><tr>';
     html += '<th>Source</th>';
-    html += '<th style="text-align:right">Visits</th>';
-    html += '<th style="text-align:right">Share</th>';
-    html += '<th style="text-align:right">Pageviews</th>';
-    html += '<th style="text-align:right">Pages / Visit</th>';
-    html += '<th style="text-align:right">Avg Duration</th>';
-    html += '<th style="text-align:right">Bounce Rate</th>';
+    html += '<th class="text-end">Visits</th>';
+    html += '<th class="text-end">Share</th>';
+    html += '<th class="text-end">Pageviews</th>';
+    html += '<th class="text-end">Pages / Visit</th>';
+    html += '<th class="text-end">Avg Duration</th>';
+    html += '<th class="text-end">Bounce Rate</th>';
     html += '</tr></thead><tbody>';
 
     data.forEach(function(row) {
@@ -45,12 +45,12 @@ function renderRefTable(data) {
         var share  = totalVisits > 0 ? Math.round(row.visits / totalVisits * 100) : 0;
         html += '<tr>';
         html += '<td><span style="display:inline-flex;align-items:center">' + refFavicon(domain) + domain + '</span></td>';
-        html += '<td style="text-align:right;font-weight:600">' + row.visits.toLocaleString() + '</td>';
-        html += '<td style="text-align:right"><div style="display:flex;align-items:center;justify-content:flex-end;gap:8px"><div style="width:80px;height:6px;background:var(--pa-border);border-radius:3px;overflow:hidden"><div style="width:' + share + '%;height:100%;background:var(--pa-primary);border-radius:3px"></div></div><span style="min-width:32px;text-align:right">' + share + '%</span></div></td>';
-        html += '<td style="text-align:right">' + row.pageviews.toLocaleString() + '</td>';
-        html += '<td style="text-align:right">' + row.pages_per_visit + '</td>';
-        html += '<td style="text-align:right">' + refFmtDuration(row.avg_duration) + '</td>';
-        html += '<td style="text-align:right">' + row.bounce_rate + '%</td>';
+        html += '<td class="text-end fw-semibold">' + row.visits.toLocaleString() + '</td>';
+        html += '<td class="text-end"><div style="display:flex;align-items:center;justify-content:flex-end;gap:8px"><div style="width:80px;height:6px;background:var(--pa-border);border-radius:3px;overflow:hidden"><div style="width:' + share + '%;height:100%;background:var(--pa-primary);border-radius:3px"></div></div><span style="min-width:32px;text-align:right">' + share + '%</span></div></td>';
+        html += '<td class="text-end">' + row.pageviews.toLocaleString() + '</td>';
+        html += '<td class="text-end">' + row.pages_per_visit + '</td>';
+        html += '<td class="text-end">' + refFmtDuration(row.avg_duration) + '</td>';
+        html += '<td class="text-end">' + row.bounce_rate + '%</td>';
         html += '</tr>';
     });
 

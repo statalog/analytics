@@ -2,8 +2,8 @@
 @section('title', 'General')
 @section('content')
 <div class="d-flex align-items-center gap-3 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-sliders me-2" style="color:var(--pa-primary)"></i>General
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-sliders me-2 icon-primary"></i>General
     </h4>
 </div>
 
@@ -11,19 +11,19 @@
     <form method="POST" action="{{ route('user.general.update') }}">
         @csrf @method('PUT')
 
-        <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-            <i class="bi bi-shield-check me-2" style="color:var(--pa-primary)"></i>Privacy
+        <h6 class="mb-3 font-heading-bold">
+            <i class="bi bi-shield-check me-2 icon-primary"></i>Privacy
         </h6>
 
         <div class="mb-4">
             <label class="auth-label">Excluded IP Addresses</label>
             <textarea name="excluded_ips" class="pa-input" rows="4" placeholder="Enter IP addresses to exclude, one per line or comma-separated">{{ old('excluded_ips', $excludedIps) }}</textarea>
-            <small style="color:var(--pa-text-muted);font-size:0.8125rem">Hits from these IPs will not be recorded. Enter valid IPv4 addresses.</small>
+            <small class="text-sm-muted">Hits from these IPs will not be recorded. Enter valid IPv4 addresses.</small>
         </div>
 
         <div class="d-flex align-items-center justify-content-between mb-4" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
             <div>
-                <label class="mb-0" style="font-weight:600;font-size:0.875rem">Hide City-Level Data</label>
+                <label class="mb-0 fw-semibold text-sm">Hide City-Level Data</label>
                 <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.125rem">Only country and region will be recorded, not cities.</div>
             </div>
             <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;cursor:pointer;margin-left:1rem">

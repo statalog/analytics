@@ -2,11 +2,11 @@
 @section('title', 'Visitors')
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-person-lines-fill me-2" style="color:var(--pa-primary)"></i>Visitors
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-person-lines-fill me-2 icon-primary"></i>Visitors
         <span id="total-badge" style="font-size:0.875rem;font-weight:400;color:var(--pa-text-muted);margin-left:0.5rem"></span>
     </h4>
-    <div style="font-size:0.8125rem;color:var(--pa-text-muted)">Last 30 days</div>
+    <div class="text-sm-muted">Last 30 days</div>
 </div>
 
 <div class="pa-card p-0">
@@ -54,8 +54,8 @@ function fmtUrl(url) {
 }
 
 function fmtRef(ref) {
-    if (!ref) return '<span style="color:var(--pa-text-muted)">—</span>';
-    return '<span style="color:var(--pa-text-muted);font-size:0.8125rem">' + escHtml(ref) + '</span>';
+    if (!ref) return '<span>—</span>';
+    return '<span class="text-sm-muted">' + escHtml(ref) + '</span>';
 }
 
 function escHtml(s) {
@@ -90,7 +90,7 @@ function render(data) {
     document.getElementById('total-badge').textContent = total + ' sessions';
 
     if (!rows.length) {
-        document.getElementById('visitor-table').innerHTML = '<div class="text-center py-5" style="color:var(--pa-text-muted)">No visitor sessions in the last 30 days.</div>';
+        document.getElementById('visitor-table').innerHTML = '<div class="text-center py-5 text-muted">No visitor sessions in the last 30 days.</div>';
         document.getElementById('pagination').innerHTML = '';
         return;
     }
@@ -104,8 +104,8 @@ function render(data) {
           + '<th>Device</th>'
           + '<th>Browser</th>'
           + '<th>OS</th>'
-          + '<th style="text-align:right">Pages</th>'
-          + '<th style="text-align:right">Duration</th>'
+          + '<th class="text-end">Pages</th>'
+          + '<th class="text-end">Duration</th>'
           + '<th>Source</th>'
           + '</tr></thead><tbody>';
 
@@ -121,9 +121,9 @@ function render(data) {
               + '<td><span style="display:inline-flex;align-items:center">' + location + '</span></td>'
               + '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8125rem" title="' + escHtml(r.entry_page) + '">' + escHtml(fmtUrl(r.entry_page)) + '</td>'
               + '<td>' + deviceIcon(r.device_type) + '</td>'
-              + '<td style="font-size:0.8125rem">' + escHtml(r.browser || '—') + '</td>'
-              + '<td style="font-size:0.8125rem">' + escHtml(r.os || '—') + '</td>'
-              + '<td style="text-align:right;font-variant-numeric:tabular-nums">' + (r.pages || 0) + '</td>'
+              + '<td class="text-sm">' + escHtml(r.browser || '—') + '</td>'
+              + '<td class="text-sm">' + escHtml(r.os || '—') + '</td>'
+              + '<td class="text-num">' + (r.pages || 0) + '</td>'
               + '<td style="text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap">' + fmtDuration(r.duration) + '</td>'
               + '<td style="font-size:0.8125rem;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + source + '</td>'
               + '</tr>';
@@ -139,7 +139,7 @@ function renderPagination(page, pages, total) {
 
     var from = ((page - 1) * 25) + 1;
     var to   = Math.min(page * 25, total);
-    var info = '<span style="font-size:0.8125rem;color:var(--pa-text-muted)">' + from + '–' + to + ' of ' + total.toLocaleString() + '</span>';
+    var info = '<span>' + from + '–' + to + ' of ' + total.toLocaleString() + '</span>';
 
     var btns = '<div style="display:flex;gap:4px">';
     btns += '<button onclick="loadPage(' + (page - 1) + ')" class="btn-pa-outline" style="padding:0.25rem 0.6rem;font-size:0.8125rem" ' + (page <= 1 ? 'disabled' : '') + '><i class="bi bi-chevron-left"></i></button>';

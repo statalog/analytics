@@ -104,7 +104,7 @@
 
         <p style="text-align:center;margin-top:1.25rem;font-size:0.875rem;color:var(--pa-text-muted)">
             Already have an account?
-            <a href="{{ route('login') }}" style="color:var(--pa-primary)">Log in instead</a>
+            <a class="icon-primary" href="{{ route('login') }}">Log in instead</a>
         </p>
     @endif
 </div>

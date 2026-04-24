@@ -2,8 +2,8 @@
 @section('title', 'Redirect Checker')
 @section('content')
 <div class="d-flex align-items-center gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-map me-2" style="color:var(--pa-primary)"></i>SEO Tools
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-map me-2 icon-primary"></i>SEO Tools
     </h4>
 </div>
 @include('user.seo._nav')
@@ -38,7 +38,7 @@ function runCheck() {
 
             var chain = data.chain || [];
             var html = '<div class="pa-card">';
-            html += '<div class="mb-3"><span style="font-size:0.8125rem;color:var(--pa-text-muted)">' + chain.length + ' hop' + (chain.length === 1 ? '' : 's') + '</span></div>';
+            html += '<div class="mb-3"><span class="text-sm-muted">' + chain.length + ' hop' + (chain.length === 1 ? '' : 's') + '</span></div>';
 
             chain.forEach(function(step, i) {
                 var isLast = i === chain.length - 1;
@@ -48,7 +48,7 @@ function runCheck() {
                 html += '<div class="d-flex align-items-start gap-3 mb-2">';
                 html += '<span style="display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:28px;border-radius:6px;background:' + statusColor + '20;color:' + statusColor + ';font-size:0.75rem;font-weight:700">' + statusLabel + '</span>';
                 html += '<div style="flex:1">';
-                html += '<div style="font-size:0.875rem;word-break:break-all"><a href="' + step.url + '" target="_blank" rel="noopener" style="color:var(--pa-primary)">' + step.url + '</a></div>';
+                html += '<div style="font-size:0.875rem;word-break:break-all"><a class="icon-primary" href="' + step.url + '" target="_blank" rel="noopener">' + step.url + '</a></div>';
                 if (step.error) html += '<div style="font-size:0.8rem;color:#ef4444">' + step.error + '</div>';
                 html += '</div></div>';
 

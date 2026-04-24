@@ -2,8 +2,8 @@
 @section('title', __('app.nav_profile'))
 @section('content')
 <div class="d-flex align-items-center gap-3 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-person-circle me-2" style="color:var(--pa-primary)"></i>{{ __('app.nav_profile') }}
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-person-circle me-2 icon-primary"></i>{{ __('app.nav_profile') }}
     </h4>
 </div>
 
@@ -12,8 +12,8 @@
     {{-- Profile information --}}
     <div class="col-lg-6">
         <div class="pa-card">
-            <h6 class="mb-1" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Profile Information</h6>
-            <p style="font-size:0.8125rem;color:var(--pa-text-muted);margin-bottom:1rem">Update your account's profile information and email address.</p>
+            <h6 class="mb-1 font-heading-bold">Profile Information</h6>
+            <p class="text-sm-muted mb-3">Update your account's profile information and email address.</p>
 
             <form method="POST" action="{{ route('user.profile.update') }}">
                 @csrf @method('PATCH')
@@ -32,7 +32,7 @@
                     @error('email', 'updateProfileInformation')<div class="invalid-feedback">{{ $message }}</div>@enderror
 
                     @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                        <div class="mt-2" style="font-size:0.8125rem;color:var(--pa-text-muted)">
+                        <div class="mt-2 text-sm-muted">
                             Your email address is unverified.
                             <form method="POST" action="{{ route('verification.send') }}" class="d-inline">
                                 @csrf
@@ -60,8 +60,8 @@
     {{-- Right column: password + 2FA --}}
     <div class="col-lg-6">
         <div class="pa-card mb-4">
-            <h6 class="mb-1" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Update Password</h6>
-            <p style="font-size:0.8125rem;color:var(--pa-text-muted);margin-bottom:1rem">Ensure your account is using a long, random password to stay secure.</p>
+            <h6 class="mb-1 font-heading-bold">Update Password</h6>
+            <p class="text-sm-muted mb-3">Ensure your account is using a long, random password to stay secure.</p>
 
             <form method="POST" action="{{ route('password.update') }}">
                 @csrf @method('PUT')

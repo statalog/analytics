@@ -2,8 +2,8 @@
 @section('title', 'Pages')
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-file-earmark-text me-2" style="color:var(--pa-primary)"></i>Pages
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-file-earmark-text me-2 icon-primary"></i>Pages
     </h4>
     @include('components.date-range-picker')
 </div>
@@ -34,16 +34,16 @@ function bar(pct, color) {
 
 function render(rows) {
     if (!rows.length) {
-        document.getElementById('pages-table').innerHTML = '<div class="text-center py-5" style="color:var(--pa-text-muted)">No page data in this range.</div>';
+        document.getElementById('pages-table').innerHTML = '<div class="text-center py-5 text-muted">No page data in this range.</div>';
         return;
     }
     var maxPv = rows.reduce(function(m, r) { return Math.max(m, +r.pageviews); }, 1);
     var html = '<table class="pa-table"><thead><tr>'
              + '<th>Page</th>'
-             + '<th style="text-align:right">Pageviews</th>'
-             + '<th style="text-align:right">Visitors</th>'
-             + '<th style="text-align:right">Bounce rate</th>'
-             + '<th style="text-align:right">Avg time</th>'
+             + '<th class="text-end">Pageviews</th>'
+             + '<th class="text-end">Visitors</th>'
+             + '<th class="text-end">Bounce rate</th>'
+             + '<th class="text-end">Avg time</th>'
              + '</tr></thead><tbody>';
     rows.forEach(function(r) {
         var pct = Math.round((+r.pageviews / maxPv) * 100);
@@ -52,10 +52,10 @@ function render(rows) {
               + '<div style="font-weight:500;font-size:0.875rem">' + escHtml(r.path) + '</div>'
               + bar(pct, 'var(--pa-primary)')
               + '</td>'
-              + '<td style="text-align:right;font-variant-numeric:tabular-nums">' + (+r.pageviews).toLocaleString() + '</td>'
-              + '<td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--pa-text-muted)">' + (+r.unique_visitors).toLocaleString() + '</td>'
-              + '<td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--pa-text-muted)">' + (+r.bounce_rate) + '%</td>'
-              + '<td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--pa-text-muted)">' + fmtTime(r.avg_time) + '</td>'
+              + '<td class="text-num">' + (+r.pageviews).toLocaleString() + '</td>'
+              + '<td class="text-num-muted">' + (+r.unique_visitors).toLocaleString() + '</td>'
+              + '<td class="text-num-muted">' + (+r.bounce_rate) + '%</td>'
+              + '<td class="text-num-muted">' + fmtTime(r.avg_time) + '</td>'
               + '</tr>';
     });
     html += '</tbody></table>';

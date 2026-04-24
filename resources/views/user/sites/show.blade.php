@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex align-items-center gap-3 mb-4">
     <a href="{{ route('user.sites.index') }}" class="btn-pa-outline" style="padding:0.25rem 0.5rem"><i class="bi bi-arrow-left"></i></a>
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ $site->name }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ $site->name }}</h4>
 </div>
 
 <form method="POST" action="{{ route('user.sites.update', $site) }}">
@@ -13,8 +13,8 @@
     <div class="col-lg-6">
 
         <div class="pa-card mb-4">
-            <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-                <i class="bi bi-globe me-2" style="color:var(--pa-primary)"></i>Website Details
+            <h6 class="mb-3 font-heading-bold">
+                <i class="bi bi-globe me-2 icon-primary"></i>Website Details
             </h6>
 
             <div class="mb-3">
@@ -27,7 +27,7 @@
                 <label class="auth-label">{{ __('sites.field_domain') }}</label>
                 <input type="text" name="domain" class="pa-input @error('domain') is-invalid @enderror" required value="{{ old('domain', $site->domain) }}">
                 @error('domain')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                <small style="color:var(--pa-text-muted);font-size:0.8125rem">{{ __('sites.hint_domain') }}</small>
+                <small class="text-sm-muted">{{ __('sites.hint_domain') }}</small>
             </div>
 
             <div class="mb-3">
@@ -38,12 +38,12 @@
                     @endforeach
                 </select>
                 @error('timezone')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                <small style="color:var(--pa-text-muted);font-size:0.8125rem">{{ __('sites.hint_timezone') }}</small>
+                <small class="text-sm-muted">{{ __('sites.hint_timezone') }}</small>
             </div>
 
             <div class="d-flex align-items-center justify-content-between mb-3" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
                 <div>
-                    <label class="mb-0" style="font-weight:600;font-size:0.875rem">{{ __('sites.field_track_subdomains') }}</label>
+                    <label class="mb-0 fw-semibold text-sm">{{ __('sites.field_track_subdomains') }}</label>
                     <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.125rem">{{ __('sites.hint_track_subdomains') }}</div>
                 </div>
                 <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;cursor:pointer;margin-left:1rem">
@@ -55,7 +55,7 @@
 
             <div class="d-flex align-items-center justify-content-between" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
                 <div>
-                    <label class="mb-0" style="font-weight:600;font-size:0.875rem">Store bot traffic <span style="color:var(--pa-success);font-size:0.7rem;font-weight:600;margin-left:0.25rem">Recommended</span></label>
+                    <label class="mb-0 fw-semibold text-sm">Store bot traffic <span style="color:var(--pa-success);font-size:0.7rem;font-weight:600;margin-left:0.25rem">Recommended</span></label>
                     <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.25rem;line-height:1.5">
                         Highly recommended — track crawlers (Googlebot, Bingbot, AI scrapers like GPTBot and ClaudeBot, SEO tools, etc.) to understand who's indexing and mining your site.
                         Bot hits are always <strong>excluded from your regular stats by default</strong>, so they never pollute your human analytics.
@@ -74,8 +74,8 @@
 
     <div class="col-lg-6">
         <div class="pa-card mb-4">
-            <h6 class="mb-2" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-                <i class="bi bi-code-slash me-2" style="color:var(--pa-primary)"></i>{{ __('sites.tracking_snippet_title') }}
+            <h6 class="mb-2 font-heading-bold">
+                <i class="bi bi-code-slash me-2 icon-primary"></i>{{ __('sites.tracking_snippet_title') }}
             </h6>
             <p style="font-size:0.8125rem;color:var(--pa-text-muted);margin-bottom:0.75rem">{{ __('sites.tracking_snippet_hint') }}</p>
             <div style="position:relative">
@@ -89,7 +89,7 @@
 
         @if($site->track_bots)
         <div class="pa-card mb-4" style="border-color:#f59e0b">
-            <h6 class="mb-2" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
+            <h6 class="mb-2 font-heading-bold">
                 <i class="bi bi-robot me-2" style="color:#f59e0b"></i>Bot tracking snippet
             </h6>
             <p style="font-size:0.8125rem;color:var(--pa-text-muted);margin-bottom:0.75rem">
@@ -113,12 +113,12 @@
 
         {{-- Public dashboard --}}
         <div class="pa-card">
-            <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-                <i class="bi bi-share me-2" style="color:var(--pa-primary)"></i>{{ __('sites.public_title') }}
+            <h6 class="mb-3 font-heading-bold">
+                <i class="bi bi-share me-2 icon-primary"></i>{{ __('sites.public_title') }}
             </h6>
 
             <div class="d-flex align-items-center justify-content-between mb-3" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
-                <label class="mb-0" style="font-weight:600;font-size:0.875rem">{{ __('sites.public_enable') }}</label>
+                <label class="mb-0 fw-semibold text-sm">{{ __('sites.public_enable') }}</label>
                 <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;cursor:pointer;margin-left:1rem">
                     <input type="hidden" name="is_public" value="0">
                     <input type="checkbox" name="is_public" value="1" id="is_public_toggle" {{ old('is_public', $site->is_public) ? 'checked' : '' }} style="opacity:0;width:0;height:0;position:absolute" onchange="togglePublicOptions()">
@@ -175,7 +175,7 @@
                     <div class="d-flex flex-column gap-2">
                         @foreach($allSections as $section)
                         <div class="d-flex align-items-center justify-content-between" style="padding:0.5rem 0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
-                            <span style="font-size:0.875rem">{{ $sectionLabels[$section] }}</span>
+                            <span class="text-sm">{{ $sectionLabels[$section] }}</span>
                             <label style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;cursor:pointer;margin-left:1rem">
                                 <input type="checkbox" name="public_sections[]" value="{{ $section }}"
                                        {{ in_array($section, (array)$activeSections) ? 'checked' : '' }}
@@ -211,8 +211,8 @@
             <form method="POST" action="{{ route('user.sites.destroy', $site) }}">
                 @csrf @method('DELETE')
                 <div class="modal-header" style="border-bottom:1px solid var(--pa-border)">
-                    <h5 class="modal-title" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-                        <i class="bi bi-exclamation-triangle me-2" style="color:var(--pa-danger)"></i>Delete website?
+                    <h5 class="modal-title font-heading-bold">
+                        <i class="bi bi-exclamation-triangle me-2 text-danger"></i>Delete website?
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

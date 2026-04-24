@@ -7,7 +7,7 @@
 
 @section('content')
 <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('analytics.page_live_stats') }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ __('analytics.page_live_stats') }}</h4>
     <span class="live-badge"><span class="pulse"></span> <span id="live-count">0</span> {{ __('analytics.live_visitors_online') }}</span>
     @if($site->track_subdomains)
     <select class="form-select form-select-sm" id="subdomain-filter" style="width:auto;min-width:200px" onchange="onSubdomainChange()">
@@ -23,9 +23,9 @@
 
 <div class="pa-card mb-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="mb-0" style="font-family:'Space Grotesk',sans-serif">{{ __('analytics.live_visitors_per_minute') }}</h6>
+        <h6 class="mb-0 font-heading">{{ __('analytics.live_visitors_per_minute') }}</h6>
         <div class="d-flex align-items-center gap-2">
-            <span id="updated-at" style="font-size:0.75rem;color:var(--pa-text-muted)"></span>
+            <span class="text-xs-muted" id="updated-at"></span>
             <button class="date-range-btn active" id="btn-30" onclick="setChartInterval(30)">30 min</button>
             <button class="date-range-btn" id="btn-60" onclick="setChartInterval(60)">60 min</button>
         </div>
@@ -36,12 +36,12 @@
 <div class="pa-card">
     <ul class="nav nav-tabs mb-3" style="border-bottom:1px solid var(--pa-border)">
         <li class="nav-item">
-            <a class="nav-link active" id="tab-visits-btn" href="#" onclick="switchTab('visits');return false" style="font-size:0.875rem">
+            <a class="nav-link active text-sm" id="tab-visits-btn" href="#" onclick="switchTab('visits');return false">
                 <i class="bi bi-list-ul me-1"></i>Recent Visits
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="tab-map-btn" href="#" onclick="switchTab('map');return false" style="font-size:0.875rem">
+            <a class="nav-link text-sm" id="tab-map-btn" href="#" onclick="switchTab('map');return false">
                 <i class="bi bi-globe2 me-1"></i>Map
             </a>
         </li>
@@ -67,7 +67,7 @@
 
     <div id="tab-map" style="display:none">
         <div id="live-map" style="height:420px;border-radius:8px;background:#e8edf2"></div>
-        <div class="d-flex justify-content-between align-items-center mt-2" style="font-size:0.8rem;color:var(--pa-text-muted)">
+        <div class="d-flex justify-content-between align-items-center mt-2 text-sm-muted">
             <span id="live-map-count"></span>
         </div>
     </div>
@@ -122,8 +122,8 @@ function formatTimestamp(ts) {
     var now = new Date();
     var diffSec = Math.floor((now - d) / 1000);
     var diffMin = Math.floor(diffSec / 60);
-    if (diffSec < 60) return '<span style="font-weight:500">Just now</span>';
-    if (diffMin < 60) return '<span style="font-weight:500">' + diffMin + 'm ago</span><span style="display:block;font-size:0.75rem;color:var(--pa-text-muted)">' + d.toLocaleTimeString() + '</span>';
+    if (diffSec < 60) return '<span>Just now</span>';
+    if (diffMin < 60) return '<span>' + diffMin + 'm ago</span><span style="display:block;font-size:0.75rem;color:var(--pa-text-muted)">' + d.toLocaleTimeString() + '</span>';
     return d.toLocaleTimeString();
 }
 
@@ -210,7 +210,7 @@ function loadLiveData() {
                 rows += '<td>' + getLiveReferrer(v.referrer) + '</td>';
                 rows += '</tr>';
             });
-            document.getElementById('recent-visits').innerHTML = rows || '<tr><td colspan="7" class="text-center" style="color:var(--pa-text-muted)">' + __t.noRecent + '</td></tr>';
+            document.getElementById('recent-visits').innerHTML = rows || '<tr><td colspan="7" class="text-center text-muted">' + __t.noRecent + '</td></tr>';
         });
 }
 

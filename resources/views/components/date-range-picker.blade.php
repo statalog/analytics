@@ -21,7 +21,7 @@
 @endphp
 <div class="date-range-picker">
     @if($siteTracksBots)
-    <div class="btn-group" role="group" aria-label="Bot filter" style="font-size:0.8125rem">
+    <div class="btn-group text-sm" role="group" aria-label="Bot filter">
         @php
             $botsOptions = [
                 ''     => ['label' => 'Humans', 'icon' => 'person', 'title' => 'Human visitors only (default)'],
@@ -67,7 +67,7 @@
             @endforeach
             <li><hr class="dropdown-divider"></li>
             <li class="px-3 py-2">
-                <input type="text" id="custom-date-range" class="pa-input" placeholder="{{ __('analytics.range_custom') }}" style="font-size:0.8125rem">
+                <input type="text" id="custom-date-range" class="pa-input text-sm" placeholder="{{ __('analytics.range_custom') }}">
             </li>
         </ul>
     </div>

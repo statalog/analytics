@@ -4,14 +4,14 @@
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <div class="d-flex align-items-center gap-3">
         <a href="{{ route('user.funnels.index') }}" class="btn-pa-outline" style="padding:0.25rem 0.5rem"><i class="bi bi-arrow-left"></i></a>
-        <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ $funnel->name }}</h4>
+        <h4 class="mb-0 font-heading-bold">{{ $funnel->name }}</h4>
     </div>
     @include('components.date-range-picker')
 </div>
 
 <div class="pa-card mb-4">
     <div class="d-flex justify-content-between align-items-center">
-        <span style="color:var(--pa-text-muted)">{{ __('analytics.funnel_overall_conversion') }}</span>
+        <span class="text-muted">{{ __('analytics.funnel_overall_conversion') }}</span>
         <span style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--pa-primary)">{{ $overallRate }}%</span>
     </div>
 </div>
@@ -28,8 +28,8 @@
     else                  $timeLabel = round($secs / 3600, 1) . 'h';
 @endphp
 <div class="d-flex align-items-center gap-2 mb-2" style="padding-left:1rem;color:var(--pa-text-muted)">
-    <i class="bi bi-clock" style="font-size:0.75rem"></i>
-    <span style="font-size:0.8125rem">avg <strong style="color:var(--pa-text)">{{ $timeLabel }}</strong> to reach this step</span>
+    <i class="bi bi-clock text-xs"></i>
+    <span class="text-sm">avg <strong style="color:var(--pa-text)">{{ $timeLabel }}</strong> to reach this step</span>
 </div>
 @endif
 

@@ -8,8 +8,8 @@
 
 <div class="pa-card">
     <div class="d-flex align-items-center justify-content-between mb-2">
-        <h6 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-            <i class="bi bi-shield-lock me-1" style="color:var(--pa-primary)"></i>Two-Factor Authentication
+        <h6 class="mb-0 font-heading-bold">
+            <i class="bi bi-shield-lock me-1 icon-primary"></i>Two-Factor Authentication
         </h6>
         @if($enabled)
             <span style="background:color-mix(in srgb, var(--pa-success) 15%, transparent);color:var(--pa-success);border-radius:9999px;padding:0.2rem 0.75rem;font-size:0.75rem;font-weight:600">
@@ -20,7 +20,7 @@
         @endif
     </div>
 
-    <p style="font-size:0.8125rem;color:var(--pa-text-muted);margin-bottom:1rem">
+    <p class="text-sm-muted mb-3">
         Add an extra layer of security by requiring a code from your authenticator app in addition to your password.
     </p>
 
@@ -68,7 +68,7 @@
     @elseif($mode === 'codes' && !empty($codes))
         <div style="border-top:1px solid var(--pa-border);padding-top:1rem;margin-top:0.5rem">
             <div class="alert" style="background:color-mix(in srgb, var(--pa-warning) 10%, transparent);color:var(--pa-text);border:1px solid color-mix(in srgb, var(--pa-warning) 40%, transparent);border-radius:var(--pa-radius);padding:0.75rem 1rem;font-size:0.8125rem">
-                <i class="bi bi-exclamation-triangle me-1" style="color:var(--pa-warning)"></i>
+                <i class="bi bi-exclamation-triangle me-1 text-warning"></i>
                 Store these recovery codes somewhere safe. Each code can be used <strong>once</strong> if you lose access to your authenticator. They will not be shown again.
             </div>
             <div id="recovery-codes-box" style="background:var(--pa-input-bg);border-radius:var(--pa-radius);padding:1rem;font-family:monospace;font-size:0.9rem;display:grid;grid-template-columns:repeat(2,1fr);gap:0.375rem 1.5rem">

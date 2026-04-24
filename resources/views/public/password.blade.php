@@ -5,7 +5,7 @@
     <div style="width:100%;max-width:400px">
         <div style="text-align:center;margin-bottom:2rem">
             <div style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:0.5rem">
-                <i class="bi bi-lock-fill me-2" style="color:var(--pa-primary)"></i>{{ $site->name }}
+                <i class="bi bi-lock-fill me-2 icon-primary"></i>{{ $site->name }}
             </div>
             <p style="color:var(--pa-text-muted);margin:0">This dashboard is password protected.</p>
         </div>

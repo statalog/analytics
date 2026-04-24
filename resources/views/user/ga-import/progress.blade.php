@@ -3,11 +3,11 @@
 @section('content')
 <div class="d-flex align-items-center gap-3 mb-4">
     <a href="{{ route('user.ga-import') }}" class="btn-pa-outline" style="padding:0.25rem 0.5rem"><i class="bi bi-arrow-left"></i></a>
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Importing from Google Analytics</h4>
+    <h4 class="mb-0 font-heading-bold">Importing from Google Analytics</h4>
 </div>
 
 <div class="pa-card" style="max-width:640px">
-    <div id="status-row" class="d-flex align-items-center gap-2 mb-3" style="font-weight:600">
+    <div id="status-row" class="d-flex align-items-center gap-2 mb-3 fw-semibold">
         <span id="status-icon"><div class="spinner-border spinner-border-sm" role="status"></div></span>
         <span id="status-text">{{ ucfirst($import->status) }}</span>
     </div>
@@ -15,7 +15,7 @@
     <div style="height:10px;background:var(--pa-input-bg);border-radius:6px;overflow:hidden;margin-bottom:0.5rem">
         <div id="progress-bar" style="height:100%;width:{{ $import->progressPercent() }}%;background:var(--pa-primary);transition:width 0.3s"></div>
     </div>
-    <div id="progress-label" style="font-size:0.8125rem;color:var(--pa-text-muted)">
+    <div class="text-sm-muted" id="progress-label">
         {{ $import->processed_days }} / {{ $import->total_days }} days processed
     </div>
 

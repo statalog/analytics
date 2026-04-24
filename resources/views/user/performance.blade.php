@@ -2,19 +2,19 @@
 @section('title', 'Performance')
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-speedometer me-2" style="color:var(--pa-primary)"></i>Performance
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-speedometer me-2 icon-primary"></i>Performance
     </h4>
     @include('components.date-range-picker')
 </div>
 
 <div class="pa-card mb-4">
-    <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Page load time over time</h6>
+    <h6 class="mb-3 font-heading-bold">Page load time over time</h6>
     <div style="height:300px"><canvas id="perf-chart"></canvas></div>
 </div>
 
 <div class="pa-card">
-    <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Performance overview</h6>
+    <h6 class="mb-3 font-heading-bold">Performance overview</h6>
     <div id="perf-overview" class="row g-3">
         <div class="col-12 text-center py-3"><div class="spinner-border text-secondary" role="status"></div></div>
     </div>
@@ -109,7 +109,7 @@ function render(data) {
               + '<div style="width:12px;height:12px;border-radius:50%;background:' + m.color + ';flex-shrink:0"></div>'
               + '<div>'
               + '<div style="font-size:1.25rem;font-weight:700">' + fmtMs(val) + '</div>'
-              + '<div style="font-size:0.8125rem;color:var(--pa-text-muted)">' + m.label + '</div>'
+              + '<div class="text-sm-muted">' + m.label + '</div>'
               + '</div></div></div>';
     });
     document.getElementById('perf-overview').innerHTML = html;

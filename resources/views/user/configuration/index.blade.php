@@ -2,8 +2,8 @@
 @section('title', 'Configuration')
 @section('content')
 <div class="d-flex align-items-center justify-content-between mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-gear-wide-connected me-2" style="color:var(--pa-primary)"></i>Configuration
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-gear-wide-connected me-2 icon-primary"></i>Configuration
     </h4>
 </div>
 
@@ -48,7 +48,7 @@
                 <div style="width:2.5rem;height:2.5rem;background:color-mix(in srgb, var(--pa-primary) 12%, transparent);color:var(--pa-primary);border-radius:0.5rem;display:flex;align-items:center;justify-content:center;font-size:1.1rem">
                     <i class="bi bi-{{ $card['icon'] }}"></i>
                 </div>
-                <h6 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ $card['title'] }}</h6>
+                <h6 class="mb-0 font-heading-bold">{{ $card['title'] }}</h6>
             </div>
             <p style="font-size:0.875rem;color:var(--pa-text-muted);line-height:1.5;margin-bottom:0.75rem">{{ $card['desc'] }}</p>
             <div style="display:flex;align-items:center;justify-content:space-between">

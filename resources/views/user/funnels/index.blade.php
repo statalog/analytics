@@ -2,7 +2,7 @@
 @section('title', __('analytics.page_funnels'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('analytics.page_funnels') }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ __('analytics.page_funnels') }}</h4>
     <a href="{{ route('user.funnels.create') }}" class="btn-pa-primary"><i class="bi bi-plus-lg me-1"></i> {{ __('analytics.btn_create_funnel') }}</a>
 </div>
 
@@ -11,7 +11,7 @@
     <div class="d-flex justify-content-between align-items-center">
         <div>
             <h6 class="mb-1">{{ $funnel->name }}</h6>
-            <span style="color:var(--pa-text-muted);font-size:0.8125rem">{{ $funnel->steps->count() }} {{ __('analytics.label_steps') }}</span>
+            <span class="text-sm-muted">{{ $funnel->steps->count() }} {{ __('analytics.label_steps') }}</span>
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('user.funnels.report', $funnel) }}" class="btn-pa-primary" style="padding:0.375rem 0.75rem;font-size:0.8125rem"><i class="bi bi-graph-up me-1"></i> {{ __('analytics.btn_report') }}</a>

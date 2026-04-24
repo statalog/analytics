@@ -3,8 +3,8 @@
 @section('content')
 
 <div class="d-flex align-items-center gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-shuffle me-2" style="color:var(--pa-primary)"></i>Page Transitions
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-shuffle me-2 icon-primary"></i>Page Transitions
     </h4>
 </div>
 
@@ -83,7 +83,7 @@ function runCheck() {
             }
 
             if (!data.total) {
-                document.getElementById('result').innerHTML = '<div class="pa-card"><div class="text-center py-3" style="color:var(--pa-text-muted)">No data found for this page in the selected date range.</div></div>';
+                document.getElementById('result').innerHTML = '<div class="pa-card"><div class="text-center py-3 text-muted">No data found for this page in the selected date range.</div></div>';
                 return;
             }
 
@@ -111,7 +111,7 @@ function runCheck() {
             }
             fromPages.forEach(function(item) { leftHtml += pageRow(item, total, 'var(--pa-primary)'); });
             if (!fromPages.length && !entries) {
-                leftHtml += '<div style="font-size:0.8125rem;color:var(--pa-text-muted)">No data</div>';
+                leftHtml += '<div class="text-sm-muted">No data</div>';
             }
 
             // Centre
@@ -121,9 +121,9 @@ function runCheck() {
                 + '<div style="padding:1rem;border:2px solid var(--pa-primary);border-radius:10px;margin-bottom:1rem">'
                 + '<div style="font-size:0.8125rem;font-weight:600;word-break:break-all;margin-bottom:0.5rem" title="' + url + '">' + shortPage + '</div>'
                 + '<div style="font-size:1.5rem;font-weight:800;color:var(--pa-primary)">' + total.toLocaleString() + '</div>'
-                + '<div style="font-size:0.75rem;color:var(--pa-text-muted)">pageviews</div>'
+                + '<div class="text-xs-muted">pageviews</div>'
                 + '</div>'
-                + '<div style="font-size:0.8rem;color:var(--pa-text-muted)">'
+                + '<div class="text-sm-muted">'
                 + '<div><span style="font-weight:600;color:#6b7280">' + entryPct + '%</span> direct entries</div>'
                 + '<div><span style="font-weight:600;color:#ef4444">' + exitPct + '%</span> exits</div>'
                 + '</div>'
@@ -144,7 +144,7 @@ function runCheck() {
             }
             toPages.forEach(function(item) { rightHtml += pageRow(item, total, '#10b981'); });
             if (!toPages.length && !exits) {
-                rightHtml += '<div style="font-size:0.8125rem;color:var(--pa-text-muted)">No data</div>';
+                rightHtml += '<div class="text-sm-muted">No data</div>';
             }
 
             var html = '<div class="pa-card">'

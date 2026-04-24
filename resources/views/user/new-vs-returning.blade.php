@@ -2,14 +2,14 @@
 @section('title', __('analytics.page_new_vs_returning'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('analytics.page_new_vs_returning') }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ __('analytics.page_new_vs_returning') }}</h4>
     @include('components.date-range-picker')
 </div>
 
 <div class="row g-4 mb-4">
     <div class="col-md-4">
         <div class="pa-card" style="height:260px">
-            <h6 class="mb-2" style="font-family:'Space Grotesk',sans-serif">Distribution</h6>
+            <h6 class="mb-2 font-heading">Distribution</h6>
             <div style="position:relative;width:180px;height:180px;margin:0 auto">
                 <canvas id="nvr-donut" width="180" height="180"></canvas>
             </div>
@@ -23,7 +23,7 @@
 </div>
 
 <div class="pa-card">
-    <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">Over time</h6>
+    <h6 class="mb-3 font-heading">Over time</h6>
     <div style="height:220px;position:relative">
         <canvas id="nvr-line"></canvas>
     </div>
@@ -99,7 +99,7 @@ function renderDistribution(rows) {
 
     // Table
     var html = '<table class="pa-table" style="width:100%">'
-        + '<thead><tr><th>Visitor Type</th><th style="text-align:right">Visitors</th><th style="text-align:right">Sessions</th><th style="text-align:right">Share</th></tr></thead><tbody>';
+        + '<thead><tr><th>Visitor Type</th><th class="text-end">Visitors</th><th class="text-end">Sessions</th><th class="text-end">Share</th></tr></thead><tbody>';
 
     [[newRow, 'New', '#0e7dd5'], [retRow, 'Returning', '#38bdf8']].forEach(function(item) {
         var row = item[0]; var label = item[1]; var color = item[2];
@@ -108,9 +108,9 @@ function renderDistribution(rows) {
         var pct = total > 0 ? Math.round(v / total * 100) : 0;
         html += '<tr>'
             + '<td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:' + color + ';margin-right:8px"></span>' + label + '</td>'
-            + '<td style="text-align:right">' + v.toLocaleString() + '</td>'
-            + '<td style="text-align:right">' + s.toLocaleString() + '</td>'
-            + '<td style="text-align:right">'
+            + '<td class="text-end">' + v.toLocaleString() + '</td>'
+            + '<td class="text-end">' + s.toLocaleString() + '</td>'
+            + '<td class="text-end">'
             + '<div class="d-flex align-items-center justify-content-end gap-2">'
             + '<div style="width:80px;height:4px;border-radius:2px;background:var(--pa-border)">'
             + '<div style="width:' + pct + '%;height:100%;border-radius:2px;background:' + color + '"></div></div>'

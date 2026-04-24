@@ -84,7 +84,7 @@
                     <div class="pa-account-header">
                         <div>
                             <div style="font-weight:600;font-size:0.9rem;color:var(--pa-text)">{{ auth()->user()->name }}</div>
-                            <div style="font-size:0.8rem;color:var(--pa-text-muted)">{{ auth()->user()->email }}</div>
+                            <div class="text-sm-muted">{{ auth()->user()->email }}</div>
                         </div>
                     </div>
                     <a href="{{ route('user.profile.edit') }}" class="dropdown-item">

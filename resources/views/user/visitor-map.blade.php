@@ -7,15 +7,15 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-globe2 me-2" style="color:var(--pa-primary)"></i>Visitor Map
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-globe2 me-2 icon-primary"></i>Visitor Map
     </h4>
     @include('components.date-range-picker')
 </div>
 
 <div class="pa-card">
     <div id="visitor-map" style="height:520px;border-radius:8px;background:#e8edf2"></div>
-    <div class="d-flex justify-content-between align-items-center mt-2" style="font-size:0.8rem;color:var(--pa-text-muted)">
+    <div class="d-flex justify-content-between align-items-center mt-2 text-sm-muted">
         <span id="map-count"></span>
         <span id="map-updated"></span>
     </div>

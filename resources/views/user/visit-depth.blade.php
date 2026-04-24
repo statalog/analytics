@@ -2,12 +2,12 @@
 @section('title', __('analytics.page_visit_depth'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('analytics.page_visit_depth') }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ __('analytics.page_visit_depth') }}</h4>
     @include('components.date-range-picker')
 </div>
 
 <div class="pa-card mb-4">
-    <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif">{{ __('analytics.visit_depth_distribution') }}</h6>
+    <h6 class="mb-3 font-heading">{{ __('analytics.visit_depth_distribution') }}</h6>
     <div style="height:300px"><canvas id="depth-chart"></canvas></div>
 </div>
 
@@ -45,14 +45,14 @@ function render(rows) {
     });
 
     var total = values.reduce(function(a, b) { return a + b; }, 0);
-    var html = '<table class="pa-table"><thead><tr><th>Pages Visited</th><th style="text-align:right">{{ __("analytics.col_sessions") }}</th><th style="text-align:right">Share</th></tr></thead><tbody>';
+    var html = '<table class="pa-table"><thead><tr><th>Pages Visited</th><th class="text-end">{{ __("analytics.col_sessions") }}</th><th class="text-end">Share</th></tr></thead><tbody>';
     rows.forEach(function(row) {
         var pct = total > 0 ? Math.round(parseInt(row.sessions || 0) / total * 100) : 0;
         html += '<tr><td>' + row.depth + ' page' + (row.depth === '1' ? '' : 's') + '</td>';
-        html += '<td style="text-align:right">' + parseInt(row.sessions || 0).toLocaleString() + '</td>';
-        html += '<td style="text-align:right">' + pct + '%</td></tr>';
+        html += '<td class="text-end">' + parseInt(row.sessions || 0).toLocaleString() + '</td>';
+        html += '<td class="text-end">' + pct + '%</td></tr>';
     });
-    if (!rows.length) html += '<tr><td colspan="3" class="text-center" style="color:var(--pa-text-muted)">No data</td></tr>';
+    if (!rows.length) html += '<tr><td colspan="3" class="text-center text-muted">No data</td></tr>';
     html += '</tbody></table>';
     document.getElementById('depth-table').innerHTML = html;
 }

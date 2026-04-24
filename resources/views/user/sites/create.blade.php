@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex align-items-center gap-3 mb-4">
     <a href="{{ route('user.sites.index') }}" class="btn-pa-outline" style="padding:0.25rem 0.5rem"><i class="bi bi-arrow-left"></i></a>
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('sites.page_create') }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ __('sites.page_create') }}</h4>
 </div>
 
 <div class="pa-card" style="max-width:600px">
@@ -21,7 +21,7 @@
             <input type="text" name="domain" class="pa-input @error('domain') is-invalid @enderror" required
                    placeholder="example.com" value="{{ old('domain') }}">
             @error('domain')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            <small style="color:var(--pa-text-muted);font-size:0.8125rem">{{ __('sites.hint_domain') }}</small>
+            <small class="text-sm-muted">{{ __('sites.hint_domain') }}</small>
         </div>
 
         <div class="mb-3">
@@ -32,12 +32,12 @@
                 @endforeach
             </select>
             @error('timezone')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            <small style="color:var(--pa-text-muted);font-size:0.8125rem">{{ __('sites.hint_timezone') }}</small>
+            <small class="text-sm-muted">{{ __('sites.hint_timezone') }}</small>
         </div>
 
         <div class="d-flex align-items-center justify-content-between mb-4" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
             <div>
-                <label class="mb-0" style="font-weight:600;font-size:0.875rem">{{ __('sites.field_track_subdomains') }}</label>
+                <label class="mb-0 fw-semibold text-sm">{{ __('sites.field_track_subdomains') }}</label>
                 <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.125rem">{{ __('sites.hint_track_subdomains') }}</div>
             </div>
             <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;cursor:pointer;margin-left:1rem">

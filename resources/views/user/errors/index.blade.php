@@ -2,23 +2,23 @@
 @section('title', 'Errors')
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">
-        <i class="bi bi-bug me-2" style="color:var(--pa-primary)"></i>Errors
+    <h4 class="mb-0 font-heading-bold">
+        <i class="bi bi-bug me-2 icon-primary"></i>Errors
     </h4>
     @include('components.date-range-picker', ['botFilter' => false])
 </div>
 
 <div class="row g-3 mb-4" id="error-stats">
-    <div class="col-6 col-md-3"><div class="pa-card"><div style="font-size:0.8125rem;color:var(--pa-text-muted)">Total errors</div><div id="stat-total" style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif">—</div></div></div>
-    <div class="col-6 col-md-3"><div class="pa-card"><div style="font-size:0.8125rem;color:var(--pa-text-muted)">Unique errors</div><div id="stat-unique" style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif">—</div></div></div>
-    <div class="col-6 col-md-3"><div class="pa-card"><div style="font-size:0.8125rem;color:var(--pa-text-muted)">Affected visitors</div><div id="stat-visitors" style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif">—</div></div></div>
-    <div class="col-6 col-md-3"><div class="pa-card"><div style="font-size:0.8125rem;color:var(--pa-text-muted)">Error rate</div><div id="stat-rate" style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif">—</div></div></div>
+    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">Total errors</div><div class="font-heading-bold text-xl" id="stat-total">—</div></div></div>
+    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">Unique errors</div><div class="font-heading-bold text-xl" id="stat-unique">—</div></div></div>
+    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">Affected visitors</div><div class="font-heading-bold text-xl" id="stat-visitors">—</div></div></div>
+    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">Error rate</div><div class="font-heading-bold text-xl" id="stat-rate">—</div></div></div>
 </div>
 
 <div class="row g-3 align-items-start">
     <div class="col-lg-5">
         <div class="pa-card">
-            <h6 class="mb-3" style="font-family:'Space Grotesk',sans-serif;font-weight:700">Errors over time</h6>
+            <h6 class="mb-3 font-heading-bold">Errors over time</h6>
             <canvas id="chart"></canvas>
         </div>
     </div>
@@ -83,26 +83,26 @@ function renderChart(rows) {
 
 function renderTable(rows) {
     if (!rows.length) {
-        document.getElementById('errors-table').innerHTML = '<div class="text-center py-5" style="color:var(--pa-text-muted)"><i class="bi bi-check-circle" style="font-size:2rem;color:var(--pa-success);opacity:.5"></i><div class="mt-2">No errors in this range. Nice.</div></div>';
+        document.getElementById('errors-table').innerHTML = '<div class="text-center py-5 text-muted"><i class="bi bi-check-circle" style="font-size:2rem;color:var(--pa-success);opacity:.5"></i><div class="mt-2">No errors in this range. Nice.</div></div>';
         return;
     }
     var html = '<table class="pa-table"><thead><tr>';
     html += '<th>Message</th>';
     html += '<th>First seen</th>';
     html += '<th>Last seen</th>';
-    html += '<th style="text-align:right">Count</th>';
-    html += '<th style="text-align:right">Affected</th>';
+    html += '<th class="text-end">Count</th>';
+    html += '<th class="text-end">Affected</th>';
     html += '<th></th></tr></thead><tbody>';
     rows.forEach(function(row) {
         var msg = escapeHtml((row.message || '').substring(0, 120));
-        var srcLine = row.source ? ' <span style="color:var(--pa-text-muted);font-size:0.75rem">' + escapeHtml(row.source.split('/').pop()) + ':' + row.line + '</span>' : '';
+        var srcLine = row.source ? ' <span class="text-xs-muted">' + escapeHtml(row.source.split('/').pop()) + ':' + row.line + '</span>' : '';
         var showUrl = '{{ route("user.errors.show", "__FP__") }}'.replace('__FP__', encodeURIComponent(row.fingerprint));
         html += '<tr>';
         html += '<td><a href="' + showUrl + '" style="color:var(--pa-text);text-decoration:none;font-weight:500">' + msg + '</a>' + srcLine + '</td>';
         html += '<td style="font-size:0.8125rem;color:var(--pa-text-muted);white-space:nowrap">' + (row.first_seen || '-') + '</td>';
         html += '<td style="font-size:0.8125rem;color:var(--pa-text-muted);white-space:nowrap">' + (row.last_seen || '-') + '</td>';
-        html += '<td style="text-align:right;font-weight:600">' + (+row.total || 0).toLocaleString() + '</td>';
-        html += '<td style="text-align:right">' + (+row.affected_visitors || 0).toLocaleString() + '</td>';
+        html += '<td class="text-end fw-semibold">' + (+row.total || 0).toLocaleString() + '</td>';
+        html += '<td class="text-end">' + (+row.affected_visitors || 0).toLocaleString() + '</td>';
         html += '<td><a href="' + showUrl + '" class="btn-pa-outline" style="padding:0.25rem 0.5rem;font-size:0.75rem"><i class="bi bi-arrow-right"></i></a></td>';
         html += '</tr>';
     });

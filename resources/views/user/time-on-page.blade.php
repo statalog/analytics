@@ -2,7 +2,7 @@
 @section('title', __('analytics.page_time_on_page'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h4 class="mb-0" style="font-family:'Space Grotesk',sans-serif;font-weight:700">{{ __('analytics.page_time_on_page') }}</h4>
+    <h4 class="mb-0 font-heading-bold">{{ __('analytics.page_time_on_page') }}</h4>
     @include('components.date-range-picker')
 </div>
 
@@ -28,15 +28,15 @@ function fmtDuration(s) {
 function render(rows) {
     var html = '<table class="pa-table"><thead><tr>';
     html += '<th>{{ __("analytics.col_page_url") }}</th>';
-    html += '<th style="text-align:right">{{ __("analytics.col_avg_time") }}</th>';
-    html += '<th style="text-align:right">{{ __("analytics.col_pageviews") }}</th>';
+    html += '<th class="text-end">{{ __("analytics.col_avg_time") }}</th>';
+    html += '<th class="text-end">{{ __("analytics.col_pageviews") }}</th>';
     html += '</tr></thead><tbody>';
     rows.forEach(function(row) {
         html += '<tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:400px">' + (row.url || '-').replace(/^https?:\/\//, '') + '</td>';
-        html += '<td style="text-align:right;font-variant-numeric:tabular-nums">' + fmtDuration(row.avg_time) + '</td>';
-        html += '<td style="text-align:right">' + (row.pageviews || 0).toLocaleString() + '</td></tr>';
+        html += '<td class="text-num">' + fmtDuration(row.avg_time) + '</td>';
+        html += '<td class="text-end">' + (row.pageviews || 0).toLocaleString() + '</td></tr>';
     });
-    if (!rows.length) html += '<tr><td colspan="3" class="text-center" style="color:var(--pa-text-muted)">No data</td></tr>';
+    if (!rows.length) html += '<tr><td colspan="3" class="text-center text-muted">No data</td></tr>';
     html += '</tbody></table>';
     document.getElementById('top-table').innerHTML = html;
 }

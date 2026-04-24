@@ -21,7 +21,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <label class="auth-label mb-0" for="password">{{ __('auth.field_password') }}</label>
                     @if(Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="auth-link" style="font-size:0.8125rem">{{ __('auth.link_forgot') }}</a>
+                        <a href="{{ route('password.request') }}" class="auth-link text-sm">{{ __('auth.link_forgot') }}</a>
                     @endif
                 </div>
                 <input id="password" type="password" name="password" class="auth-input" required autocomplete="current-password">
@@ -35,7 +35,7 @@
         </form>
 
         @if(Route::has('register'))
-        <div class="text-center mt-3" style="font-size:0.875rem;color:var(--pa-text-muted)">
+        <div class="text-center mt-3 text-sm-muted">
             <a href="{{ route('register') }}" class="auth-link">{{ __('auth.link_register') }}</a>
         </div>
         @endif
