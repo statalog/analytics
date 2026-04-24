@@ -150,7 +150,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('select.js-searchable').forEach(function (el) {
-                new TomSelect(el, { maxOptions: 1000, openOnFocus: false });
+                new TomSelect(el, {
+                    maxOptions: 1000,
+                    openOnFocus: false,
+                    onFocus: function() { this.close(); }
+                });
             });
         });
     </script>
