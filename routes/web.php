@@ -73,9 +73,13 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
 
     // Sites
     Route::get('/sites', [SiteController::class, 'index'])->name('sites.index');
+    Route::get('/sites/{site}', [SiteController::class, 'show'])->name('sites.show');
+
+    // Write routes — blocked for viewers
+    Route::middleware('not-viewer')->group(function () {
+
     Route::get('/sites/create', [SiteController::class, 'create'])->name('sites.create');
     Route::post('/sites', [SiteController::class, 'store'])->name('sites.store');
-    Route::get('/sites/{site}', [SiteController::class, 'show'])->name('sites.show');
     Route::put('/sites/{site}', [SiteController::class, 'update'])->name('sites.update');
     Route::delete('/sites/{site}', [SiteController::class, 'destroy'])->name('sites.destroy');
 
@@ -137,22 +141,22 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
 
     // Funnels
     Route::get('/funnels',                  [FunnelController::class, 'index'])->name('funnels.index');
+    Route::get('/funnels/{funnel}/report',  [FunnelController::class, 'report'])->name('funnels.report');
     Route::get('/funnels/create',           [FunnelController::class, 'create'])->name('funnels.create');
     Route::post('/funnels',                 [FunnelController::class, 'store'])->name('funnels.store');
     Route::get('/funnels/{funnel}/edit',    [FunnelController::class, 'edit'])->name('funnels.edit');
     Route::put('/funnels/{funnel}',         [FunnelController::class, 'update'])->name('funnels.update');
     Route::delete('/funnels/{funnel}',      [FunnelController::class, 'destroy'])->name('funnels.destroy');
-    Route::get('/funnels/{funnel}/report',  [FunnelController::class, 'report'])->name('funnels.report');
 
     // Goals
     Route::get('/goals',                      [GoalController::class, 'index'])->name('goals.index');
+    Route::get('/goals/{goal}/report',        [GoalController::class, 'report'])->name('goals.report');
+    Route::get('/goals/{goal}/report/data',   [GoalController::class, 'reportData'])->name('goals.report.data');
     Route::get('/goals/create',               [GoalController::class, 'create'])->name('goals.create');
     Route::post('/goals',                     [GoalController::class, 'store'])->name('goals.store');
     Route::get('/goals/{goal}/edit',          [GoalController::class, 'edit'])->name('goals.edit');
     Route::put('/goals/{goal}',               [GoalController::class, 'update'])->name('goals.update');
     Route::delete('/goals/{goal}',            [GoalController::class, 'destroy'])->name('goals.destroy');
-    Route::get('/goals/{goal}/report',        [GoalController::class, 'report'])->name('goals.report');
-    Route::get('/goals/{goal}/report/data',   [GoalController::class, 'reportData'])->name('goals.report.data');
 
     // Custom Events
     Route::get('/events',               [EventController::class, 'index'])->name('events');
@@ -164,7 +168,7 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/bots',      [BotController::class, 'index'])->name('bots');
     Route::get('/bots/data', [BotController::class, 'data'])->name('bots.data');
 
-    // SEO Tools
+    // SEO Tools (broken-links scan is a write action but harmless — keep open for viewers)
     Route::prefix('/seo')->name('seo.')->group(function () {
         Route::get('/sitemap',                [SeoToolsController::class, 'sitemap'])->name('sitemap');
         Route::get('/sitemap/check',          [SeoToolsController::class, 'sitemapCheck'])->name('sitemap.check');
@@ -186,21 +190,23 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/errors/{fingerprint}',        [ErrorController::class, 'show'])->name('errors.show');
     Route::get('/errors/{fingerprint}/data',   [ErrorController::class, 'showData'])->name('errors.show.data');
 
-    // Configuration hub (integrations, external connections)
-    Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
+    // Account switching (viewers need this)
+    Route::post('/account-users/switch', [AccountUserController::class, 'switchAccount'])->name('account-users.switch');
+    Route::get('/account-picker',        [AccountUserController::class, 'picker'])->name('account-users.picker');
 
-    // Team members
-    Route::get('/account-users',             [AccountUserController::class, 'index'])->name('account-users.index');
+    }); // end not-viewer group
+
+    // Configuration & management — hidden from viewers entirely
+    Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
+    Route::get('/account-users', [AccountUserController::class, 'index'])->name('account-users.index');
     Route::put('/account-users/{member}',    [AccountUserController::class, 'update'])->name('account-users.update');
     Route::delete('/account-users/{member}', [AccountUserController::class, 'destroy'])->name('account-users.destroy');
-    Route::post('/account-users/switch',     [AccountUserController::class, 'switchAccount'])->name('account-users.switch');
-    Route::get('/account-picker',            [AccountUserController::class, 'picker'])->name('account-users.picker');
 
     // Invitations
     Route::post('/invitations',                  [InvitationController::class, 'store'])->name('invitations.store');
     Route::delete('/invitations/{invitation}',   [InvitationController::class, 'destroy'])->name('invitations.destroy');
 
-    // Google Analytics import (reachable from Configuration)
+    // Google Analytics import
     Route::get('/ga-import',                        [GaImportController::class, 'index'])->name('ga-import');
     Route::post('/ga-import/connect',               [GaImportController::class, 'connect'])->name('ga-import.connect');
     Route::get('/ga-import/callback',               [GaImportController::class, 'callback'])->name('ga-import.callback');
@@ -215,18 +221,18 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/general', [SettingsController::class, 'index'])->name('general');
     Route::put('/general', [SettingsController::class, 'update'])->name('general.update');
 
-    // Profile (from Breeze)
+    // Profile (own account — viewers can edit their own profile)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Two-factor authentication (profile page actions)
+    // Two-factor authentication
     Route::post('/two-factor/start',   [TwoFactorController::class, 'start'])->name('two-factor.start');
     Route::post('/two-factor/confirm', [TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
     Route::post('/two-factor/cancel',  [TwoFactorController::class, 'cancel'])->name('two-factor.cancel');
 
     Route::middleware('password.confirm')->group(function () {
-        Route::post('/two-factor/recovery-codes',    [TwoFactorController::class, 'showRecoveryCodes'])->name('two-factor.recovery-codes');
-        Route::post('/two-factor/recovery-codes/regenerate', [TwoFactorController::class, 'regenerateCodes'])->name('two-factor.regenerate');
+        Route::post('/two-factor/recovery-codes',             [TwoFactorController::class, 'showRecoveryCodes'])->name('two-factor.recovery-codes');
+        Route::post('/two-factor/recovery-codes/regenerate',  [TwoFactorController::class, 'regenerateCodes'])->name('two-factor.regenerate');
         Route::delete('/two-factor', [TwoFactorController::class, 'disable'])->name('two-factor.disable');
     });
 });

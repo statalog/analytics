@@ -1,4 +1,6 @@
 @php
+    $isViewer = app()->bound('statalog.active_account_user')
+        && app('statalog.active_account_user')?->isViewer();
     $sites = auth()->user()->sites ?? collect();
     $currentSiteId = session('current_site_id');
     $currentSite = $currentSiteId ? $sites->firstWhere('site_id', $currentSiteId) : $sites->first();
@@ -196,12 +198,14 @@
         @include('cloud::partials.sidebar')
     @endif
 
+    @if(!$isViewer)
     <div class="nav-section">
         <div class="nav-section-title">{{ __('app.nav_section_account') }}</div>
         <a href="{{ route('user.configuration') }}" class="nav-link {{ request()->routeIs('user.configuration*') || request()->routeIs('user.ga-import*') || request()->routeIs('user.account-users*') || request()->routeIs('user.general*') ? 'active' : '' }}">
             <i class="bi bi-gear-wide-connected"></i> Configuration
         </a>
     </div>
+    @endif
 </aside>
 
 <script>
