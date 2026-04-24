@@ -54,7 +54,7 @@ function renderTable(id, rows, labelKey, valueKey) {
     var html = '<table class="pa-table"><thead><tr><th>Location</th><th style="text-align:right">Visitors</th></tr></thead><tbody>';
     rows.forEach(function(r) {
         var pct = Math.round((+r[valueKey] / max) * 100);
-        html += '<tr><td><div style="font-weight:500">' + escHtml(r[labelKey] || '—') + '</div>' + bar(pct) + '</td>'
+        html += '<tr><td><div style="font-weight:500;display:flex;align-items:center">' + flag(r[labelKey]) + escHtml(r[labelKey] || '—') + '</div>' + bar(pct) + '</td>'
               + '<td style="text-align:right;font-variant-numeric:tabular-nums">' + (+r[valueKey]).toLocaleString() + '</td></tr>';
     });
     html += '</tbody></table>';
@@ -71,11 +71,16 @@ function renderCities(rows) {
     rows.forEach(function(r) {
         var pct = Math.round((+r.visitors / max) * 100);
         html += '<tr><td><div style="font-weight:500">' + escHtml(r.city) + '</div>' + bar(pct) + '</td>'
-              + '<td style="color:var(--pa-text-muted);font-size:0.8125rem">' + escHtml(r.country) + '</td>'
+              + '<td style="font-size:0.8125rem"><span style="display:inline-flex;align-items:center;gap:5px">' + flag(r.country) + escHtml(r.country) + '</span></td>'
               + '<td style="text-align:right;font-variant-numeric:tabular-nums">' + (+r.visitors).toLocaleString() + '</td></tr>';
     });
     html += '</tbody></table>';
     document.getElementById('cities-table').innerHTML = html;
+}
+
+function flag(code) {
+    if (!code || code === '—') return '';
+    return '<img src="/img/flags/' + code.toLowerCase() + '.svg" width="20" height="20" style="border-radius:2px;object-fit:cover;margin-right:6px;vertical-align:middle;flex-shrink:0" onerror="this.style.display=\'none\'">';
 }
 
 function escHtml(s) {

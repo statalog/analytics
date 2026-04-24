@@ -163,7 +163,7 @@ function loadLiveData() {
                 rows += '<td>' + (isLive ? '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22C55E"></span>' : '') + '</td>';
                 rows += '<td>' + formatTimestamp(v.timestamp) + '</td>';
                 rows += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">' + (v.url || '').replace(/^https?:\/\//, '') + '</td>';
-                rows += '<td>' + (v.country || '') + (!__hideCities && v.city ? ', ' + v.city : '') + '</td>';
+                rows += '<td><span style="display:inline-flex;align-items:center;gap:5px">' + (v.country ? '<img src="/img/flags/' + v.country.toLowerCase() + '.svg" width="20" height="20" style="border-radius:2px;object-fit:cover;flex-shrink:0" onerror="this.style.display=\'none\'">' : '') + (v.country || '') + (!__hideCities && v.city ? ', ' + v.city : '') + '</span></td>';
                 rows += '<td><i class="bi bi-' + deviceIcon + ' me-1"></i>' + (v.device_type || 'Desktop') + '</td>';
                 rows += '<td>' + (v.browser || '') + '</td>';
                 rows += '<td>' + getLiveReferrer(v.referrer) + '</td>';

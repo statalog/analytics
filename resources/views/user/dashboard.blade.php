@@ -46,6 +46,11 @@
 <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"></script>
 <script>
+function flagImg(code) {
+    if (!code) return '';
+    return '<img src="/img/flags/' + code.toLowerCase() + '.svg" width="20" height="20" style="border-radius:2px;object-fit:cover;flex-shrink:0" onerror="this.style.display=\'none\'">';
+}
+
 var mainChart = null;
 var chartData = {};
 var activeMetric = 'visitors';
@@ -98,7 +103,7 @@ function renderLocationsCard(locationData) {
     locationData.forEach(function(row) {
         var val = parseInt(row.visitors || 0);
         var pct = total > 0 ? Math.round(val / total * 100) : 0;
-        html += '<div class="detail-row"><span class="detail-label">' + (row.country || __t.unknown) + '</span>';
+        html += '<div class="detail-row"><span class="detail-label" style="display:inline-flex;align-items:center;gap:5px">' + flagImg(row.country) + (row.country || __t.unknown) + '</span>';
         html += '<span class="detail-value">' + val.toLocaleString() + ' (' + pct + '%)</span>';
         html += '<div class="detail-bar"><div class="detail-bar-fill" style="width:' + pct + '%"></div></div></div>';
     });
