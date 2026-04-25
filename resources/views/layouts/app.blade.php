@@ -24,6 +24,14 @@
     @endif
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
+    @php
+        $me = auth()->user();
+        $accountsUserIsMemberOf = \App\Models\AccountUser::where('user_id', $me->id)->with('owner')->get();
+        $activeOwnerId = session('active_owner_id');
+        $activeAccount = $activeOwnerId ? \App\Models\User::find($activeOwnerId) : null;
+        $topbarSites = $me->sites ?? collect();
+        $topbarSite  = ($sid = session('current_site_id')) ? $topbarSites->firstWhere('site_id', $sid) : $topbarSites->first();
+    @endphp
     <div class="topbar">
         <div class="d-flex align-items-center gap-3">
             <button class="theme-toggle d-lg-none" onclick="toggleSidebar()" aria-label="Menu">
@@ -31,20 +39,15 @@
             </button>
             <a href="{{ route('home') }}" class="topbar-brand">{{ __('app.name') }}</a>
             @if($topbarSite ?? null)
-            <span class="d-none d-lg-flex align-items-center gap-1 text-sm" style="color:var(--pa-text-muted);border-left:1px solid var(--pa-border);padding-left:1rem">
-                <i class="bi bi-globe2" style="font-size:0.75rem"></i>
-                <span style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $topbarSite->name }}</span>
-            </span>
+            <div class="d-none d-lg-flex align-items-center gap-2" style="border-left:1px solid var(--pa-border);padding-left:1rem">
+                <i class="bi bi-globe2" style="font-size:0.8rem;color:var(--pa-text-muted);flex-shrink:0"></i>
+                <div style="line-height:1.25">
+                    <div style="font-size:0.8125rem;font-weight:600;color:var(--pa-text);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $topbarSite->name }}</div>
+                    <div style="font-size:0.7rem;color:var(--pa-text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $topbarSite->domain }}</div>
+                </div>
+            </div>
             @endif
         </div>
-        @php
-            $me = auth()->user();
-            $accountsUserIsMemberOf = \App\Models\AccountUser::where('user_id', $me->id)->with('owner')->get();
-            $activeOwnerId = session('active_owner_id');
-            $activeAccount = $activeOwnerId ? \App\Models\User::find($activeOwnerId) : null;
-            $topbarSites = $me->sites ?? collect();
-            $topbarSite  = ($sid = session('current_site_id')) ? $topbarSites->firstWhere('site_id', $sid) : $topbarSites->first();
-        @endphp
 
         <div class="d-flex align-items-center gap-3">
             @if($accountsUserIsMemberOf->count() > 0)
