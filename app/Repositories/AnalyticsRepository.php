@@ -1110,7 +1110,7 @@ class AnalyticsRepository
                 countIf(timestamp >= toStartOfMonth(now())) as this_month,
                 countIf(timestamp >= toStartOfMonth(subtractMonths(now(), 1)) AND timestamp < toStartOfMonth(now())) as last_month
             FROM pageviews
-            WHERE site_id IN ('{$ids}') AND url != ''
+            WHERE site_id IN ('{$ids}') AND url != '' AND is_bot = 0
             GROUP BY site_id"
         );
 
