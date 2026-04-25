@@ -25,6 +25,10 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        if (session('is_demo')) {
+            return Redirect::route('user.profile.edit')->with('status', 'demo-blocked');
+        }
+
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {

@@ -7,7 +7,21 @@
     </h4>
 </div>
 
-<div class="row g-4">
+@if(session('is_demo'))
+<div class="alert alert-warning d-flex align-items-center gap-2 mb-4" style="font-size:0.875rem">
+    <i class="bi bi-lock-fill"></i>
+    <span>Profile settings are <strong>read-only</strong> in the demo account.</span>
+</div>
+@endif
+
+@if(session('status') === 'demo-blocked')
+<div class="alert alert-warning d-flex align-items-center gap-2 mb-4" style="font-size:0.875rem">
+    <i class="bi bi-lock-fill"></i>
+    <span>Changes are not allowed in the demo account.</span>
+</div>
+@endif
+
+<div class="row g-4" @if(session('is_demo')) style="pointer-events:none;opacity:0.55" @endif>
 
     {{-- Profile information --}}
     <div class="col-lg-6">

@@ -94,6 +94,8 @@ class AccountUserController extends Controller
 
     public function switchAccount(Request $request): RedirectResponse
     {
+        abort_if(session('is_demo'), 403);
+
         $ownerId = (int) $request->input('owner_id', 0);
         $user    = $request->user();
 

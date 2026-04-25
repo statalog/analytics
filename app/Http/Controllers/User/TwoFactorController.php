@@ -16,9 +16,18 @@ class TwoFactorController extends Controller
 {
     public function __construct(protected TwoFactorService $service) {}
 
+    private function denyDemo(): ?RedirectResponse
+    {
+        if (session('is_demo')) {
+            return redirect()->route('user.profile.edit')->with('status', 'demo-blocked');
+        }
+        return null;
+    }
+
     /** Generate a secret and show the QR setup screen. */
     public function start(Request $request): RedirectResponse
     {
+        if ($r = $this->denyDemo()) return $r;
         $this->service->generateSecret($request->user());
         return redirect()->route('user.profile.edit')->with('tfa_mode', 'setup');
     }
@@ -26,6 +35,7 @@ class TwoFactorController extends Controller
     /** User entered a 6-digit code from their authenticator — confirm and persist. */
     public function confirm(Request $request): RedirectResponse
     {
+        if ($r = $this->denyDemo()) return $r;
         $data = $request->validate(['code' => ['required', 'string', 'min:6', 'max:6']]);
 
         $user = $request->user();
@@ -44,6 +54,7 @@ class TwoFactorController extends Controller
     /** Cancel an incomplete setup (secret was generated but never confirmed). */
     public function cancel(Request $request): RedirectResponse
     {
+        if ($r = $this->denyDemo()) return $r;
         $user = $request->user();
 
         if (!$user->hasTwoFactorEnabled()) {
@@ -75,6 +86,7 @@ class TwoFactorController extends Controller
     /** Turn 2FA off (requires password confirmation). */
     public function disable(Request $request): RedirectResponse
     {
+        if ($r = $this->denyDemo()) return $r;
         $this->service->disable($request->user());
 
         return redirect()->route('user.profile.edit')->with('success', 'Two-factor authentication disabled.');

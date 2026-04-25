@@ -50,7 +50,7 @@
         </div>
 
         <div class="d-flex align-items-center gap-3">
-            @if($accountsUserIsMemberOf->count() > 0)
+            @if($accountsUserIsMemberOf->count() > 0 && !session('is_demo'))
             <div class="dropdown">
                 <button class="btn-pa-outline dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" style="padding:0.375rem 0.75rem;font-size:0.8125rem" title="Switch account">
                     <i class="bi bi-arrow-left-right"></i>
