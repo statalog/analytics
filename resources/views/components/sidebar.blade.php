@@ -181,9 +181,6 @@
                 <a href="{{ route('user.seo.meta-tags') }}" class="nav-link {{ request()->routeIs('user.seo.meta-tags*') ? 'active' : '' }}">
                     <i class="bi bi-tags"></i> Meta Tags
                 </a>
-                <a href="{{ route('user.seo.core-web-vitals') }}" class="nav-link {{ request()->routeIs('user.seo.core-web-vitals*') ? 'active' : '' }}">
-                    <i class="bi bi-speedometer2"></i> Core Web Vitals
-                </a>
             </div>
         </div>
 

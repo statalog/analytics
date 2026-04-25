@@ -7,7 +7,6 @@
             ['route' => 'user.seo.broken-links',      'icon' => 'link-break',   'label' => 'Broken Links'],
             ['route' => 'user.seo.redirect-checker',  'icon' => 'arrow-repeat', 'label' => 'Redirects'],
             ['route' => 'user.seo.meta-tags',         'icon' => 'tags',         'label' => 'Meta Tags'],
-            ['route' => 'user.seo.core-web-vitals',   'icon' => 'speedometer',  'label' => 'Core Web Vitals'],
         ];
     @endphp
     @foreach($seoLinks as $link)

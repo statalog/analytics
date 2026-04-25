@@ -234,9 +234,18 @@ class SeoToolsController extends Controller
 
     public function redirectCheckerCheck(Request $request)
     {
+        $site = $this->getCurrentSite($request);
+        if (!$site) return response()->json(['error' => 'No site selected.']);
+
         $url = trim($request->input('url', ''));
         if (!$url) return response()->json(['error' => 'No URL provided.']);
         if (!str_starts_with($url, 'http')) $url = 'https://' . $url;
+
+        $siteDomain = parse_url('https://' . $site->domain, PHP_URL_HOST);
+        $inputHost  = parse_url($url, PHP_URL_HOST);
+        if ($inputHost && $siteDomain && !str_ends_with($inputHost, $siteDomain) && $inputHost !== $siteDomain) {
+            return response()->json(['error' => 'URL must belong to the selected site (' . $site->domain . ').']);
+        }
 
         $chain   = [];
         $visited = [];
@@ -292,9 +301,18 @@ class SeoToolsController extends Controller
 
     public function metaTagsCheck(Request $request)
     {
+        $site = $this->getCurrentSite($request);
+        if (!$site) return response()->json(['error' => 'No site selected.']);
+
         $url = trim($request->input('url', ''));
         if (!$url) return response()->json(['error' => 'No URL provided.']);
         if (!str_starts_with($url, 'http')) $url = 'https://' . $url;
+
+        $siteDomain = parse_url('https://' . $site->domain, PHP_URL_HOST);
+        $inputHost  = parse_url($url, PHP_URL_HOST);
+        if ($inputHost && $siteDomain && $inputHost !== $siteDomain && !str_ends_with($inputHost, '.' . $siteDomain)) {
+            return response()->json(['error' => 'URL must belong to the selected site (' . $site->domain . ').']);
+        }
 
         try {
             $response = Http::timeout(10)
@@ -353,87 +371,4 @@ class SeoToolsController extends Controller
         return response()->json(compact('title', 'description', 'ogTitle', 'ogDesc', 'ogImage', 'canonical', 'robots', 'twitterCard', 'issues', 'final'));
     }
 
-    // -------------------------------------------------------------------------
-    // Core Web Vitals
-    // -------------------------------------------------------------------------
-
-    public function coreWebVitals(Request $request)
-    {
-        $site = $this->getCurrentSite($request);
-        if (!$site) return redirect()->route('user.sites.create');
-        return view('user.seo.core-web-vitals', [
-            'site'        => $site,
-            'hasKey'      => (bool) config('statalog.pagespeed_key'),
-            'breadcrumbs' => [['label' => 'SEO Tools'], ['label' => 'Core Web Vitals']],
-        ]);
-    }
-
-    public function coreWebVitalsCheck(Request $request)
-    {
-        $key = config('statalog.pagespeed_key');
-        if (!$key) return response()->json(['error' => 'GOOGLE_PAGESPEED_KEY not configured in .env']);
-
-        $site = $this->getCurrentSite($request);
-        if (!$site) return response()->json(['error' => 'No site selected.']);
-
-        $url      = trim($request->input('url', 'https://' . $site->domain));
-        $strategy = $request->input('strategy', 'mobile');
-
-        try {
-            $response = Http::timeout(30)->get('https://www.googleapis.com/pagespeedonline/v5/runPagespeed', [
-                'url'      => $url,
-                'key'      => $key,
-                'strategy' => $strategy,
-                'category' => 'performance',
-            ]);
-        } catch (\Throwable $e) {
-            return response()->json(['error' => 'API request failed: ' . $e->getMessage()]);
-        }
-
-        if ($response->failed()) {
-            $msg = $response->json('error.message') ?? 'API error ' . $response->status();
-            return response()->json(['error' => $msg]);
-        }
-
-        $data = $response->json();
-        $exp  = $data['loadingExperience'] ?? [];
-        $lab  = $data['lighthouseResult']['audits'] ?? [];
-        $score = (int) round(($data['lighthouseResult']['categories']['performance']['score'] ?? 0) * 100);
-
-        $field = [];
-        foreach ([
-            'lcp' => 'LARGEST_CONTENTFUL_PAINT_MS',
-            'fid' => 'FIRST_INPUT_DELAY_MS',
-            'cls' => 'CUMULATIVE_LAYOUT_SHIFT_SCORE',
-            'inp' => 'INTERACTION_TO_NEXT_PAINT',
-            'fcp' => 'FIRST_CONTENTFUL_PAINT_MS',
-            'ttfb' => 'EXPERIMENTAL_TIME_TO_FIRST_BYTE',
-        ] as $key => $metric) {
-            $m = $exp['metrics'][$metric] ?? null;
-            if ($m) {
-                $field[$key] = [
-                    'value'    => $m['percentiles']['p75'] ?? 0,
-                    'category' => $m['category'] ?? 'UNKNOWN',
-                ];
-            }
-        }
-
-        $labData = [
-            'lcp'  => $lab['largest-contentful-paint']['displayValue'] ?? null,
-            'fcp'  => $lab['first-contentful-paint']['displayValue'] ?? null,
-            'ttfb' => $lab['server-response-time']['displayValue'] ?? null,
-            'cls'  => $lab['cumulative-layout-shift']['displayValue'] ?? null,
-            'tbt'  => $lab['total-blocking-time']['displayValue'] ?? null,
-            'si'   => $lab['speed-index']['displayValue'] ?? null,
-        ];
-
-        return response()->json([
-            'score'    => $score,
-            'field'    => $field,
-            'lab'      => $labData,
-            'strategy' => $strategy,
-            'url'      => $url,
-            'has_field_data' => !empty($field),
-        ]);
-    }
 }

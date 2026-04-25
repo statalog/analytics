@@ -189,8 +189,6 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
         Route::get('/redirect-checker/check', [SeoToolsController::class, 'redirectCheckerCheck'])->name('redirect-checker.check');
         Route::get('/meta-tags',              [SeoToolsController::class, 'metaTags'])->name('meta-tags');
         Route::get('/meta-tags/check',        [SeoToolsController::class, 'metaTagsCheck'])->name('meta-tags.check');
-        Route::get('/core-web-vitals',        [SeoToolsController::class, 'coreWebVitals'])->name('core-web-vitals');
-        Route::get('/core-web-vitals/check',  [SeoToolsController::class, 'coreWebVitalsCheck'])->name('core-web-vitals.check');
     });
 
     // Monitoring — JS errors

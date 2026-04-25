@@ -731,16 +731,22 @@ class AnalyticsRepository
 
     public function searchPageUrls(string $siteId, string $query, int $limit = 25): array
     {
+        $params = ['site_id' => $siteId];
+        $where  = "site_id = :site_id AND is_bot = 0 AND url != '' AND timestamp >= now() - INTERVAL 90 DAY";
+
+        if ($query !== '') {
+            $where .= ' AND url ILIKE :q';
+            $params['q'] = '%' . $query . '%';
+        }
+
         $rows = $this->query(
             "SELECT url, count() AS hits
              FROM pageviews
-             WHERE site_id = :site_id AND is_bot = 0 AND url != ''
-               AND url ILIKE :q
-               AND timestamp >= now() - INTERVAL 90 DAY
+             WHERE {$where}
              GROUP BY url
              ORDER BY hits DESC
              LIMIT {$limit}",
-            ['site_id' => $siteId, 'q' => '%' . $query . '%']
+            $params
         );
         return array_column($rows, 'url');
     }

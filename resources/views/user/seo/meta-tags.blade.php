@@ -9,14 +9,18 @@
 @include('user.seo._nav')
 
 <div class="pa-card mb-3">
-    <div class="d-flex gap-2 flex-wrap align-items-center">
-        <input type="text" id="url-input" class="form-control" placeholder="https://example.com/page"
-               value="https://{{ $site->domain }}" style="max-width:480px"
-               onkeydown="if(event.key==='Enter')runCheck()">
-        <button onclick="runCheck()" class="btn btn-sm btn-primary" id="btn-check">
+    <div class="d-flex gap-2 align-items-center">
+        <div class="input-group" style="max-width:560px">
+            <span class="input-group-text" style="font-size:0.8125rem;color:var(--pa-text-muted);background:var(--pa-surface-alt);border-color:var(--pa-border);white-space:nowrap">https://{{ $site->domain }}</span>
+            <input type="text" id="url-input" class="form-control" placeholder="/page"
+                   style="border-color:var(--pa-border)"
+                   onkeydown="if(event.key==='Enter')runCheck()">
+        </div>
+        <button onclick="runCheck()" class="btn-pa-primary flex-shrink-0" id="btn-check">
             <i class="bi bi-play-fill me-1"></i>Analyse
         </button>
     </div>
+    <div class="text-sm-muted mt-2">Enter a path on <strong>{{ $site->domain }}</strong> to inspect its meta tags.</div>
 </div>
 
 <div id="result"></div>
@@ -24,9 +28,13 @@
 
 @push('scripts')
 <script>
+var SITE_BASE = 'https://{{ $site->domain }}';
+
 function runCheck() {
-    var url = document.getElementById('url-input').value.trim();
-    if (!url) return;
+    var path = document.getElementById('url-input').value.trim();
+    if (!path) return;
+    if (!path.startsWith('/')) path = '/' + path;
+    var url = SITE_BASE + path;
     document.getElementById('btn-check').disabled = true;
     document.getElementById('result').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-secondary" role="status"></div></div>';
 

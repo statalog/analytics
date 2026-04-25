@@ -23,11 +23,11 @@ var currentPage = 1;
 var totalPages  = 1;
 
 function visitorAvatar(id) {
-    if (!id) return '<span style="width:24px;height:24px;display:inline-block;flex-shrink:0"></span>';
+    if (!id) return '<span style="width:16px;height:16px;display:inline-block;flex-shrink:0"></span>';
     var h = 5381;
     for (var i = 0; i < id.length; i++) { h = (((h << 5) + h) ^ id.charCodeAt(i)) | 0; }
     var hue = (h >>> 0) % 360;
-    return '<span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:hsl(' + hue + ',65%,45%);flex-shrink:0"></span>';
+    return '<span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:hsl(' + hue + ',65%,45%);flex-shrink:0"></span>';
 }
 
 function flag(code) {
@@ -68,6 +68,32 @@ function deviceIcon(type) {
     if (type === 'mobile') return '<i class="bi bi-phone" title="Mobile"></i>';
     if (type === 'tablet') return '<i class="bi bi-tablet" title="Tablet"></i>';
     return '<i class="bi bi-laptop" title="Desktop"></i>';
+}
+
+function browserIcon(name) {
+    if (!name) return '';
+    var n = name.toLowerCase();
+    var cls;
+    if (n.includes('chrome') && !n.includes('chromium') && !n.includes('edge')) cls = 'bi-browser-chrome';
+    else if (n.includes('edge'))    cls = 'bi-browser-edge';
+    else if (n.includes('firefox')) cls = 'bi-browser-firefox';
+    else if (n.includes('safari') && !n.includes('chrome')) cls = 'bi-browser-safari';
+    else cls = 'bi-browser';
+    return '<i class="bi ' + cls + '" title="' + escHtml(name) + '" style="margin-right:4px;vertical-align:-1px"></i>';
+}
+
+function osIcon(name) {
+    if (!name) return '';
+    var n = name.toLowerCase();
+    var cls;
+    if (n.includes('windows'))           cls = 'bi-windows';
+    else if (n.includes('mac') || n.includes('ios') || n.includes('iphone') || n.includes('ipad')) cls = 'bi-apple';
+    else if (n.includes('android'))      cls = 'bi-android2';
+    else if (n.includes('ubuntu'))       cls = 'bi-ubuntu';
+    else if (n.includes('linux'))        cls = 'bi-linux';
+    else if (n.includes('chrome'))       cls = 'bi-browser-chrome';
+    else cls = 'bi-display';
+    return '<i class="bi ' + cls + '" title="' + escHtml(name) + '" style="margin-right:4px;vertical-align:-1px"></i>';
 }
 
 function loadPage(page) {
@@ -121,8 +147,8 @@ function render(data) {
               + '<td><span style="display:inline-flex;align-items:center">' + location + '</span></td>'
               + '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8125rem" title="' + escHtml(r.entry_page) + '">' + escHtml(fmtUrl(r.entry_page)) + '</td>'
               + '<td>' + deviceIcon(r.device_type) + '</td>'
-              + '<td class="text-sm">' + escHtml(r.browser || '—') + '</td>'
-              + '<td class="text-sm">' + escHtml(r.os || '—') + '</td>'
+              + '<td class="text-sm" style="white-space:nowrap">' + browserIcon(r.browser) + escHtml(r.browser || '—') + '</td>'
+              + '<td class="text-sm" style="white-space:nowrap">' + osIcon(r.os) + escHtml(r.os || '—') + '</td>'
               + '<td class="text-num">' + (r.pages || 0) + '</td>'
               + '<td style="text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap">' + fmtDuration(r.duration) + '</td>'
               + '<td style="font-size:0.8125rem;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + source + '</td>'

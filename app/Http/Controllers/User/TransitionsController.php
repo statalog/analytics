@@ -32,9 +32,8 @@ class TransitionsController extends Controller
         if (!$site) return response()->json([]);
 
         $q = trim($request->input('q', ''));
-        if ($q === '') return response()->json([]);
 
-        $urls = $this->analyticsFor($site)->searchPageUrls($site->site_id, $q);
+        $urls = $this->analyticsFor($site)->searchPageUrls($site->site_id, $q ?: '');
 
         return response()->json(array_map(fn($url) => ['value' => $url, 'text' => preg_replace('#^https?://#', '', $url)], $urls));
     }

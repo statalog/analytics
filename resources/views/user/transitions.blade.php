@@ -9,9 +9,11 @@
 </div>
 
 <div class="pa-card mb-3">
-    <div class="d-flex gap-2 flex-wrap align-items-center">
-        <select id="url-input" style="max-width:520px;min-width:320px"></select>
-        <button onclick="runCheck()" class="btn-pa-primary" id="btn-check">
+    <div class="d-flex gap-2 align-items-center">
+        <div style="flex:1;min-width:0">
+            <select id="url-input" style="width:100%"></select>
+        </div>
+        <button onclick="runCheck()" class="btn-pa-primary flex-shrink-0" id="btn-check">
             <i class="bi bi-play-fill me-1"></i>Analyse
         </button>
     </div>
@@ -164,10 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var ts = new TomSelect('#url-input', {
         maxOptions: 25,
-        openOnFocus: false,
-        placeholder: 'Type to search pages…',
+        openOnFocus: true,
+        placeholder: 'Select or search a page…',
+        preload: true,
         load: function(query, callback) {
-            if (!query.length) return callback();
             fetch(searchUrl + '?q=' + encodeURIComponent(query))
                 .then(function(r) { return r.json(); })
                 .then(callback)
