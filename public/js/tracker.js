@@ -12,7 +12,7 @@
 
             var canvas = document.createElement('canvas');
             canvas.id = '_st_heatmap';
-            var W = Math.max(document.documentElement.scrollWidth, document.body ? document.body.scrollWidth : 0);
+            var W = document.documentElement.clientWidth || window.innerWidth || 800;
             var H = Math.max(document.documentElement.scrollHeight, document.body ? document.body.scrollHeight : 0);
             canvas.width  = W;
             canvas.height = H;
