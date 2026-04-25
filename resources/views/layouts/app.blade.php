@@ -83,6 +83,12 @@
             </div>
             @endif
 
+            @if(Route::has('cloud.billing.plans') && !session('is_demo'))
+            @php $topbarPlan = $activeAccount ? $activeAccount->plan : $me->plan; @endphp
+            <a href="{{ route('cloud.billing.plans') }}" class="btn-pa-outline" style="padding:0.3rem 0.75rem;font-size:0.8125rem;font-weight:600;white-space:nowrap" title="Current plan">
+                <i class="bi bi-layers me-1 icon-primary"></i>{{ $topbarPlan?->name ?? 'Free' }}
+            </a>
+            @endif
             <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">
                 <i class="bi bi-sun-fill" id="theme-icon" style="color:var(--pa-warning)"></i>
             </button>
