@@ -86,7 +86,9 @@ function renderPoints(points) {
 }
 
 function loadMapData(from, to) {
+    var params = new URLSearchParams(window.location.search);
     var url = '{{ route("user.visitor-map.data") }}?from=' + encodeURIComponent(from) + '&to=' + encodeURIComponent(to);
+    if (params.get('bots')) url += '&bots=' + encodeURIComponent(params.get('bots'));
     fetch(url)
         .then(function(r) { return r.json(); })
         .then(function(data) {

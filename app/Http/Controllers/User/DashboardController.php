@@ -92,6 +92,7 @@ class DashboardController extends Controller
             'topPages'    => $repo->getTopPages($site->site_id, $from, $to),
             'sources'     => $repo->getTrafficSources($site->site_id, $from, $to),
             'locations'   => $repo->getLocations($site->site_id, $from, $to),
+            'mapPoints'   => $repo->getVisitorMapPoints($site->site_id, $from, $to),
             'devices'     => $repo->getDevices($site->site_id, $from, $to),
             'browsers'    => $repo->getBrowsers($site->site_id, $from, $to),
             'os'          => $repo->getOperatingSystems($site->site_id, $from, $to),

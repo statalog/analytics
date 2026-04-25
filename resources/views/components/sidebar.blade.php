@@ -184,6 +184,10 @@
             </div>
         </div>
 
+        <a href="{{ route('user.pdf-report') }}" class="nav-link {{ request()->routeIs('user.pdf-report*') ? 'active' : '' }}">
+            <i class="bi bi-file-earmark-pdf"></i> PDF Report
+        </a>
+
         {{-- Cloud injects AI Insights, Email reports, Heatmaps, etc. here. --}}
         @if(view()->exists('cloud::partials.tools'))
             @include('cloud::partials.tools')

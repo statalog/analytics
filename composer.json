@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.3",
         "bacon/bacon-qr-code": "^3.1",
+        "barryvdh/laravel-dompdf": "^3.1",
         "cybercog/laravel-clickhouse": "^0.2.1",
         "donatj/phpuseragentparser": "^1.11",
         "google/apiclient": "^2.19",

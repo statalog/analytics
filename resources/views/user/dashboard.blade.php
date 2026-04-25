@@ -25,27 +25,22 @@
     </div>
 
     <div class="row g-3">
-        <div class="col-lg-4 col-md-6" id="card-pages"></div>
-        <div class="col-lg-4 col-md-6" id="card-sources"></div>
-        <div class="col-lg-4 col-md-6" id="card-locations"></div>
-        <div class="col-lg-4 col-md-6" id="card-devices"></div>
-        <div class="col-lg-4 col-md-6" id="card-browsers"></div>
-        <div class="col-lg-4 col-md-6" id="card-os"></div>
-        <div class="col-lg-4 col-md-6" id="card-resolutions"></div>
+        <div class="col-lg-6" id="card-pages"></div>
+        <div class="col-lg-6" id="card-sources"></div>
+        <div class="col-lg-6" id="card-locations"></div>
+        <div class="col-lg-6" id="card-locations-map"></div>
+        <div class="col-lg-6" id="card-devices"></div>
+        <div class="col-lg-6" id="card-browsers"></div>
+        <div class="col-lg-6" id="card-os"></div>
+        <div class="col-lg-6" id="card-resolutions"></div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css">
-<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
-function flagImg(code) {
-    if (!code) return '';
-    return '<img src="/img/flags/' + code.toLowerCase() + '.svg" width="20" height="20" style="border-radius:2px;object-fit:cover;flex-shrink:0" onerror="this.style.display=\'none\'">';
-}
-
 var mainChart = null;
 var chartData = {};
 var activeMetric = 'visitors';
@@ -53,6 +48,7 @@ var __t = {
     topPages:    @json(__('analytics.card_top_pages')),
     sources:     @json(__('analytics.card_traffic_sources')),
     locations:   @json(__('analytics.card_locations')),
+    locMap:      'Locations Map',
     devices:     @json(__('analytics.card_devices')),
     browsers:    @json(__('analytics.card_browsers')),
     os:          @json(__('analytics.card_operating_systems')),
@@ -60,8 +56,13 @@ var __t = {
     noData:      @json(__('analytics.no_data_available')),
     unknown:     @json(__('analytics.unknown')),
 };
-var __locationData = [];
-var __locMap = null;
+var __dashMap = null;
+var __dashMarkers = null;
+
+function flagImg(code) {
+    if (!code) return '';
+    return '<img src="/img/flags/' + code.toLowerCase() + '.svg" width="20" height="20" style="border-radius:2px;object-fit:cover;flex-shrink:0" onerror="this.style.display=\'none\'">';
+}
 
 function getSourceIcon(source) {
     if (!source || source === 'Direct') return '<i class="bi bi-cursor me-1"></i>';
@@ -79,10 +80,10 @@ function getSourceIcon(source) {
 
 function getBrowserIcon(browser) {
     var b = (browser || '').toLowerCase();
-    if (b === 'chrome')          return '<i class="bi bi-browser-chrome me-1"></i>';
-    if (b === 'firefox')         return '<i class="bi bi-browser-firefox me-1"></i>';
-    if (b === 'safari')          return '<i class="bi bi-browser-safari me-1"></i>';
-    if (b === 'edge')            return '<i class="bi bi-browser-edge me-1"></i>';
+    if (b === 'chrome')  return '<i class="bi bi-browser-chrome me-1"></i>';
+    if (b === 'firefox') return '<i class="bi bi-browser-firefox me-1"></i>';
+    if (b === 'safari')  return '<i class="bi bi-browser-safari me-1"></i>';
+    if (b === 'edge')    return '<i class="bi bi-browser-edge me-1"></i>';
     return '<i class="bi bi-window me-1"></i>';
 }
 
@@ -105,14 +106,28 @@ function getOsIcon(os) {
     return '<i class="bi bi-question-circle me-1"></i>';
 }
 
+function renderDetailCard(id, title, rows, labelKey, valueKey, labelFn) {
+    if (!document.getElementById(id)) return;
+    var total = 0;
+    rows.forEach(function(r) { total += parseInt(r[valueKey] || 0); });
+    var html = '<div class="detail-card"><div class="detail-card-header"><h6>' + title + '</h6></div><div class="detail-card-body">';
+    if (!rows.length) html += '<div class="detail-row"><span class="detail-label text-muted">' + __t.noData + '</span></div>';
+    rows.forEach(function(row) {
+        var val = parseInt(row[valueKey] || 0);
+        var pct = total > 0 ? Math.round(val / total * 100) : 0;
+        var label = labelFn ? labelFn(row) : (row[labelKey] || __t.unknown);
+        html += '<div class="detail-row"><span class="detail-label">' + label + '</span>';
+        html += '<span class="detail-value">' + val.toLocaleString() + ' (' + pct + '%)</span>';
+        html += '<div class="detail-bar"><div class="detail-bar-fill" style="width:' + pct + '%"></div></div></div>';
+    });
+    html += '</div></div>';
+    document.getElementById(id).innerHTML = html;
+}
+
 function renderLocationsCard(locationData) {
-    __locationData = locationData;
     var total = 0;
     locationData.forEach(function(r) { total += parseInt(r.visitors || 0); });
-    var html = '<div class="detail-card"><div class="detail-card-header"><h6>' + __t.locations + '</h6>';
-    html += '<div style="display:flex;gap:4px"><button class="date-range-btn active" id="loc-btn-table" onclick="switchLocTab(\'table\')"><i class="bi bi-list-ul"></i></button>';
-    html += '<button class="date-range-btn" id="loc-btn-map" onclick="switchLocTab(\'map\')"><i class="bi bi-globe2"></i></button></div></div>';
-    html += '<div id="loc-tab-table" class="detail-card-body">';
+    var html = '<div class="detail-card"><div class="detail-card-header"><h6>' + __t.locations + '</h6></div><div class="detail-card-body">';
     if (!locationData.length) html += '<div class="detail-row"><span class="detail-label text-muted">' + __t.noData + '</span></div>';
     locationData.forEach(function(row) {
         var val = parseInt(row.visitors || 0);
@@ -121,32 +136,53 @@ function renderLocationsCard(locationData) {
         html += '<span class="detail-value">' + val.toLocaleString() + ' (' + pct + '%)</span>';
         html += '<div class="detail-bar"><div class="detail-bar-fill" style="width:' + pct + '%"></div></div></div>';
     });
-    html += '</div><div id="loc-tab-map" style="display:none;padding:8px 4px"><div id="locations-map" style="height:220px"></div></div></div>';
+    html += '</div></div>';
     document.getElementById('card-locations').innerHTML = html;
 }
 
-function switchLocTab(tab) {
-    document.getElementById('loc-tab-table').style.display = tab === 'table' ? '' : 'none';
-    document.getElementById('loc-tab-map').style.display   = tab === 'map'   ? '' : 'none';
-    document.getElementById('loc-btn-table').classList.toggle('active', tab === 'table');
-    document.getElementById('loc-btn-map').classList.toggle('active',   tab === 'map');
-    if (tab === 'map') initLocationMap();
-}
+function renderLocationsMapCard(points) {
+    var el = document.getElementById('card-locations-map');
+    if (!el) return;
+    el.innerHTML = '<div class="detail-card"><div class="detail-card-header"><h6>' + __t.locMap + '</h6></div>'
+        + '<div style="padding:8px"><div id="dash-map" style="height:280px;border-radius:6px;background:#e8edf2"></div></div></div>';
 
-function initLocationMap() {
-    var values = {};
-    __locationData.forEach(function(r) {
-        if (r.country && r.country !== 'Unknown') values[r.country.toUpperCase()] = parseInt(r.visitors || 0);
-    });
-    if (__locMap) { try { __locMap.destroy(); } catch(e) {} __locMap = null; }
-    try {
-        __locMap = new jsVectorMap({
-            selector: '#locations-map', map: 'world',
-            series: { regions: [{ values: values, scale: [paColor(0.2), paColor()], normalizeFunction: 'polynomial' }] },
-            regionStyle: { initial: { fill: 'var(--pa-border)', stroke: 'var(--pa-bg)', strokeWidth: 0.3 }, hover: { fill: paColor(), cursor: 'pointer' } },
-            backgroundColor: 'transparent', zoomOnScroll: false,
+    if (__dashMap) { try { __dashMap.remove(); } catch(e) {} __dashMap = null; }
+
+    requestAnimationFrame(function() {
+        __dashMap = L.map('dash-map', { zoomControl: true, scrollWheelZoom: false });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd', maxZoom: 19
+        }).addTo(__dashMap);
+        __dashMarkers = L.layerGroup().addTo(__dashMap);
+        __dashMap.setView([20, 0], 2);
+
+        if (!points || !points.length) return;
+
+        var maxHits = Math.max.apply(null, points.map(function(p) { return parseInt(p.hits) || 1; }));
+        var bounds = [];
+
+        points.forEach(function(p) {
+            var lat = parseFloat(p.latitude);
+            var lng = parseFloat(p.longitude);
+            if (!lat && !lng) return;
+            var hits = parseInt(p.hits) || 1;
+            var r = Math.max(5, Math.min(22, 5 + (hits / maxHits) * 17));
+            var opacity = Math.max(0.4, Math.min(0.85, 0.4 + (hits / maxHits) * 0.45));
+            var circle = L.circleMarker([lat, lng], {
+                radius: r, fillColor: paColor(), color: paColor(0.8),
+                weight: 1, opacity: 0.8, fillOpacity: opacity
+            });
+            var label = p.city ? p.city + (p.country ? ', ' + p.country : '') : (p.country || '');
+            circle.bindTooltip('<strong>' + (label || 'Unknown') + '</strong><br>' + hits + (hits === 1 ? ' visitor' : ' visitors'), { direction: 'top', offset: [0, -4] });
+            __dashMarkers.addLayer(circle);
+            bounds.push([lat, lng]);
         });
-    } catch(e) {}
+
+        if (bounds.length > 0) {
+            __dashMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 7 });
+        }
+    });
 }
 
 function loadDashboardData() {
@@ -158,6 +194,7 @@ function loadDashboardData() {
             renderDetailCard('card-pages',    __t.topPages,   data.topPages || [],   'url',    'pageviews', function(r) { return (r.url || __t.unknown).replace(/^https?:\/\//, ''); });
             renderDetailCard('card-sources',  __t.sources,    data.sources || [],    'source', 'visits',    function(r) { return getSourceIcon(r.source) + (r.source || __t.unknown); });
             renderLocationsCard(data.locations || []);
+            renderLocationsMapCard(data.mapPoints || []);
             renderDetailCard('card-devices',  __t.devices,    data.devices || [],    'device', 'visitors',  function(r) { return getDeviceIcon(r.device) + (r.device || __t.unknown); });
             renderDetailCard('card-browsers', __t.browsers,   data.browsers || [],   'browser','visitors',  function(r) { return getBrowserIcon(r.browser) + (r.browser || __t.unknown); });
             renderDetailCard('card-os',       __t.os,         data.os || [],         'os',     'visitors',  function(r) { return getOsIcon(r.os) + (r.os || __t.unknown); });
@@ -185,24 +222,6 @@ function renderStats(stats) {
         html += '<div class="stat-value">' + stat.value + '</div><div class="stat-label">' + stat.label + '</div></div></div>';
     });
     document.getElementById('stats-row').innerHTML = html;
-}
-
-function renderDetailCard(id, title, rows, labelKey, valueKey, labelFn) {
-    if (!document.getElementById(id)) return;
-    var total = 0;
-    rows.forEach(function(r) { total += parseInt(r[valueKey] || 0); });
-    var html = '<div class="detail-card"><div class="detail-card-header"><h6>' + title + '</h6></div><div class="detail-card-body">';
-    if (!rows.length) html += '<div class="detail-row"><span class="detail-label text-muted">' + __t.noData + '</span></div>';
-    rows.forEach(function(row) {
-        var val = parseInt(row[valueKey] || 0);
-        var pct = total > 0 ? Math.round(val / total * 100) : 0;
-        var label = labelFn ? labelFn(row) : (row[labelKey] || __t.unknown);
-        html += '<div class="detail-row"><span class="detail-label">' + label + '</span>';
-        html += '<span class="detail-value">' + val.toLocaleString() + ' (' + pct + '%)</span>';
-        html += '<div class="detail-bar"><div class="detail-bar-fill" style="width:' + pct + '%"></div></div></div>';
-    });
-    html += '</div></div>';
-    document.getElementById(id).innerHTML = html;
 }
 
 function formatDuration(s) {

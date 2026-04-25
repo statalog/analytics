@@ -36,6 +36,7 @@ use App\Http\Controllers\User\WebsitesController;
 use App\Http\Controllers\User\SocialNetworksController;
 use App\Http\Controllers\User\AiSourcesController;
 use App\Http\Controllers\User\SeoToolsController;
+use App\Http\Controllers\User\PdfReportController;
 use Illuminate\Support\Facades\Route;
 
 // Root: authed users go to dashboard. Guests see the cloud landing page
@@ -196,6 +197,10 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/errors/data',               [ErrorController::class, 'data'])->name('errors.data');
     Route::get('/errors/{fingerprint}',      [ErrorController::class, 'show'])->name('errors.show');
     Route::get('/errors/{fingerprint}/data', [ErrorController::class, 'showData'])->name('errors.show.data');
+
+    // PDF report
+    Route::get('/pdf-report',          [PdfReportController::class, 'index'])->name('pdf-report');
+    Route::get('/pdf-report/generate', [PdfReportController::class, 'generate'])->name('pdf-report.generate');
 
     // Account switching — available to all roles
     Route::post('/account-users/switch', [AccountUserController::class, 'switchAccount'])->name('account-users.switch');
