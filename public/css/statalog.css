@@ -152,7 +152,7 @@ h1, h2, h3, h4, h5, h6 {
 .text-sm-muted { font-size: var(--pa-font-sm); color: var(--pa-text-muted); }
 .text-xs-muted { font-size: var(--pa-font-xs); color: var(--pa-text-muted); }
 
-.icon-muted    { color: var(--pa-text-muted); opacity: 0.5; font-size: var(--pa-font-sm); }
+.icon-muted    { color: var(--pa-text-muted); opacity: 0.5; font-size: var(--pa-font-lg); }
 .icon-primary  { color: var(--pa-primary); }
 
 .topbar-brand {
