@@ -79,6 +79,14 @@ class AccountUserController extends Controller
     {
         abort_unless($member->owner_id === auth()->id(), 403);
         $member->siteAccess()->detach();
+
+        // Clean up any invitations sent to this member for this owner's account.
+        if ($member->user) {
+            \App\Models\Invitation::where('owner_id', $member->owner_id)
+                ->where('email', $member->user->email)
+                ->delete();
+        }
+
         $member->delete();
 
         return redirect()->route('user.account-users.index')->with('success', 'Access revoked.');
