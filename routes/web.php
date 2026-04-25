@@ -184,8 +184,8 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
         Route::get('/sitemap/check',          [SeoToolsController::class, 'sitemapCheck'])->name('sitemap.check');
         Route::get('/robots',                 [SeoToolsController::class, 'robots'])->name('robots');
         Route::get('/robots/check',           [SeoToolsController::class, 'robotsCheck'])->name('robots.check');
-        Route::get('/broken-links',           [SeoToolsController::class, 'brokenLinks'])->name('broken-links');
-        Route::post('/broken-links/scan',     [SeoToolsController::class, 'brokenLinksScan'])->name('broken-links.scan');
+        Route::get('/broken-links',       [SeoToolsController::class, 'brokenLinks'])->name('broken-links');
+        Route::post('/broken-links/scan', [SeoToolsController::class, 'brokenLinksScan'])->name('broken-links.scan');
         Route::get('/redirect-checker',       [SeoToolsController::class, 'redirectChecker'])->name('redirect-checker');
         Route::get('/redirect-checker/check', [SeoToolsController::class, 'redirectCheckerCheck'])->name('redirect-checker.check');
         Route::get('/meta-tags',              [SeoToolsController::class, 'metaTags'])->name('meta-tags');
@@ -206,30 +206,29 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::post('/account-users/switch', [AccountUserController::class, 'switchAccount'])->name('account-users.switch');
     Route::get('/account-picker',        [AccountUserController::class, 'picker'])->name('account-users.picker');
 
-    // Configuration & management — hidden from viewers entirely
-    Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
-    Route::get('/account-users', [AccountUserController::class, 'index'])->name('account-users.index');
-    Route::put('/account-users/{member}',    [AccountUserController::class, 'update'])->name('account-users.update');
-    Route::delete('/account-users/{member}', [AccountUserController::class, 'destroy'])->name('account-users.destroy');
+    // Configuration & management — write operations blocked for demo + viewers
+    Route::middleware('not-viewer')->group(function () {
+        Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
+        Route::get('/account-users', [AccountUserController::class, 'index'])->name('account-users.index');
+        Route::put('/account-users/{member}',    [AccountUserController::class, 'update'])->name('account-users.update');
+        Route::delete('/account-users/{member}', [AccountUserController::class, 'destroy'])->name('account-users.destroy');
 
-    // Invitations
-    Route::post('/invitations',                  [InvitationController::class, 'store'])->name('invitations.store');
-    Route::delete('/invitations/{invitation}',   [InvitationController::class, 'destroy'])->name('invitations.destroy');
+        Route::post('/invitations',                [InvitationController::class, 'store'])->name('invitations.store');
+        Route::delete('/invitations/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
 
-    // Google Analytics import
-    Route::get('/ga-import',                        [GaImportController::class, 'index'])->name('ga-import');
-    Route::post('/ga-import/connect',               [GaImportController::class, 'connect'])->name('ga-import.connect');
-    Route::get('/ga-import/callback',               [GaImportController::class, 'callback'])->name('ga-import.callback');
-    Route::delete('/ga-import/disconnect',          [GaImportController::class, 'disconnect'])->name('ga-import.disconnect');
-    Route::get('/ga-import/select',                 [GaImportController::class, 'selectProperty'])->name('ga-import.select');
-    Route::post('/ga-import/start',                 [GaImportController::class, 'start'])->name('ga-import.start');
-    Route::get('/ga-import/progress/{import}',      [GaImportController::class, 'progress'])->name('ga-import.progress');
-    Route::get('/ga-import/progress/{import}/data', [GaImportController::class, 'progressData'])->name('ga-import.progress.data');
-    Route::get('/ga-import/summary/{site}',         [GaImportController::class, 'summary'])->name('ga-import.summary');
+        Route::get('/ga-import',                        [GaImportController::class, 'index'])->name('ga-import');
+        Route::post('/ga-import/connect',               [GaImportController::class, 'connect'])->name('ga-import.connect');
+        Route::get('/ga-import/callback',               [GaImportController::class, 'callback'])->name('ga-import.callback');
+        Route::delete('/ga-import/disconnect',          [GaImportController::class, 'disconnect'])->name('ga-import.disconnect');
+        Route::get('/ga-import/select',                 [GaImportController::class, 'selectProperty'])->name('ga-import.select');
+        Route::post('/ga-import/start',                 [GaImportController::class, 'start'])->name('ga-import.start');
+        Route::get('/ga-import/progress/{import}',      [GaImportController::class, 'progress'])->name('ga-import.progress');
+        Route::get('/ga-import/progress/{import}/data', [GaImportController::class, 'progressData'])->name('ga-import.progress.data');
+        Route::get('/ga-import/summary/{site}',         [GaImportController::class, 'summary'])->name('ga-import.summary');
 
-    // General (privacy & data settings)
-    Route::get('/general', [SettingsController::class, 'index'])->name('general');
-    Route::put('/general', [SettingsController::class, 'update'])->name('general.update');
+        Route::get('/general', [SettingsController::class, 'index'])->name('general');
+        Route::put('/general', [SettingsController::class, 'update'])->name('general.update');
+    });
 
     // Profile (own account — viewers can edit their own profile)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
