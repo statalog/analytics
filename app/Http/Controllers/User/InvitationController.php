@@ -13,7 +13,6 @@ use App\Models\AccountUser;
 use App\Models\Invitation;
 use App\Models\Site;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -137,14 +136,13 @@ class InvitationController extends Controller
                 ->with('error', 'An account with this email already exists. Please log in instead.');
         }
 
-        // Create the user.
+        // Create the user — email is already verified via the invitation link.
         $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $invitation->email,
-            'password' => Hash::make($data['password']),
+            'name'             => $data['name'],
+            'email'            => $invitation->email,
+            'password'         => Hash::make($data['password']),
+            'email_verified_at' => now(),
         ]);
-
-        event(new Registered($user));
 
         // Accept the invitation.
         $this->applyInvitation($invitation, $user);
@@ -190,6 +188,11 @@ class InvitationController extends Controller
     /** Shared logic: create AccountUser record and mark invitation accepted. */
     private function applyInvitation(Invitation $invitation, User $user): void
     {
+        // Accepting an invitation via email link confirms the address.
+        if (!$user->email_verified_at) {
+            $user->forceFill(['email_verified_at' => now()])->save();
+        }
+
         $member = AccountUser::firstOrCreate(
             ['owner_id' => $invitation->owner_id, 'user_id' => $user->id],
             ['role' => $invitation->role],

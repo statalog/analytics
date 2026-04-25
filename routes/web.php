@@ -61,7 +61,7 @@ Route::get('/account', fn () => redirect()->route('user.sites.index'));
 Route::get('/account/dashboard', fn () => redirect()->route('user.dashboard'));
 
 // User panel
-Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
+Route::prefix('account')->name('user.')->middleware(['auth', 'verified'])->group(function () {
 
     // Overview merged into Websites; keep a redirect for bookmarks / old links.
     Route::get('/overview', fn () => redirect()->route('user.sites.index'))->name('overview');
