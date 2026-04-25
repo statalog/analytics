@@ -72,6 +72,12 @@ class SiteController extends Controller
 
         usort($siteStats, fn ($a, $b) => $b['visitors'] - $a['visitors']);
 
+        $billingUsage = null;
+        if (class_exists(\Statalog\Cloud\Services\UsageService::class)) {
+            $billingUsage = app(\Statalog\Cloud\Services\UsageService::class)
+                ->currentPeriodUsage($request->user());
+        }
+
         return view('user.sites.index', [
             'breadcrumbs'    => [['label' => 'Websites']],
             'sites'          => $sites,
@@ -80,6 +86,7 @@ class SiteController extends Controller
             'totalSessions'  => $totalSessions,
             'totalPageviews' => $totalPageviews,
             'totalTrend'     => $this->calculateTrend($totalVisitors, $prevTotalVisitors),
+            'billingUsage'   => $billingUsage,
         ]);
     }
 

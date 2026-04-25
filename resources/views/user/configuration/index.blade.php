@@ -20,13 +20,13 @@
             'url'    => route('user.general'),
             'status' => null,
         ],
-        [
+        ...(Route::has('user.account-users.index') ? [[
             'icon'   => 'people',
-            'title'  => 'Account users',
+            'title'  => 'Team members',
             'desc'   => 'Grant admins and viewers access to your account. Admins manage everything; viewers are read-only.',
             'url'    => route('user.account-users.index'),
             'status' => null,
-        ],
+        ]] : []),
         [
             'icon'   => 'cloud-download',
             'title'  => 'Google Analytics Import',

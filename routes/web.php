@@ -4,7 +4,6 @@ use App\Http\Controllers\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicDashboardController;
 use App\Http\Controllers\User\CampaignsController;
-use App\Http\Controllers\User\InvitationController;
 use App\Http\Controllers\User\ConfigurationController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\EntryExitController;
@@ -18,7 +17,6 @@ use App\Http\Controllers\User\LiveStatsController;
 use App\Http\Controllers\User\NewVsReturningController;
 use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\SiteController;
-use App\Http\Controllers\User\AccountUserController;
 use App\Http\Controllers\User\DevicesController;
 use App\Http\Controllers\User\LocationsController;
 use App\Http\Controllers\User\PagesController;
@@ -202,22 +200,11 @@ Route::prefix('account')->name('user.')->middleware(['auth', 'verified'])->group
     Route::get('/pdf-report',          [PdfReportController::class, 'index'])->name('pdf-report');
     Route::get('/pdf-report/generate', [PdfReportController::class, 'generate'])->name('pdf-report.generate');
 
-    // Account switching — available to all roles
-    Route::post('/account-users/switch', [AccountUserController::class, 'switchAccount'])->name('account-users.switch');
-    Route::get('/account-picker',        [AccountUserController::class, 'picker'])->name('account-users.picker');
-
     // Configuration overview — readable by demo + viewers, sub-pages are write-protected
     Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
 
     // Configuration & management — write operations blocked for demo + viewers
     Route::middleware('not-viewer')->group(function () {
-        Route::get('/account-users', [AccountUserController::class, 'index'])->name('account-users.index');
-        Route::put('/account-users/{member}',    [AccountUserController::class, 'update'])->name('account-users.update');
-        Route::delete('/account-users/{member}', [AccountUserController::class, 'destroy'])->name('account-users.destroy');
-
-        Route::post('/invitations',                [InvitationController::class, 'store'])->name('invitations.store');
-        Route::delete('/invitations/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
-
         Route::get('/ga-import',                        [GaImportController::class, 'index'])->name('ga-import');
         Route::post('/ga-import/connect',               [GaImportController::class, 'connect'])->name('ga-import.connect');
         Route::get('/ga-import/callback',               [GaImportController::class, 'callback'])->name('ga-import.callback');
@@ -253,11 +240,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/two-factor-challenge',  [TwoFactorChallengeController::class, 'create'])->name('two-factor.challenge');
     Route::post('/two-factor-challenge', [TwoFactorChallengeController::class, 'store']);
 });
-
-// Public invitation accept page (no auth required)
-Route::get('/invite/{token}',          [InvitationController::class, 'show'])->name('invitations.show');
-Route::post('/invite/{token}/register',[InvitationController::class, 'register'])->name('invitations.register');
-Route::post('/invite/{token}',         [InvitationController::class, 'accept'])->name('invitations.accept')->middleware('auth');
 
 // Public shared dashboards — read-only analytics at /share/{token}
 Route::get('/share/{token}',         [PublicDashboardController::class, 'show'])->name('public.dashboard');

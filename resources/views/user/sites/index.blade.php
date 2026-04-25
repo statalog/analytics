@@ -27,7 +27,7 @@
 @else
 
 {{-- Totals across all sites --}}
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:2rem">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem">
     @php
     $cards = [
         ['label' => 'Total Visitors',  'value' => number_format($totalVisitors),  'icon' => 'people',  'trend' => $totalTrend],
@@ -51,6 +51,51 @@
     </div>
     @endforeach
 </div>
+
+{{-- Billing period usage bar (cloud only) --}}
+@if(!empty($billingUsage))
+@php
+    $bu        = $billingUsage;
+    $buPct     = $bu['limit'] > 0 ? (int) round($bu['ratio'] * 100) : null;
+    $buColor   = $bu['ratio'] >= 1.0 ? 'var(--pa-danger)' : ($bu['ratio'] >= 0.8 ? 'var(--pa-warning)' : 'var(--pa-primary)');
+    $periodPct = $bu['daysTotal'] > 0 ? (int) round($bu['daysElapsed'] / $bu['daysTotal'] * 100) : 0;
+@endphp
+<div class="pa-card mb-4" style="padding:1rem 1.25rem">
+    <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+        <div>
+            <span style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--pa-text-muted)">Plan usage</span>
+            <span style="font-size:0.75rem;color:var(--pa-text-muted);margin-left:0.5rem">
+                Billing period: {{ $bu['from']->format('M j') }} – {{ $bu['to']->format('M j, Y') }}
+                &middot; Day {{ $bu['daysElapsed'] }} of {{ $bu['daysTotal'] }}
+            </span>
+        </div>
+        <div style="font-size:0.8125rem;color:var(--pa-text-muted)">
+            <strong style="color:var(--pa-text)">{{ number_format($bu['used']) }}</strong>
+            @if($bu['limit'] > 0)
+                / {{ number_format($bu['limit']) }} pageviews
+                @if($buPct !== null)
+                    &middot; <span style="color:{{ $buColor }};font-weight:600">{{ $buPct }}% used</span>
+                @endif
+            @else
+                pageviews &middot; <span style="color:var(--pa-success);font-weight:600">Unlimited</span>
+            @endif
+        </div>
+    </div>
+
+    @if($bu['limit'] > 0)
+    <div style="position:relative;height:8px;background:var(--pa-input-bg);border-radius:9999px;overflow:hidden">
+        {{-- Time elapsed (faint track) --}}
+        <div style="position:absolute;inset:0;width:{{ $periodPct }}%;background:var(--pa-border);border-radius:9999px"></div>
+        {{-- Pageviews used --}}
+        <div style="position:absolute;inset:0;width:{{ min(100, $buPct ?? 0) }}%;background:{{ $buColor }};border-radius:9999px;transition:width 0.3s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--pa-text-muted);margin-top:0.35rem">
+        <span>{{ $bu['from']->format('M j') }}</span>
+        <span>Resets {{ $bu['to']->format('M j') }}</span>
+    </div>
+    @endif
+</div>
+@endif
 
 <div style="font-size:0.8125rem;font-weight:600;color:var(--pa-text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Your Websites</div>
 

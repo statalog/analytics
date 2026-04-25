@@ -202,7 +202,7 @@
     @if(!$isViewer || session('is_demo'))
     <div class="nav-section">
         <div class="nav-section-title">{{ __('app.nav_section_account') }}</div>
-        <a href="{{ route('user.configuration') }}" class="nav-link {{ request()->routeIs('user.configuration*') || request()->routeIs('user.ga-import*') || request()->routeIs('user.account-users*') || request()->routeIs('user.general*') ? 'active' : '' }}">
+        <a href="{{ route('user.configuration') }}" class="nav-link {{ request()->routeIs('user.configuration*') || request()->routeIs('user.ga-import*') || request()->routeIs('user.general*') ? 'active' : '' }}">
             <i class="bi bi-gear-wide-connected"></i> Configuration
         </a>
     </div>
