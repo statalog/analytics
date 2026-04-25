@@ -1004,3 +1004,19 @@ input:checked + .toggle-track + .toggle-dot { transform: translate(18px, -50%); 
 }
 
 body.pa-modal-open { overflow: hidden; }
+
+/* Badge status pills */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.2rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+}
+.badge-status.success { background: color-mix(in srgb, var(--pa-success) 15%, transparent); color: var(--pa-success); }
+.badge-status.danger  { background: color-mix(in srgb, var(--pa-danger)  15%, transparent); color: var(--pa-danger); }
+.badge-status.warning { background: color-mix(in srgb, var(--pa-warning) 15%, transparent); color: var(--pa-warning); }
+.badge-status.primary { background: var(--pa-primary-soft); color: var(--pa-primary); }
+.badge-status.muted   { background: var(--pa-input-bg); color: var(--pa-text-muted); }
