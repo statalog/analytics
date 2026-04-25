@@ -206,9 +206,11 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::post('/account-users/switch', [AccountUserController::class, 'switchAccount'])->name('account-users.switch');
     Route::get('/account-picker',        [AccountUserController::class, 'picker'])->name('account-users.picker');
 
+    // Configuration overview — readable by demo + viewers, sub-pages are write-protected
+    Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
+
     // Configuration & management — write operations blocked for demo + viewers
     Route::middleware('not-viewer')->group(function () {
-        Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
         Route::get('/account-users', [AccountUserController::class, 'index'])->name('account-users.index');
         Route::put('/account-users/{member}',    [AccountUserController::class, 'update'])->name('account-users.update');
         Route::delete('/account-users/{member}', [AccountUserController::class, 'destroy'])->name('account-users.destroy');
