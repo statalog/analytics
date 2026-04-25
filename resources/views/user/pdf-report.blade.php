@@ -43,17 +43,21 @@
                     <label class="auth-label d-block mb-2">Sections to include</label>
                     <div class="d-flex flex-column gap-2">
                         @foreach([
-                            'summary'   => ['icon' => 'grid-1x2',        'label' => 'Summary stats'],
-                            'pages'     => ['icon' => 'file-earmark',    'label' => 'Top pages'],
-                            'sources'   => ['icon' => 'diagram-3',       'label' => 'Traffic sources'],
-                            'locations' => ['icon' => 'geo-alt',         'label' => 'Locations'],
-                            'devices'   => ['icon' => 'phone',           'label' => 'Devices & browsers'],
+                            'summary'   => ['icon' => 'grid-1x2',     'label' => 'Summary stats'],
+                            'pages'     => ['icon' => 'file-earmark', 'label' => 'Top pages'],
+                            'sources'   => ['icon' => 'diagram-3',    'label' => 'Traffic sources'],
+                            'locations' => ['icon' => 'geo-alt',      'label' => 'Locations'],
+                            'devices'   => ['icon' => 'phone',        'label' => 'Devices & browsers'],
                         ] as $key => $item)
-                        <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:0.875rem;color:var(--pa-text)">
-                            <input type="checkbox" name="sections[]" value="{{ $key }}" checked
-                                   style="width:1rem;height:1rem;accent-color:var(--pa-primary);flex-shrink:0">
-                            <i class="bi bi-{{ $item['icon'] }}" style="color:var(--pa-primary)"></i>
-                            {{ $item['label'] }}
+                        <label class="d-flex align-items-center justify-content-between gap-2" style="cursor:pointer;font-size:0.875rem;color:var(--pa-text);padding:0.375rem 0;border-bottom:1px solid var(--pa-border)">
+                            <span class="d-flex align-items-center gap-2">
+                                <i class="bi bi-{{ $item['icon'] }}" style="color:var(--pa-primary);width:1rem;text-align:center"></i>
+                                {{ $item['label'] }}
+                            </span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" name="sections[]" value="{{ $key }}" checked
+                                       style="width:2.25rem;height:1.25rem;cursor:pointer;accent-color:var(--pa-primary)">
+                            </div>
                         </label>
                         @endforeach
                     </div>
