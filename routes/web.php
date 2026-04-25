@@ -79,9 +79,27 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     // Write routes — blocked for viewers
     Route::middleware('not-viewer')->group(function () {
 
-    Route::post('/sites',          [SiteController::class, 'store'])->name('sites.store');
-    Route::put('/sites/{site}',    [SiteController::class, 'update'])->name('sites.update');
-    Route::delete('/sites/{site}', [SiteController::class, 'destroy'])->name('sites.destroy');
+        Route::post('/sites',          [SiteController::class, 'store'])->name('sites.store');
+        Route::put('/sites/{site}',    [SiteController::class, 'update'])->name('sites.update');
+        Route::delete('/sites/{site}', [SiteController::class, 'destroy'])->name('sites.destroy');
+
+        // Funnels — create/edit/write only
+        Route::get('/funnels/create',        [FunnelController::class, 'create'])->name('funnels.create');
+        Route::post('/funnels',              [FunnelController::class, 'store'])->name('funnels.store');
+        Route::get('/funnels/{funnel}/edit', [FunnelController::class, 'edit'])->name('funnels.edit');
+        Route::put('/funnels/{funnel}',      [FunnelController::class, 'update'])->name('funnels.update');
+        Route::delete('/funnels/{funnel}',   [FunnelController::class, 'destroy'])->name('funnels.destroy');
+
+        // Goals — create/edit/write only
+        Route::get('/goals/create',        [GoalController::class, 'create'])->name('goals.create');
+        Route::post('/goals',              [GoalController::class, 'store'])->name('goals.store');
+        Route::get('/goals/{goal}/edit',   [GoalController::class, 'edit'])->name('goals.edit');
+        Route::put('/goals/{goal}',        [GoalController::class, 'update'])->name('goals.update');
+        Route::delete('/goals/{goal}',     [GoalController::class, 'destroy'])->name('goals.destroy');
+
+    }); // end not-viewer group
+
+    // Read-only analytics routes — accessible to all roles including viewers
 
     // Live Stats
     Route::get('/live', [LiveStatsController::class, 'index'])->name('live');
@@ -110,9 +128,9 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
 
     // Audience detail reports
     Route::get('/visitors',          [VisitorLogController::class, 'index'])->name('visitor-log');
-    Route::get('/visitors/data',    [VisitorLogController::class, 'data'])->name('visitor-log.data');
-    Route::get('/performance',      [PerformanceController::class, 'index'])->name('performance');
-    Route::get('/performance/data', [PerformanceController::class, 'data'])->name('performance.data');
+    Route::get('/visitors/data',     [VisitorLogController::class, 'data'])->name('visitor-log.data');
+    Route::get('/performance',       [PerformanceController::class, 'index'])->name('performance');
+    Route::get('/performance/data',  [PerformanceController::class, 'data'])->name('performance.data');
     Route::get('/visitor-map',       [VisitorMapController::class, 'index'])->name('visitor-map');
     Route::get('/visitor-map/data',  [VisitorMapController::class, 'data'])->name('visitor-map.data');
     Route::get('/visitor-map/live',  [VisitorMapController::class, 'liveData'])->name('visitor-map.live');
@@ -140,36 +158,26 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     Route::get('/transitions/search', [TransitionsController::class, 'search'])->name('transitions.search');
     Route::get('/transitions/data',   [TransitionsController::class, 'data'])->name('transitions.data');
 
-    // Funnels
-    Route::get('/funnels',                  [FunnelController::class, 'index'])->name('funnels.index');
-    Route::get('/funnels/{funnel}/report',  [FunnelController::class, 'report'])->name('funnels.report');
-    Route::get('/funnels/create',           [FunnelController::class, 'create'])->name('funnels.create');
-    Route::post('/funnels',                 [FunnelController::class, 'store'])->name('funnels.store');
-    Route::get('/funnels/{funnel}/edit',    [FunnelController::class, 'edit'])->name('funnels.edit');
-    Route::put('/funnels/{funnel}',         [FunnelController::class, 'update'])->name('funnels.update');
-    Route::delete('/funnels/{funnel}',      [FunnelController::class, 'destroy'])->name('funnels.destroy');
+    // Funnels — read-only
+    Route::get('/funnels',                 [FunnelController::class, 'index'])->name('funnels.index');
+    Route::get('/funnels/{funnel}/report', [FunnelController::class, 'report'])->name('funnels.report');
 
-    // Goals
-    Route::get('/goals',                      [GoalController::class, 'index'])->name('goals.index');
-    Route::get('/goals/{goal}/report',        [GoalController::class, 'report'])->name('goals.report');
-    Route::get('/goals/{goal}/report/data',   [GoalController::class, 'reportData'])->name('goals.report.data');
-    Route::get('/goals/create',               [GoalController::class, 'create'])->name('goals.create');
-    Route::post('/goals',                     [GoalController::class, 'store'])->name('goals.store');
-    Route::get('/goals/{goal}/edit',          [GoalController::class, 'edit'])->name('goals.edit');
-    Route::put('/goals/{goal}',               [GoalController::class, 'update'])->name('goals.update');
-    Route::delete('/goals/{goal}',            [GoalController::class, 'destroy'])->name('goals.destroy');
+    // Goals — read-only
+    Route::get('/goals',                     [GoalController::class, 'index'])->name('goals.index');
+    Route::get('/goals/{goal}/report',       [GoalController::class, 'report'])->name('goals.report');
+    Route::get('/goals/{goal}/report/data',  [GoalController::class, 'reportData'])->name('goals.report.data');
 
     // Custom Events
-    Route::get('/events',               [EventController::class, 'index'])->name('events');
-    Route::get('/events/data',          [EventController::class, 'data'])->name('events.data');
-    Route::get('/events/{name}',        [EventController::class, 'show'])->name('events.show');
-    Route::get('/events/{name}/data',   [EventController::class, 'showData'])->name('events.show.data');
+    Route::get('/events',             [EventController::class, 'index'])->name('events');
+    Route::get('/events/data',        [EventController::class, 'data'])->name('events.data');
+    Route::get('/events/{name}',      [EventController::class, 'show'])->name('events.show');
+    Route::get('/events/{name}/data', [EventController::class, 'showData'])->name('events.show.data');
 
     // Tools — bots
     Route::get('/bots',      [BotController::class, 'index'])->name('bots');
     Route::get('/bots/data', [BotController::class, 'data'])->name('bots.data');
 
-    // SEO Tools (broken-links scan is a write action but harmless — keep open for viewers)
+    // SEO Tools
     Route::prefix('/seo')->name('seo.')->group(function () {
         Route::get('/sitemap',                [SeoToolsController::class, 'sitemap'])->name('sitemap');
         Route::get('/sitemap/check',          [SeoToolsController::class, 'sitemapCheck'])->name('sitemap.check');
@@ -186,16 +194,14 @@ Route::prefix('account')->name('user.')->middleware('auth')->group(function () {
     });
 
     // Monitoring — JS errors
-    Route::get('/errors',                      [ErrorController::class, 'index'])->name('errors');
-    Route::get('/errors/data',                 [ErrorController::class, 'data'])->name('errors.data');
-    Route::get('/errors/{fingerprint}',        [ErrorController::class, 'show'])->name('errors.show');
-    Route::get('/errors/{fingerprint}/data',   [ErrorController::class, 'showData'])->name('errors.show.data');
+    Route::get('/errors',                    [ErrorController::class, 'index'])->name('errors');
+    Route::get('/errors/data',               [ErrorController::class, 'data'])->name('errors.data');
+    Route::get('/errors/{fingerprint}',      [ErrorController::class, 'show'])->name('errors.show');
+    Route::get('/errors/{fingerprint}/data', [ErrorController::class, 'showData'])->name('errors.show.data');
 
-    // Account switching (viewers need this)
+    // Account switching — available to all roles
     Route::post('/account-users/switch', [AccountUserController::class, 'switchAccount'])->name('account-users.switch');
     Route::get('/account-picker',        [AccountUserController::class, 'picker'])->name('account-users.picker');
-
-    }); // end not-viewer group
 
     // Configuration & management — hidden from viewers entirely
     Route::get('/configuration', [ConfigurationController::class, 'index'])->name('configuration');
