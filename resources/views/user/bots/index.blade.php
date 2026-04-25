@@ -8,7 +8,7 @@
     @include('components.date-range-picker', ['botFilter' => false])
 </div>
 
-<p style="color:var(--pa-text-muted);max-width:720px;margin-bottom:1.5rem">
+<p style="color:var(--pa-text-muted);margin-bottom:1.5rem">
     Crawlers and bots indexing or scraping your site: search engines, AI models, SEO tools, link-preview fetchers, and headless browsers. Always kept separate from your human analytics.
 </p>
 
@@ -132,9 +132,9 @@ function render(data) {
 
 function statCard(label, value, icon) {
     return '<div class="col-6 col-md-3"><div class="pa-card">' +
-        '<div class="d-flex justify-content-between align-items-start">' +
-        '<div class="text-xs-muted">' + label + '</div>' +
-        '<i class="bi bi-' + icon + ' icon-muted"></i>' +
+        '<div class="d-flex justify-content-between align-items-start mb-2">' +
+        '<div style="font-size:0.875rem;color:var(--pa-text-muted)">' + label + '</div>' +
+        '<i class="bi bi-' + icon + '" style="font-size:1.375rem;color:var(--pa-primary);opacity:0.7"></i>' +
         '</div>' +
         '<div style="font-size:1.5rem;font-weight:700;font-family:\'Space Grotesk\',sans-serif;line-height:1.1">' + escapeHtml(value) + '</div>' +
         '</div></div>';
