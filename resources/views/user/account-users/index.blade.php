@@ -204,41 +204,43 @@
 
 {{-- Site access edit modal --}}
 <div id="access-modal-backdrop" class="pa-modal-backdrop" data-pa-modal-backdrop="access-modal"></div>
-<div id="access-modal" class="pa-modal" data-pa-modal="access-modal" aria-hidden="true" style="max-width:420px">
-    <div style="padding:1.5rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+<div id="access-modal" class="pa-modal" data-pa-modal="access-modal" aria-hidden="true">
+    <div class="pa-modal-dialog" style="max-width:420px">
+        <div style="padding:1.25rem 1.25rem 0;display:flex;align-items:center;justify-content:space-between">
             <h6 class="mb-0 font-heading-bold">Edit site access — <span id="access-modal-name"></span></h6>
-            <button type="button" data-pa-modal-close style="background:none;border:none;font-size:1.25rem;color:var(--pa-text-muted);cursor:pointer;line-height:1">&times;</button>
+            <button type="button" data-pa-modal-close style="background:none;border:none;font-size:1.25rem;color:var(--pa-text-muted);cursor:pointer;line-height:1;padding:0.25rem">&times;</button>
         </div>
         <form method="POST" id="access-modal-form">
             @csrf @method('PUT')
             <input type="hidden" name="role" value="viewer">
-            <div style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:8px;overflow:hidden;margin-bottom:1rem">
-                {{-- All sites --}}
-                <label style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;border-bottom:1px solid var(--pa-border)">
-                    <span style="font-size:0.875rem;color:var(--pa-text-muted)">All sites</span>
-                    <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
-                        <input type="checkbox" id="modal-all-sites-cb" checked onchange="onModalAllSitesChange(this.checked)"
-                               style="opacity:0;width:0;height:0;position:absolute">
-                        <span class="toggle-track"></span><span class="toggle-dot"></span>
-                    </span>
-                </label>
-                {{-- Individual sites --}}
-                @foreach($sites as $site)
-                <label id="modal-site-row-{{ $site->id }}"
-                       style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;opacity:0.4{{ !$loop->last ? ';border-bottom:1px solid var(--pa-border)' : '' }}">
-                    <span style="font-size:0.875rem">{{ $site->name }}</span>
-                    <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
-                        <input type="checkbox" name="sites[]" value="{{ $site->id }}" class="modal-site-cb"
-                               onclick="onModalSiteCbClick()"
-                               style="opacity:0;width:0;height:0;position:absolute">
-                        <span class="toggle-track"></span><span class="toggle-dot"></span>
-                    </span>
-                </label>
-                @endforeach
+            <div style="padding:1rem 1.25rem">
+                <div style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:8px;overflow:hidden;margin-bottom:0.5rem">
+                    {{-- All sites --}}
+                    <label style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;border-bottom:1px solid var(--pa-border)">
+                        <span style="font-size:0.875rem;color:var(--pa-text-muted)">All sites</span>
+                        <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
+                            <input type="checkbox" id="modal-all-sites-cb" checked onchange="onModalAllSitesChange(this.checked)"
+                                   style="opacity:0;width:0;height:0;position:absolute">
+                            <span class="toggle-track"></span><span class="toggle-dot"></span>
+                        </span>
+                    </label>
+                    {{-- Individual sites --}}
+                    @foreach($sites as $site)
+                    <label id="modal-site-row-{{ $site->id }}"
+                           style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;opacity:0.4{{ !$loop->last ? ';border-bottom:1px solid var(--pa-border)' : '' }}">
+                        <span style="font-size:0.875rem">{{ $site->name }}</span>
+                        <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
+                            <input type="checkbox" name="sites[]" value="{{ $site->id }}" class="modal-site-cb"
+                                   onclick="onModalSiteCbClick()"
+                                   style="opacity:0;width:0;height:0;position:absolute">
+                            <span class="toggle-track"></span><span class="toggle-dot"></span>
+                        </span>
+                    </label>
+                    @endforeach
+                </div>
+                <div style="font-size:0.75rem;color:var(--pa-text-muted)">Leave "All sites" on to grant access to everything.</div>
             </div>
-            <div style="font-size:0.75rem;color:var(--pa-text-muted);margin-bottom:1.25rem">Leave "All sites" on to grant access to everything.</div>
-            <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+            <div style="padding:0.75rem 1.25rem 1.25rem;display:flex;gap:0.75rem;justify-content:flex-end;border-top:1px solid var(--pa-border)">
                 <button type="button" class="btn-pa-outline" data-pa-modal-close>Cancel</button>
                 <button type="submit" class="btn-pa-primary">Save</button>
             </div>
