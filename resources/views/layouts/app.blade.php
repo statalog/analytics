@@ -83,9 +83,9 @@
             </div>
             @endif
 
-            @if(Route::has('cloud.billing.plans') && !session('is_demo'))
+            @if(Route::has('cloud.billing') && !session('is_demo'))
             @php $topbarPlan = $activeAccount ? $activeAccount->plan : $me->plan; @endphp
-            <a href="{{ route('cloud.billing.plans') }}" class="btn-pa-outline" style="padding:0.3rem 0.75rem;font-size:0.8125rem;font-weight:600;white-space:nowrap" title="Current plan">
+            <a href="{{ route('cloud.billing') }}" class="btn-pa-outline" style="padding:0.3rem 0.75rem;font-size:0.8125rem;font-weight:600;white-space:nowrap" title="Current plan">
                 <i class="bi bi-layers me-1 icon-primary"></i>{{ $topbarPlan?->name ?? 'Free' }}
             </a>
             @endif
