@@ -34,9 +34,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name', 'email', 'password', 'is_admin',
-        // Cloud billing (columns added by cloud package migration, harmless in OSS)
-        'plan_id', 'stripe_customer_id', 'stripe_subscription_id',
-        'subscription_status', 'billing_interval', 'trial_ends_at',
+        'stripe_customer_id', // Cloud billing — column added by cloud package migration
     ];
 
     protected $hidden = [
@@ -54,7 +52,6 @@ class User extends Authenticatable
             'email_verified_at'         => 'datetime',
             'two_factor_confirmed_at'   => 'datetime',
             'ga_token_expires_at'       => 'datetime',
-            'trial_ends_at'             => 'datetime',
             'password'                  => 'hashed',
             'is_admin'                  => 'boolean',
             'two_factor_secret'         => 'encrypted',
@@ -66,7 +63,7 @@ class User extends Authenticatable
 
     public function hasActiveSubscription(): bool
     {
-        return in_array($this->subscription_status, ['active', 'trialing'], true);
+        return $this->subscription()?->isActive() ?? false;
     }
 
     public function sites(): HasMany
@@ -74,13 +71,21 @@ class User extends Authenticatable
         return $this->hasMany(Site::class);
     }
 
-    /** Plan relation — only resolves when the cloud package is installed. */
-    public function plan()
+    /** Active subscription — only resolves when the cloud package is installed. */
+    public function subscription()
     {
-        if (!class_exists(\Statalog\Cloud\Models\Plan::class)) {
+        if (!class_exists(\Statalog\Cloud\Models\Subscription::class)) {
             return null;
         }
-        return $this->belongsTo(\Statalog\Cloud\Models\Plan::class);
+        return $this->hasOne(\Statalog\Cloud\Models\Subscription::class)
+            ->whereIn('status', ['active', 'trialing', 'incomplete', 'past_due'])
+            ->latest();
+    }
+
+    /** Convenience accessor for the user's current plan via their active subscription. */
+    public function getPlanAttribute()
+    {
+        return $this->subscription?->plan;
     }
 
     public function settings(): HasMany
