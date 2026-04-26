@@ -35,7 +35,11 @@ use App\Http\Controllers\User\SocialNetworksController;
 use App\Http\Controllers\User\AiSourcesController;
 use App\Http\Controllers\User\SeoToolsController;
 use App\Http\Controllers\User\PdfReportController;
+use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
+
+// Locale switcher (works for guests and authed users).
+Route::post('/locale/{code}', [LocaleController::class, 'set'])->name('locale.set');
 
 // Root: authed users go to dashboard. Guests see the cloud landing page
 // if the cloud package is installed (cloud::welcome view), otherwise

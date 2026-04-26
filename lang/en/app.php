@@ -31,6 +31,7 @@ return [
     'nav_settings'         => 'Settings',
     'nav_profile'          => 'Profile',
     'nav_logout'           => 'Logout',
+    'language'             => 'Language',
 
     // Common actions
     'action_save'    => 'Save',

@@ -105,8 +105,27 @@
                         </div>
                     </div>
                     <a href="{{ route('user.profile.edit') }}" class="dropdown-item">
-                        <i class="bi bi-person"></i> Profile
+                        <i class="bi bi-person"></i> {{ __('app.nav_profile') }}
                     </a>
+                    @php $locales = config('statalog.locales', []); @endphp
+                    @if(count($locales) > 1)
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-header" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--pa-text-muted);padding:0.25rem 1rem">
+                        <i class="bi bi-translate me-1"></i>{{ __('app.language') }}
+                    </div>
+                    @foreach($locales as $code => $label)
+                        <form method="POST" action="{{ route('locale.set', $code) }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2"
+                                    style="{{ app()->getLocale() === $code ? 'color:var(--pa-primary);font-weight:600' : '' }}">
+                                <span>{{ $label }}</span>
+                                @if(app()->getLocale() === $code)
+                                    <i class="bi bi-check2 ms-auto"></i>
+                                @endif
+                            </button>
+                        </form>
+                    @endforeach
+                    @endif
                     <div class="dropdown-divider"></div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

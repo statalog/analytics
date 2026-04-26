@@ -59,6 +59,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Supported Locales
+    |--------------------------------------------------------------------------
+    |
+    | Map of locale code => native language name. Listed locales must have a
+    | matching `lang/{code}/` directory (and `packages/cloud/lang/{code}/` when
+    | the cloud package is installed). The first key is the fallback default
+    | when STATALOG_LOCALE_DEFAULT isn't set.
+    |
+    */
+
+    'locales' => [
+        'en' => 'English',
+    ],
+
+    'locale_default' => env('STATALOG_LOCALE_DEFAULT', 'en'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Visitor Anonymization
     |--------------------------------------------------------------------------
     |

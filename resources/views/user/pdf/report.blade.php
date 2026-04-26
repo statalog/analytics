@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Analytics Report — {{ $site->domain }}</title>
 <style>
+@page { margin: 18mm 14mm; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #1a1a2e; background: #fff; }
 
