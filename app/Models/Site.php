@@ -86,13 +86,11 @@ class Site extends Model
 
     public function getTrackingSnippetAttribute(): string
     {
-        // Cloud installs expose a templated per-site tracker that lights up paid
-        // features (heatmaps, etc.) automatically. OSS falls back to the static file.
-        $src = class_exists(\Statalog\Cloud\CloudServiceProvider::class)
-            ? url('/js/t/' . $this->site_id . '.js')
-            : url('/js/tracker.js');
+        // Single static script for every site. Site identification via data-site-id;
+        // heatmap activation discovered at runtime via /api/site-config.
+        $src = url('/js/tracker.js');
 
-        return '<script async src="' . $src . '"></script>';
+        return '<script async src="' . $src . '" data-site-id="' . e($this->site_id) . '"></script>';
     }
 
     /**

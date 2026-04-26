@@ -279,4 +279,109 @@
             sendErr({ error_type: 'unhandledrejection', message: msg || 'Unhandled rejection', source: '', line: 0, col: 0, stack: stack });
         });
     }
+
+    // ── Heatmap capture (cloud feature; silently inert when not configured) ──
+    // Fetches per-site config from /api/site-config once per session. If the
+    // current path matches one of the active heatmap patterns, click + scroll
+    // events are buffered and flushed every 5s to /api/collect/heatmap.
+    (function () {
+        if (location.search.indexOf('_statalog_preview=1') !== -1) return;
+
+        var origin = endpoint.replace(/\/api\/collect$/, '');
+        var configKey = 'sa_cfg_' + siteId;
+        var heatmapEndpoint = origin + '/api/collect/heatmap';
+
+        function loadConfig(cb) {
+            try {
+                var cached = sessionStorage.getItem(configKey);
+                if (cached) { cb(JSON.parse(cached)); return; }
+            } catch (e) {}
+
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', origin + '/api/site-config?site=' + encodeURIComponent(siteId), true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState !== 4) return;
+                    var cfg = {};
+                    if (xhr.status === 200) {
+                        try { cfg = JSON.parse(xhr.responseText) || {}; } catch (e) {}
+                    }
+                    try { sessionStorage.setItem(configKey, JSON.stringify(cfg)); } catch (e) {}
+                    cb(cfg);
+                };
+                xhr.send();
+            } catch (e) { cb({}); }
+        }
+
+        function matchesAny(path, patterns) {
+            for (var i = 0; i < patterns.length; i++) {
+                var p = patterns[i];
+                if (p === path) return true;
+                if (p.indexOf('*') !== -1) {
+                    var re = new RegExp('^' + p.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\\\*/g, '.*') + '$');
+                    if (re.test(path)) return true;
+                }
+            }
+            return false;
+        }
+
+        function viewportBucket() {
+            var w = window.innerWidth || 0;
+            if (w < 640) return 'mobile';
+            if (w < 1024) return 'tablet';
+            if (w < 1600) return 'desktop';
+            return 'wide';
+        }
+
+        loadConfig(function (cfg) {
+            var patterns = (cfg.heatmaps && cfg.heatmaps.patterns) || [];
+            if (!patterns.length) return;
+
+            var path = location.pathname;
+            if (!matchesAny(path, patterns)) return;
+
+            var GRID = 20;
+            var buffer = [];
+            var maxScroll = 0;
+
+            document.addEventListener('click', function (e) {
+                buffer.push({
+                    t: 'click',
+                    x: Math.floor(e.clientX / GRID),
+                    y: Math.floor((e.clientY + window.scrollY) / GRID)
+                });
+            }, true);
+
+            document.addEventListener('scroll', function () {
+                var h = Math.max(1, document.body.scrollHeight);
+                var pct = Math.round((window.scrollY + window.innerHeight) / h * 100);
+                if (pct > maxScroll) maxScroll = Math.min(100, pct);
+            }, { passive: true });
+
+            function flush() {
+                if (buffer.length === 0 && maxScroll === 0) return;
+                var body = JSON.stringify({
+                    site_id: siteId,
+                    page_url: path,
+                    viewport: viewportBucket(),
+                    events: buffer.splice(0),
+                    scroll_pct: maxScroll
+                });
+                try {
+                    if (navigator.sendBeacon) {
+                        navigator.sendBeacon(heatmapEndpoint, new Blob([body], { type: 'application/json' }));
+                    } else {
+                        fetch(heatmapEndpoint, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: body });
+                    }
+                } catch (e) {}
+                maxScroll = 0;
+            }
+
+            setInterval(flush, 5000);
+            window.addEventListener('pagehide', flush);
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'hidden') flush();
+            });
+        });
+    })();
 })();
