@@ -53,18 +53,16 @@
                 </label>
             </div>
 
-            <div class="d-flex align-items-center justify-content-between" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
-                <div>
-                    <label class="mb-0 fw-semibold text-sm">{{ __('sites.bot_track_label') }} <span style="color:var(--pa-success);font-size:0.7rem;font-weight:600;margin-left:0.25rem">{{ __('sites.bot_track_recommended') }}</span></label>
-                    <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.25rem;line-height:1.5">
-                        {{ __('sites.bot_track_hint') }}
+            <div style="padding:0.75rem;background:color-mix(in srgb, var(--pa-success) 6%, var(--pa-input-bg));border:1px solid color-mix(in srgb, var(--pa-success) 25%, var(--pa-border));border-radius:var(--pa-radius)">
+                <div class="d-flex align-items-start gap-2">
+                    <i class="bi bi-robot" style="color:var(--pa-success);font-size:1.05rem;margin-top:0.1rem"></i>
+                    <div>
+                        <div class="fw-semibold text-sm">{{ __('sites.bot_detection_label') }}</div>
+                        <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.2rem;line-height:1.5">
+                            {{ __('sites.bot_detection_hint') }}
+                        </div>
                     </div>
                 </div>
-                <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;cursor:pointer;margin-left:1rem">
-                    <input type="hidden" name="track_bots" value="0">
-                    <input type="checkbox" name="track_bots" value="1" {{ old('track_bots', $site->track_bots) ? 'checked' : '' }} style="opacity:0;width:0;height:0;position:absolute">
-                    <span class="toggle-track"></span><span class="toggle-dot"></span>
-                </label>
             </div>
         </div>
 
@@ -85,26 +83,6 @@
             </div>
         </div>
 
-        @if($site->track_bots)
-        <div class="pa-card mb-4" style="border-color:#f59e0b">
-            <h6 class="mb-2 font-heading-bold">
-                <i class="bi bi-robot me-2" style="color:#f59e0b"></i>{{ __('sites.bot_snippet_title') }}
-            </h6>
-            <p style="font-size:0.8125rem;color:var(--pa-text-muted);margin-bottom:0.75rem">
-                {!! __('sites.bot_snippet_intro') !!}
-            </p>
-            <div style="position:relative">
-                <pre id="bot-snippet-code" style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius);padding:0.875rem 2.5rem 0.875rem 0.875rem;font-size:0.8125rem;overflow-x:auto;white-space:pre-wrap;word-break:break-all;margin:0">{{ $site->bot_tracking_snippet }}</pre>
-                <button type="button" onclick="copyBotSnippet()" title="{{ __('sites.tracking_copy_code') }}"
-                        style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--pa-text-muted);cursor:pointer;padding:0.25rem">
-                    <i class="bi bi-clipboard" id="bot-snippet-icon"></i>
-                </button>
-            </div>
-            <p style="font-size:0.75rem;color:var(--pa-text-muted);margin-top:0.6rem;margin-bottom:0">
-                <i class="bi bi-info-circle me-1"></i>{{ __('sites.bot_snippet_note') }}
-            </p>
-        </div>
-        @endif
 
         {{-- Public dashboard --}}
         <div class="pa-card">

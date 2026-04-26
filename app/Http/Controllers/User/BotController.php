@@ -52,12 +52,6 @@ class BotController extends Controller
             return response()->json([]);
         }
 
-        if (!$site->track_bots) {
-            return response()->json([
-                'track_bots_disabled' => true,
-            ]);
-        }
-
         [$from, $to] = $this->getDateRange($request);
         $botsRepo   = $this->analytics->onlyBots();
         $humansRepo = $this->analytics; // default = humans only

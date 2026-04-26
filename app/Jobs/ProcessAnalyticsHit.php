@@ -71,10 +71,9 @@ class ProcessAnalyticsHit implements ShouldQueue
             return;
         }
 
-        // Drop bots entirely unless this site opts in to store them.
-        if ($isBot && !$site['track_bots']) {
-            return;
-        }
+        // Bot hits are stored for every site. They never count toward billable
+        // pageviews and are excluded from human stats by default; the dedicated
+        // Bots page is the only place they show up unless the user opts them in.
 
         $type = $this->payload['type'] ?? 'pageview';
 

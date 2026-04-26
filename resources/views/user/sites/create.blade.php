@@ -35,7 +35,7 @@
             <small class="text-sm-muted">{{ __('sites.hint_timezone') }}</small>
         </div>
 
-        <div class="d-flex align-items-center justify-content-between mb-4" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
+        <div class="d-flex align-items-center justify-content-between mb-3" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
             <div>
                 <label class="mb-0 fw-semibold text-sm">{{ __('sites.field_track_subdomains') }}</label>
                 <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.125rem">{{ __('sites.hint_track_subdomains') }}</div>
@@ -45,6 +45,18 @@
                 <input type="checkbox" name="track_subdomains" value="1" {{ old('track_subdomains') ? 'checked' : '' }} style="opacity:0;width:0;height:0;position:absolute">
                 <span class="toggle-track"></span><span class="toggle-dot"></span>
             </label>
+        </div>
+
+        <div class="mb-4" style="padding:0.85rem 1rem;background:color-mix(in srgb, var(--pa-success) 6%, var(--pa-input-bg));border:1px solid color-mix(in srgb, var(--pa-success) 25%, var(--pa-border));border-radius:var(--pa-radius)">
+            <div class="d-flex align-items-start gap-2">
+                <i class="bi bi-robot" style="color:var(--pa-success);font-size:1.05rem;margin-top:0.15rem;flex-shrink:0"></i>
+                <div>
+                    <div class="fw-semibold text-sm">{{ __('sites.bot_detection_label') }}</div>
+                    <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.25rem;line-height:1.5">
+                        {{ __('sites.bot_detection_hint') }}
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="d-flex gap-2">

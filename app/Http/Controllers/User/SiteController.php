@@ -23,6 +23,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\User\Concerns\HasDateRange;
+use Illuminate\Validation\Rule;
 use App\Models\Site;
 use App\Repositories\AnalyticsRepository;
 use Illuminate\Http\Request;
@@ -114,10 +115,15 @@ class SiteController extends Controller
 
         $request->validate([
             'name'     => ['required', 'string', 'max:255'],
-            'domain'   => ['required', 'string', 'max:255', 'regex:/^([a-z0-9-]+\.)+[a-z]{2,}$/i'],
+            'domain'   => [
+                'required', 'string', 'max:255',
+                'regex:/^([a-z0-9-]+\.)+[a-z]{2,}$/i',
+                Rule::unique('sites', 'domain')->where(fn ($q) => $q->where('user_id', auth()->id())),
+            ],
             'timezone' => ['required', 'string', 'timezone'],
         ], [
-            'domain.regex' => 'Please enter a valid domain name (e.g. example.com).',
+            'domain.regex'  => 'Please enter a valid domain name (e.g. example.com).',
+            'domain.unique' => 'You already have a website with this domain.',
         ]);
 
         $site = Site::create([
@@ -125,7 +131,7 @@ class SiteController extends Controller
             'domain'           => $request->input('domain'),
             'timezone'         => $request->input('timezone'),
             'track_subdomains' => $request->boolean('track_subdomains'),
-            'track_bots'       => $request->boolean('track_bots'),
+            'track_bots'       => true,
         ]);
 
         session(['current_site_id' => $site->site_id]);
@@ -154,10 +160,17 @@ class SiteController extends Controller
 
         $request->validate([
             'name'     => ['required', 'string', 'max:255'],
-            'domain'   => ['required', 'string', 'max:255', 'regex:/^([a-z0-9-]+\.)+[a-z]{2,}$/i'],
+            'domain'   => [
+                'required', 'string', 'max:255',
+                'regex:/^([a-z0-9-]+\.)+[a-z]{2,}$/i',
+                Rule::unique('sites', 'domain')
+                    ->ignore($site->id)
+                    ->where(fn ($q) => $q->where('user_id', auth()->id())),
+            ],
             'timezone' => ['required', 'string', 'timezone'],
         ], [
-            'domain.regex' => 'Please enter a valid domain name (e.g. example.com).',
+            'domain.regex'  => 'Please enter a valid domain name (e.g. example.com).',
+            'domain.unique' => 'You already have a website with this domain.',
         ]);
 
         $updates = [
@@ -165,7 +178,7 @@ class SiteController extends Controller
             'domain'           => $request->input('domain'),
             'timezone'         => $request->input('timezone'),
             'track_subdomains' => $request->boolean('track_subdomains'),
-            'track_bots'       => $request->boolean('track_bots'),
+            'track_bots'       => true,
         ];
 
         $isPublic = $request->boolean('is_public');

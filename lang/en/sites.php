@@ -32,8 +32,10 @@ return [
     'bot_track_label'    => 'Store bot traffic',
     'bot_track_recommended' => 'Recommended',
     'bot_track_hint'     => 'Highly recommended — track crawlers (Googlebot, Bingbot, AI scrapers like GPTBot and ClaudeBot, SEO tools, etc.) to understand who\'s indexing and mining your site. Bot hits are always excluded from your regular stats by default, so they never pollute your human analytics. You get a dedicated Bots page with a breakdown by bot, category, and page, and you can toggle bots in or out on any report.',
+    'bot_detection_label' => 'Bot detection runs automatically',
+    'bot_detection_hint'  => 'Statalog identifies search engine crawlers (Googlebot, Bingbot), AI scrapers (GPTBot, ClaudeBot, PerplexityBot) and SEO tools using verified User-Agent and IP signatures. Bot hits never count toward your billable pageviews and are excluded from human stats — they appear on the dedicated Bots page.',
     'bot_snippet_title'  => 'Bot tracking snippet',
-    'bot_snippet_intro'  => 'You have Store bot traffic enabled. Replace your current tracking snippet with this one. It adds a <noscript> pixel that crawlers (Googlebot, GPTBot, etc.) fetch automatically — the page URL is detected from the request with no extra configuration needed.',
+    'bot_snippet_intro'  => 'You have Store bot traffic enabled. Replace your current tracking snippet with this one. It adds a <code>&lt;noscript&gt;</code> pixel that crawlers (Googlebot, GPTBot, etc.) fetch automatically — the page URL is detected from the request with no extra configuration needed.',
     'bot_snippet_note'   => 'Paste this once in your site\'s global layout. No placeholders to replace.',
 
     // Public dashboard

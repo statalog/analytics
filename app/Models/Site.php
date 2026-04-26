@@ -95,16 +95,13 @@ class Site extends Model
         return '<script async src="' . $src . '"></script>';
     }
 
+    /**
+     * @deprecated Bot detection is now automatic via UA + IP-range verification.
+     * Returns the same snippet as the regular tracker — no extra pixel needed.
+     */
     public function getBotTrackingSnippetAttribute(): string
     {
-        $src = class_exists(\Statalog\Cloud\CloudServiceProvider::class)
-            ? url('/js/t/' . $this->site_id . '.js')
-            : url('/js/tracker.js');
-
-        $pixel = url('/api/pixel') . '?site=' . urlencode($this->site_id);
-
-        return '<script async src="' . $src . '"></script>' . "\n"
-            . '<noscript><img src="' . $pixel . '" width="1" height="1" alt="" style="position:absolute;border:0" /></noscript>';
+        return $this->tracking_snippet;
     }
 
     public function setDomainAttribute(string $value): void

@@ -185,9 +185,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('select.js-searchable').forEach(function (el) {
                 new TomSelect(el, {
-                    maxOptions: 1000,
-                    openOnFocus: false,
-                    onFocus: function() { this.close(); }
+                    maxOptions: null,        // show every option
+                    openOnFocus: true,       // dropdown opens when user focuses
+                    hideSelected: false,     // keep currently-selected visible in the list
+                    create: false,
+                    sortField: { field: '$order' }  // preserve original option order
                 });
             });
         });
