@@ -31,7 +31,7 @@
                 </option>
             @endforeach
             <option disabled>- - - - - - - - -</option>
-            <option value="__manage__">Manage Websites</option>
+            <option value="__manage__">{{ __('app.nav_manage_websites') }}</option>
         </select>
     </div>
     @endif
@@ -151,7 +151,7 @@
     </div>
 
     <div class="nav-section">
-        <div class="nav-section-title">Tools</div>
+        <div class="nav-section-title">{{ __('app.nav_section_tools') }}</div>
         <a href="{{ route('user.errors') }}" class="nav-link {{ request()->routeIs('user.errors*') ? 'active' : '' }}">
             <i class="bi bi-bug"></i> Error tracking
         </a>

@@ -27,14 +27,24 @@ function loadData() {
         .then(function(data) { render(data.depth || []); });
 }
 
+var __t = {
+    pageSingular: @json(__('analytics.depth_pages_singular')),
+    pagePlural:   @json(__('analytics.depth_pages_plural')),
+};
+
+function depthLabel(depth) {
+    var tpl = (depth === '1' || depth === 1) ? __t.pageSingular : __t.pagePlural;
+    return tpl.replace(':n', depth);
+}
+
 function render(rows) {
-    var labels = rows.map(function(r) { return r.depth + ' page' + (r.depth === '1' ? '' : 's'); });
+    var labels = rows.map(function(r) { return depthLabel(r.depth); });
     var values = rows.map(function(r) { return parseInt(r.sessions || 0); });
     var ctx = document.getElementById('depth-chart').getContext('2d');
     if (depthChart) depthChart.destroy();
     depthChart = new Chart(ctx, {
         type: 'bar',
-        data: { labels: labels, datasets: [{ label: 'Sessions', data: values, backgroundColor: paColor(), borderRadius: 4, barPercentage: 0.6 }] },
+        data: { labels: labels, datasets: [{ label: @json(__('analytics.col_sessions')), data: values, backgroundColor: paColor(), borderRadius: 4, barPercentage: 0.6 }] },
         options: { responsive: true, maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
@@ -45,14 +55,14 @@ function render(rows) {
     });
 
     var total = values.reduce(function(a, b) { return a + b; }, 0);
-    var html = '<table class="pa-table"><thead><tr><th>Pages Visited</th><th class="text-end">{{ __("analytics.col_sessions") }}</th><th class="text-end">Share</th></tr></thead><tbody>';
+    var html = '<table class="pa-table"><thead><tr><th>{{ __("analytics.col_pages_visited") }}</th><th class="text-end">{{ __("analytics.col_sessions") }}</th><th class="text-end">{{ __("analytics.col_share") }}</th></tr></thead><tbody>';
     rows.forEach(function(row) {
         var pct = total > 0 ? Math.round(parseInt(row.sessions || 0) / total * 100) : 0;
-        html += '<tr><td>' + row.depth + ' page' + (row.depth === '1' ? '' : 's') + '</td>';
+        html += '<tr><td>' + depthLabel(row.depth) + '</td>';
         html += '<td class="text-end">' + parseInt(row.sessions || 0).toLocaleString() + '</td>';
         html += '<td class="text-end">' + pct + '%</td></tr>';
     });
-    if (!rows.length) html += '<tr><td colspan="3" class="text-center text-muted">No data</td></tr>';
+    if (!rows.length) html += '<tr><td colspan="3" class="text-center text-muted">{{ __("analytics.no_data") }}</td></tr>';
     html += '</tbody></table>';
     document.getElementById('depth-table').innerHTML = html;
 }

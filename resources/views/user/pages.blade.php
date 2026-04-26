@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Pages')
+@section('title', __('analytics.page_pages'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-file-earmark-text me-2 icon-primary"></i>Pages
+        <i class="bi bi-file-earmark-text me-2 icon-primary"></i>{{ __('analytics.page_pages') }}
     </h4>
     @include('components.date-range-picker')
 </div>
@@ -15,6 +15,14 @@
 
 @push('scripts')
 <script>
+var __t = {
+    noData:     @json(__('analytics.no_page_data_range')),
+    colPage:    @json(__('analytics.col_page')),
+    colPv:      @json(__('analytics.col_pageviews')),
+    colVisitors:@json(__('analytics.col_visitors')),
+    colBounce:  @json(__('analytics.col_bounce_rate')),
+    colAvgTime: @json(__('analytics.col_avg_time')),
+};
 function loadData() {
     var params = new URLSearchParams(window.location.search);
     fetch('{{ route("user.pages.data") }}?' + params.toString())
@@ -34,16 +42,16 @@ function bar(pct, color) {
 
 function render(rows) {
     if (!rows.length) {
-        document.getElementById('pages-table').innerHTML = '<div class="text-center py-5 text-muted">No page data in this range.</div>';
+        document.getElementById('pages-table').innerHTML = '<div class="text-center py-5 text-muted">' + __t.noData + '</div>';
         return;
     }
     var maxPv = rows.reduce(function(m, r) { return Math.max(m, +r.pageviews); }, 1);
     var html = '<table class="pa-table"><thead><tr>'
-             + '<th>Page</th>'
-             + '<th class="text-end">Pageviews</th>'
-             + '<th class="text-end">Visitors</th>'
-             + '<th class="text-end">Bounce rate</th>'
-             + '<th class="text-end">Avg time</th>'
+             + '<th>' + __t.colPage + '</th>'
+             + '<th class="text-end">' + __t.colPv + '</th>'
+             + '<th class="text-end">' + __t.colVisitors + '</th>'
+             + '<th class="text-end">' + __t.colBounce + '</th>'
+             + '<th class="text-end">' + __t.colAvgTime + '</th>'
              + '</tr></thead><tbody>';
     rows.forEach(function(r) {
         var pct = Math.round((+r.pageviews / maxPv) * 100);

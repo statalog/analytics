@@ -58,4 +58,14 @@ return [
     // Session
     'logged_out'       => 'You have been logged out.',
 
+    // Two-factor challenge
+    'tfa_heading'              => 'Two-factor authentication',
+    'tfa_subheading_code'      => 'Enter the 6-digit code from your authenticator app.',
+    'tfa_subheading_recovery'  => 'Enter one of your saved recovery codes.',
+    'tfa_label_code'           => 'Authenticator code',
+    'tfa_label_recovery'       => 'Recovery code',
+    'btn_verify'               => 'Verify',
+    'tfa_use_recovery'         => 'Use a recovery code instead',
+    'tfa_use_code'             => 'Use authenticator code instead',
+
 ];

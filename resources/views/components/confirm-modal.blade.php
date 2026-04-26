@@ -35,10 +35,10 @@
     'id',
     'variant'      => 'primary',
     'icon'         => 'question-circle',
-    'title'        => 'Are you sure?',
+    'title'        => __('app.confirm_default_title'),
     'body'         => null,
-    'confirmLabel' => 'Confirm',
-    'cancelLabel'  => 'Cancel',
+    'confirmLabel' => __('app.action_confirm'),
+    'cancelLabel'  => __('app.action_cancel'),
 ])
 
 @php

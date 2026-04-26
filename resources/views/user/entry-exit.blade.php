@@ -26,7 +26,7 @@ function renderTable(rows, labelCol, valueCol, valueLabel) {
         html += '<tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:300px">' + (row[labelCol] || '-').replace(/^https?:\/\//, '') + '</td>';
         html += '<td class="text-end">' + (row[valueCol] || 0).toLocaleString() + '</td></tr>';
     });
-    if (!rows.length) html += '<tr><td colspan="2" class="text-center text-muted">No data</td></tr>';
+    if (!rows.length) html += '<tr><td colspan="2" class="text-center text-muted">{{ __("analytics.no_data") }}</td></tr>';
     html += '</tbody></table>';
     return html;
 }

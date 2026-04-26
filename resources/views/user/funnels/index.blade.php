@@ -28,7 +28,7 @@
     <div class="pa-empty-state">
         <i class="bi bi-funnel"></i>
         <h5>{{ __('analytics.no_funnels') }}</h5>
-        <p>Create a funnel to track multi-step conversion paths.</p>
+        <p>{{ __('analytics.funnels_create_hint') }}</p>
         <a href="{{ route('user.funnels.create') }}" class="btn-pa-primary">{{ __('analytics.btn_create_funnel') }}</a>
     </div>
 </div>
@@ -38,7 +38,7 @@
     id="delete-funnel"
     variant="danger"
     icon="exclamation-triangle"
-    title="Delete funnel?"
+    :title="__('analytics.delete_funnel_title')"
     :body="__('analytics.confirm_delete_funnel')"
     confirmLabel="{{ __('app.action_delete') }}"
 />

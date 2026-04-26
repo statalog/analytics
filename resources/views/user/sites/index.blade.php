@@ -30,10 +30,10 @@
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem">
     @php
     $cards = [
-        ['label' => 'Total Visitors',  'value' => number_format($totalVisitors),  'icon' => 'people',  'trend' => $totalTrend],
-        ['label' => 'Total Sessions',  'value' => number_format($totalSessions),  'icon' => 'cursor',  'trend' => null],
-        ['label' => 'Total Pageviews', 'value' => number_format($totalPageviews), 'icon' => 'eye',     'trend' => null],
-        ['label' => 'Sites Tracked',   'value' => count($siteStats),              'icon' => 'globe',   'trend' => null],
+        ['label' => __('sites.card_total_visitors'),  'value' => number_format($totalVisitors),  'icon' => 'people',  'trend' => $totalTrend],
+        ['label' => __('sites.card_total_sessions'),  'value' => number_format($totalSessions),  'icon' => 'cursor',  'trend' => null],
+        ['label' => __('sites.card_total_pageviews'), 'value' => number_format($totalPageviews), 'icon' => 'eye',     'trend' => null],
+        ['label' => __('sites.card_sites_tracked'),   'value' => count($siteStats),              'icon' => 'globe',   'trend' => null],
     ];
     @endphp
     @foreach($cards as $card)
@@ -45,7 +45,7 @@
         <div style="font-size:1.5rem;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:1.1">{{ $card['value'] }}</div>
         @if($card['trend'] !== null)
         <div style="margin-top:0.25rem;font-size:0.75rem;font-weight:600;color:{{ $card['trend'] >= 0 ? 'var(--pa-success)' : 'var(--pa-danger)' }}">
-            <i class="bi bi-arrow-{{ $card['trend'] >= 0 ? 'up' : 'down' }}-short"></i> {{ abs($card['trend']) }}% vs previous
+            <i class="bi bi-arrow-{{ $card['trend'] >= 0 ? 'up' : 'down' }}-short"></i> {{ abs($card['trend']) }}% {{ __('sites.vs_previous') }}
         </div>
         @endif
     </div>
@@ -63,21 +63,21 @@
 <div class="pa-card mb-4" style="padding:1rem 1.25rem">
     <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
         <div>
-            <span style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--pa-text-muted)">Plan usage</span>
+            <span style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--pa-text-muted)">{{ __('sites.plan_usage') }}</span>
             <span style="font-size:0.75rem;color:var(--pa-text-muted);margin-left:0.5rem">
-                Billing period: {{ $bu['from']->format('M j') }} – {{ $bu['to']->format('M j, Y') }}
-                &middot; Day {{ $bu['daysElapsed'] }} of {{ $bu['daysTotal'] }}
+                {{ __('sites.billing_period', ['from' => $bu['from']->format('M j'), 'to' => $bu['to']->format('M j, Y')]) }}
+                &middot; {{ __('sites.day_of_total', ['elapsed' => $bu['daysElapsed'], 'total' => $bu['daysTotal']]) }}
             </span>
         </div>
         <div style="font-size:0.8125rem;color:var(--pa-text-muted)">
             <strong style="color:var(--pa-text)">{{ number_format($bu['used']) }}</strong>
             @if($bu['limit'] > 0)
-                / {{ number_format($bu['limit']) }} pageviews
+                / {{ number_format($bu['limit']) }} {{ __('sites.pageviews_label') }}
                 @if($buPct !== null)
-                    &middot; <span style="color:{{ $buColor }};font-weight:600">{{ $buPct }}% used</span>
+                    &middot; <span style="color:{{ $buColor }};font-weight:600">{{ __('sites.percent_used', ['percent' => $buPct]) }}</span>
                 @endif
             @else
-                pageviews &middot; <span style="color:var(--pa-success);font-weight:600">Unlimited</span>
+                {{ __('sites.pageviews_label') }} &middot; <span style="color:var(--pa-success);font-weight:600">{{ __('sites.unlimited') }}</span>
             @endif
         </div>
     </div>
@@ -91,19 +91,19 @@
     </div>
     <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--pa-text-muted);margin-top:0.35rem">
         <span>{{ $bu['from']->format('M j') }}</span>
-        <span>Resets {{ $bu['to']->format('M j') }}</span>
+        <span>{{ __('sites.resets', ['date' => $bu['to']->format('M j')]) }}</span>
     </div>
     @endif
 </div>
 @endif
 
-<div style="font-size:0.8125rem;font-weight:600;color:var(--pa-text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Your Websites</div>
+<div style="font-size:0.8125rem;font-weight:600;color:var(--pa-text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">{{ __('sites.your_websites') }}</div>
 
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem">
     @foreach($siteStats as $stat)
     @php $site = $stat['site']; $trend = $stat['trend']; @endphp
     <div class="pa-card" style="position:relative">
-        <a href="{{ route('user.dashboard') }}?switch_site={{ $site->site_id }}" class="stretched-link" style="text-decoration:none" aria-label="Open {{ $site->name }} dashboard"></a>
+        <a href="{{ route('user.dashboard') }}?switch_site={{ $site->site_id }}" class="stretched-link" style="text-decoration:none" aria-label="{{ __('sites.open_dashboard', ['site' => $site->name]) }}"></a>
         <div class="d-flex justify-content-between align-items-start mb-2">
             <div style="min-width:0">
                 <div style="font-weight:600;font-family:'Space Grotesk',sans-serif;font-size:0.9375rem;color:var(--pa-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ $site->name }}</div>
@@ -115,13 +115,13 @@
                     {{ $trend >= 0 ? '+' : '' }}{{ $trend }}%
                 </span>
                 @endif
-                <a href="{{ route('user.sites.show', $site) }}" class="btn-pa-outline" style="padding:0.2rem 0.45rem;font-size:0.75rem;position:relative;z-index:2" title="Site settings">
+                <a href="{{ route('user.sites.show', $site) }}" class="btn-pa-outline" style="padding:0.2rem 0.45rem;font-size:0.75rem;position:relative;z-index:2" title="{{ __('sites.site_settings') }}">
                     <i class="bi bi-gear"></i>
                 </a>
             </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--pa-border)">
-            @foreach([['Visitors', number_format($stat['visitors']), 'people'], ['Sessions', number_format($stat['sessions']), 'cursor'], ['Pageviews', number_format($stat['pageviews']), 'eye']] as [$lbl, $val, $ico])
+            @foreach([[__('sites.visitors'), number_format($stat['visitors']), 'people'], [__('sites.sessions'), number_format($stat['sessions']), 'cursor'], [__('sites.pageviews'), number_format($stat['pageviews']), 'eye']] as [$lbl, $val, $ico])
             <div style="text-align:center">
                 <div style="font-size:1.0625rem;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:1.1;color:var(--pa-text)">{{ $val }}</div>
                 <div style="font-size:0.7rem;color:var(--pa-text-muted);margin-top:0.1rem"><i class="bi bi-{{ $ico }}" style="font-size:0.65rem"></i> {{ $lbl }}</div>
@@ -129,7 +129,7 @@
             @endforeach
         </div>
         @if(!$site->is_active)
-        <div style="margin-top:0.625rem;font-size:0.75rem;color:var(--pa-warning)"><i class="bi bi-pause-circle me-1"></i>Tracking paused</div>
+        <div style="margin-top:0.625rem;font-size:0.75rem;color:var(--pa-warning)"><i class="bi bi-pause-circle me-1"></i>{{ __('sites.tracking_paused') }}</div>
         @endif
     </div>
     @endforeach

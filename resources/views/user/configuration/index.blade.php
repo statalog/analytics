@@ -1,36 +1,36 @@
 @extends('layouts.app')
-@section('title', 'Configuration')
+@section('title', __('configuration.page_title'))
 @section('content')
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-gear-wide-connected me-2 icon-primary"></i>Configuration
+        <i class="bi bi-gear-wide-connected me-2 icon-primary"></i>{{ __('configuration.page_title') }}
     </h4>
 </div>
 
 <p style="color:var(--pa-text-muted);max-width:680px;margin-bottom:1.5rem">
-    Integrations and advanced tooling for your account. Add new sources of data or connect external services.
+    {{ __('configuration.intro') }}
 </p>
 
 @php
     $cards = [
         [
             'icon'   => 'sliders',
-            'title'  => 'General',
-            'desc'   => 'Privacy settings — exclude IP addresses from tracking and control city-level geolocation.',
+            'title'  => __('configuration.card_general_title'),
+            'desc'   => __('configuration.card_general_desc'),
             'url'    => route('user.general'),
             'status' => null,
         ],
         ...(Route::has('user.account-users.index') ? [[
             'icon'   => 'people',
-            'title'  => 'Team members',
-            'desc'   => 'Grant admins and viewers access to your account. Admins manage everything; viewers are read-only.',
+            'title'  => __('configuration.card_team_title'),
+            'desc'   => __('configuration.card_team_desc'),
             'url'    => route('user.account-users.index'),
             'status' => null,
         ]] : []),
         [
             'icon'   => 'cloud-download',
-            'title'  => 'Google Analytics Import',
-            'desc'   => 'Pull historical pageviews, visitors and top pages from GA4 into Statalog. Keep your past numbers when you switch.',
+            'title'  => __('configuration.card_ga_title'),
+            'desc'   => __('configuration.card_ga_desc'),
             'url'    => route('user.ga-import'),
             'status' => null,
         ],
@@ -41,7 +41,7 @@
 @if(session('is_demo'))
 <div class="alert alert-warning d-flex align-items-center gap-2 mb-3" style="font-size:0.875rem;max-width:1000px">
     <i class="bi bi-lock-fill"></i>
-    <span>Configuration is <strong>read-only</strong> in the demo account.</span>
+    <span>{!! __('app.demo_readonly', ['strong' => '<strong>'.__('app.demo_readonly_word').'</strong>']) !!}</span>
 </div>
 @endif
 
@@ -59,7 +59,7 @@
             <p style="font-size:0.875rem;color:var(--pa-text-muted);line-height:1.5;margin-bottom:0.75rem">{{ $card['desc'] }}</p>
             <div style="display:flex;align-items:center;justify-content:space-between">
                 <span></span>
-                <span style="font-size:0.8125rem;color:var(--pa-text-muted)"><i class="bi bi-lock me-1"></i>Demo only</span>
+                <span style="font-size:0.8125rem;color:var(--pa-text-muted)"><i class="bi bi-lock me-1"></i>{{ __('app.demo_only') }}</span>
             </div>
         </div>
         @else
@@ -79,7 +79,7 @@
                 @else
                     <span></span>
                 @endif
-                <span style="color:var(--pa-primary);font-size:0.875rem;font-weight:500">Open <i class="bi bi-arrow-right"></i></span>
+                <span style="color:var(--pa-primary);font-size:0.875rem;font-weight:500">{{ __('app.action_open') }} <i class="bi bi-arrow-right"></i></span>
             </div>
         </a>
         @endif

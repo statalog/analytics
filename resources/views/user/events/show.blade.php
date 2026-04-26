@@ -24,7 +24,7 @@
     <div class="col-lg-4">
         <div class="pa-card" style="padding:0">
             <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--pa-border)">
-                <h6 class="mb-0 font-heading">Top Pages</h6>
+                <h6 class="mb-0 font-heading">{{ __('analytics.event_top_pages') }}</h6>
             </div>
             <div id="pages-table"><div class="text-center py-4"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></div></div>
         </div>
@@ -51,7 +51,7 @@ function render(data) {
     if (eventChart) eventChart.destroy();
     eventChart = new Chart(ctx, {
         type: 'bar',
-        data: { labels: labels, datasets: [{ label: 'Occurrences', data: values, backgroundColor: paColor(), borderRadius: 4, barPercentage: 0.6 }] },
+        data: { labels: labels, datasets: [{ label: @json(__('analytics.event_occurrences')), data: values, backgroundColor: paColor(), borderRadius: 4, barPercentage: 0.6 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
             scales: { x: { grid: { display: false }, ticks: { color: '#6B7290' } }, y: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#6B7290' }, beginAtZero: true } }
         }
@@ -73,9 +73,9 @@ function render(data) {
     var pages = data.pages || [];
     var pagesHtml = '';
     if (!pages.length) {
-        pagesHtml = '<div class="text-center py-4 text-muted">No data</div>';
+        pagesHtml = '<div class="text-center py-4 text-muted">{{ __("analytics.no_data") }}</div>';
     } else {
-        pagesHtml = '<table class="pa-table"><thead><tr><th>Page</th><th class="text-end">Count</th></tr></thead><tbody>';
+        pagesHtml = '<table class="pa-table"><thead><tr><th>{{ __("analytics.col_page") }}</th><th class="text-end">{{ __("analytics.col_count") }}</th></tr></thead><tbody>';
         pages.forEach(function(row) {
             pagesHtml += '<tr><td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">' + (row.url || '').replace(/^https?:\/\//, '') + '</td><td class="text-end">' + (row.cnt || 0).toLocaleString() + '</td></tr>';
         });

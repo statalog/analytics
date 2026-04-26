@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Channels')
+@section('title', __('analytics.page_channels'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-diagram-3 me-2 icon-primary"></i>Channels
+        <i class="bi bi-diagram-3 me-2 icon-primary"></i>{{ __('analytics.page_channels') }}
     </h4>
     @include('components.date-range-picker', ['botFilter' => false])
 </div>
@@ -18,6 +18,16 @@
 @push('scripts')
 <script>
 var channelData = [];
+var __t = {
+    noData:        @json(__('analytics.no_data_period')),
+    colChannel:    @json(__('analytics.col_channel')),
+    colVisits:     @json(__('analytics.channel_visits')),
+    colPageviews:  @json(__('analytics.channel_pageviews')),
+    colPagesVisit: @json(__('analytics.col_pages_per_visit')),
+    colAvgDuration:@json(__('analytics.col_avg_duration')),
+    colBounce:     @json(__('analytics.col_bounce_rate')),
+    colSource:     @json(__('analytics.col_source')),
+};
 
 var CHANNEL_ICONS = {
     'Search':       'bi-search',
@@ -46,19 +56,19 @@ function fmtDuration(sec) {
 function renderChannels(data) {
     if (!data || data.length === 0) {
         document.getElementById('channels-container').innerHTML =
-            '<div class="text-center py-5 text-muted">No data for selected period</div>';
+            '<div class="text-center py-5 text-muted">' + __t.noData + '</div>';
         return;
     }
 
     var html = '<table class="pa-table" style="width:100%">';
     html += '<thead><tr>';
     html += '<th style="width:32px"></th>';
-    html += '<th>Channel</th>';
-    html += '<th class="text-end">Visits</th>';
-    html += '<th class="text-end">Pageviews</th>';
-    html += '<th class="text-end">Pages / Visit</th>';
-    html += '<th class="text-end">Avg Duration</th>';
-    html += '<th class="text-end">Bounce Rate</th>';
+    html += '<th>' + __t.colChannel + '</th>';
+    html += '<th class="text-end">' + __t.colVisits + '</th>';
+    html += '<th class="text-end">' + __t.colPageviews + '</th>';
+    html += '<th class="text-end">' + __t.colPagesVisit + '</th>';
+    html += '<th class="text-end">' + __t.colAvgDuration + '</th>';
+    html += '<th class="text-end">' + __t.colBounce + '</th>';
     html += '</tr></thead><tbody id="channels-body">';
 
     data.forEach(function(row, idx) {
@@ -87,10 +97,10 @@ function renderChannels(data) {
             html += '<tr id="sub-' + idx + '" style="display:none"><td colspan="7" style="padding:0">';
             html += '<table class="pa-table" style="width:100%;background:var(--pa-surface)">';
             html += '<thead><tr style="background:var(--pa-surface)">';
-            html += '<th style="width:32px"></th><th style="padding-left:48px">Source</th>';
-            html += '<th class="text-end">Visits</th><th class="text-end">Pageviews</th>';
-            html += '<th class="text-end">Pages / Visit</th><th class="text-end">Avg Duration</th>';
-            html += '<th class="text-end">Bounce Rate</th></tr></thead><tbody>';
+            html += '<th style="width:32px"></th><th style="padding-left:48px">' + __t.colSource + '</th>';
+            html += '<th class="text-end">' + __t.colVisits + '</th><th class="text-end">' + __t.colPageviews + '</th>';
+            html += '<th class="text-end">' + __t.colPagesVisit + '</th><th class="text-end">' + __t.colAvgDuration + '</th>';
+            html += '<th class="text-end">' + __t.colBounce + '</th></tr></thead><tbody>';
 
             row.sources.forEach(function(src) {
                 html += '<tr>';

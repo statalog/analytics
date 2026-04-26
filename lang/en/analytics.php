@@ -21,6 +21,16 @@ return [
     'page_edit_goal'        => 'Edit Goal',
     'page_goal_report'      => 'Goal Report',
     'page_ai_insights'      => 'AI Insights',
+    'page_visitors'         => 'Visitors',
+    'page_channels'         => 'Channels',
+    'page_pages'            => 'Pages',
+    'page_transitions'      => 'Page Transitions',
+    'page_locations'        => 'Locations',
+    'page_devices'          => 'Devices & Software',
+    'page_performance'      => 'Performance',
+    'page_bots'             => 'Bots',
+    'page_errors'           => 'Errors',
+    'page_error_detail'     => 'Error detail',
 
     // Date ranges
     'range_live'         => 'Live',
@@ -73,6 +83,31 @@ return [
     'col_completions'       => 'Completions',
     'col_target_path'       => 'Target Path',
     'col_match_type'        => 'Match Type',
+    'col_country'           => 'Country',
+    'col_city'              => 'City',
+    'col_browser'           => 'Browser',
+    'col_os'                => 'OS',
+    'col_device'            => 'Device',
+    'col_location'          => 'Location',
+    'col_name'              => 'Name',
+    'col_share'             => 'Share',
+    'col_channel'           => 'Channel',
+    'col_pages_per_visit'   => 'Pages / Visit',
+    'col_entry_page'        => 'Entry page',
+    'col_duration'          => 'Duration',
+    'col_time'              => 'Time',
+    'col_url'               => 'URL',
+    'col_when'              => 'When',
+    'col_message'           => 'Message',
+    'col_first_seen_short'  => 'First seen',
+    'col_last_seen_short'   => 'Last seen',
+    'col_affected'          => 'Affected',
+    'col_hits'              => 'Hits',
+    'col_unique'            => 'Unique',
+    'col_distinct_bots'     => 'Distinct bots',
+    'col_bot'               => 'Bot',
+    'col_visitor_type'      => 'Visitor Type',
+    'col_pages_visited'     => 'Pages Visited',
 
     // Labels
     'label_new'            => 'New',
@@ -128,6 +163,10 @@ return [
 
     // Goal report
     'goal_total_completions' => 'Total Completions',
+    'funnels_create_hint'    => 'Create a funnel to track multi-step conversion paths.',
+    'delete_funnel_title'    => 'Delete funnel?',
+    'delete_goal_title'      => 'Delete goal?',
+    'col_revenue'            => 'Revenue',
 
     // Events
     'event_occurrences_over_time' => 'Occurrences Over Time',
@@ -147,6 +186,18 @@ return [
     'live_col_browser'         => 'Browser',
     'live_col_source'          => 'Source',
     'live_source_direct'       => 'Direct',
+    'live_recent_visits_tab'   => 'Recent Visits',
+    'live_map_tab'             => 'Map',
+    'live_all_domains'         => 'All domains',
+    'live_30_min'              => '30 min',
+    'live_60_min'              => '60 min',
+    'live_just_now'            => 'Just now',
+    'live_min_ago'             => ':n m ago',
+    'live_updated'             => 'Updated :time',
+    'live_map_no_data'         => 'No visitors with location data in the last :minutes minutes',
+    'live_map_count'           => ':total visitor(s) at :locations location(s) (last :minutes min)',
+    'live_visitor_singular'    => 'visitor',
+    'live_visitor_plural'      => 'visitors',
 
     // Visit depth
     'visit_depth_distribution' => 'Visit Depth Distribution',
@@ -174,5 +225,92 @@ return [
     'no_goals'           => 'No goals created yet.',
     'no_properties'      => 'No properties recorded.',
     'unknown'            => 'Unknown',
+    'no_data_dot'        => 'No data.',
+    'no_city_data'       => 'No city data.',
+    'no_visitor_sessions_30d' => 'No visitor sessions in the last 30 days.',
+    'no_data_for_page'   => 'No data found for this page in the selected date range.',
+    'no_page_data_range' => 'No page data in this range.',
+    'no_bot_traffic'     => 'No bot traffic in this range.',
+    'no_bot_pageviews'   => 'No bot pageviews in this range.',
+    'no_errors_range'    => 'No errors in this range. Nice.',
+    'no_occurrences'     => 'No occurrences of this error in the selected range.',
+    'none_dot'           => 'None.',
+    'request_failed'     => 'Request failed. Please try again.',
+    'sessions_label'     => ':count sessions',
+
+    // Visitors / sessions table
+    'visitors_last_30d'  => 'Last 30 days',
+
+    // Channels card extras
+    'card_countries'         => 'Countries',
+    'card_cities'            => 'Cities',
+    'card_device_type'       => 'Device type',
+
+    // Bots
+    'bot_tracking_off'           => 'Bot tracking is off',
+    'bot_tracking_off_desc_html' => 'Enable <strong>Store bot traffic</strong> on your website settings to start capturing crawler activity. Bots stay excluded from your regular analytics.',
+    'website_settings'           => 'Website settings',
+    'bots_intro'                 => 'Crawlers and bots indexing or scraping your site: search engines, AI models, SEO tools, link-preview fetchers, and headless browsers. Always kept separate from your human analytics.',
+    'bot_hits'                   => 'Bot hits',
+    'human_hits'                 => 'Human hits',
+    'bot_share'                  => 'Bot share',
+    'top_bot'                    => 'Top bot',
+    'bot_activity_over_time'     => 'Bot activity over time',
+    'by_bot'                     => 'By bot',
+    'top_pages_by_bots'          => 'Top pages hit by bots',
+
+    // Errors
+    'errors_total'         => 'Total errors',
+    'errors_unique'        => 'Unique errors',
+    'errors_affected'      => 'Affected visitors',
+    'errors_rate'          => 'Error rate',
+    'errors_over_time'     => 'Errors over time',
+    'errors_total_short'   => 'Total',
+    'errors_stack'         => 'Stack',
+    'errors_recent'        => 'Recent occurrences',
+
+    // Performance
+    'perf_load_over_time'    => 'Page load time over time',
+    'perf_overview'          => 'Performance overview',
+    'perf_avg_network'       => 'Network time',
+    'perf_avg_server'        => 'Server time',
+    'perf_avg_transfer'      => 'Transfer time',
+    'perf_avg_dom_processing'=> 'DOM processing time',
+    'perf_avg_dom_completion'=> 'DOM completion time',
+    'perf_avg_on_load'       => 'On load time',
+    'perf_avg_load'          => 'Page load time',
+
+    // Channels
+    'channel_visits'       => 'Visits',
+    'channel_pageviews'    => 'Pageviews',
+
+    // Transitions
+    'transitions_intro'        => 'Shows the pages visitors came from and went to for any page on your site.',
+    'transitions_analyse'      => 'Analyse',
+    'transitions_analysing'    => 'Analysing…',
+    'transitions_came_from'    => 'Came from',
+    'transitions_went_to'      => 'Went to',
+    'transitions_selected'     => 'Selected page',
+    'transitions_pageviews'    => 'pageviews',
+    'transitions_direct_entry' => 'Direct / Entry',
+    'transitions_exit'         => 'Exit (left site)',
+    'transitions_direct_pct'   => 'direct entries',
+    'transitions_exits_pct'    => 'exits',
+    'transitions_select_page'  => 'Select or search a page…',
+
+    // New vs Returning
+    'nvr_distribution'         => 'Distribution',
+    'nvr_over_time'            => 'Over time',
+
+    // Visit depth chart label
+    'depth_pages_singular'     => ':n page',
+    'depth_pages_plural'       => ':n pages',
+
+    // Events show
+    'event_top_pages'          => 'Top Pages',
+    'event_occurrences'        => 'Occurrences',
+
+    // Dashboard
+    'card_locations_map'       => 'Locations Map',
 
 ];

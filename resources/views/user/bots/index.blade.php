@@ -1,15 +1,15 @@
 @extends('layouts.app')
-@section('title', 'Bots')
+@section('title', __('analytics.page_bots'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-robot me-2 icon-primary"></i>Bots
+        <i class="bi bi-robot me-2 icon-primary"></i>{{ __('analytics.page_bots') }}
     </h4>
     @include('components.date-range-picker', ['botFilter' => false])
 </div>
 
 <p style="color:var(--pa-text-muted);margin-bottom:1.5rem">
-    Crawlers and bots indexing or scraping your site: search engines, AI models, SEO tools, link-preview fetchers, and headless browsers. Always kept separate from your human analytics.
+    {{ __('analytics.bots_intro') }}
 </p>
 
 <div id="bots-content"><div class="text-center py-5"><div class="spinner-border text-secondary" role="status"></div></div></div>
@@ -18,6 +18,26 @@
 @push('scripts')
 <script>
 let chart = null;
+var __t = {
+    trackingOff:      @json(__('analytics.bot_tracking_off')),
+    trackingOffDesc:  @json(__('analytics.bot_tracking_off_desc_html')),
+    websiteSettings:  @json(__('analytics.website_settings')),
+    botHits:          @json(__('analytics.bot_hits')),
+    humanHits:        @json(__('analytics.human_hits')),
+    botShare:         @json(__('analytics.bot_share')),
+    topBot:           @json(__('analytics.top_bot')),
+    activityOverTime: @json(__('analytics.bot_activity_over_time')),
+    byBot:            @json(__('analytics.by_bot')),
+    topPagesByBots:   @json(__('analytics.top_pages_by_bots')),
+    noBotTraffic:     @json(__('analytics.no_bot_traffic')),
+    noBotPageviews:   @json(__('analytics.no_bot_pageviews')),
+    colBot:           @json(__('analytics.col_bot')),
+    colHits:          @json(__('analytics.col_hits')),
+    colUnique:        @json(__('analytics.col_unique')),
+    colPage:          @json(__('analytics.col_page')),
+    colDistinctBots:  @json(__('analytics.col_distinct_bots')),
+    settingsUrl:      @json(route('user.sites.show', $site)),
+};
 
 function loadData() {
     var params = new URLSearchParams(window.location.search);
@@ -32,9 +52,9 @@ function render(data) {
     if (data.track_bots_disabled) {
         host.innerHTML = '<div class="pa-card text-center py-5">' +
             '<i class="bi bi-toggle-off" style="font-size:2rem;color:var(--pa-primary);opacity:.4"></i>' +
-            '<h5 class="mt-3 font-heading-bold">Bot tracking is off</h5>' +
-            '<p style="color:var(--pa-text-muted);max-width:440px;margin:0.75rem auto 1.5rem">Enable <strong>Store bot traffic</strong> on your website settings to start capturing crawler activity. Bots stay excluded from your regular analytics.</p>' +
-            '<a href="{{ route("user.sites.show", $site) }}" class="btn-pa-primary"><i class="bi bi-gear me-1"></i>Website settings</a>' +
+            '<h5 class="mt-3 font-heading-bold">' + __t.trackingOff + '</h5>' +
+            '<p style="color:var(--pa-text-muted);max-width:440px;margin:0.75rem auto 1.5rem">' + __t.trackingOffDesc + '</p>' +
+            '<a href="' + __t.settingsUrl + '" class="btn-pa-primary"><i class="bi bi-gear me-1"></i>' + __t.websiteSettings + '</a>' +
             '</div>';
         return;
     }
@@ -50,22 +70,22 @@ function render(data) {
 
     // Stat strip
     html += '<div class="row g-3 mb-4">';
-    html += statCard('Bot hits', botTotal.toLocaleString(), 'robot');
-    html += statCard('Human hits', humanTotal.toLocaleString(), 'person');
-    html += statCard('Bot share', botPct + '%', 'pie-chart');
-    html += statCard('Top bot', topBot, 'trophy');
+    html += statCard(__t.botHits, botTotal.toLocaleString(), 'robot');
+    html += statCard(__t.humanHits, humanTotal.toLocaleString(), 'person');
+    html += statCard(__t.botShare, botPct + '%', 'pie-chart');
+    html += statCard(__t.topBot, topBot, 'trophy');
     html += '</div>';
 
     // Chart
-    html += '<div class="pa-card mb-4"><h6 class="mb-3 font-heading-bold">Bot activity over time</h6><canvas id="chart" height="80"></canvas></div>';
+    html += '<div class="pa-card mb-4"><h6 class="mb-3 font-heading-bold">' + __t.activityOverTime + '</h6><canvas id="chart" height="80"></canvas></div>';
 
     // By bot table
     html += '<div class="row g-3">';
-    html += '<div class="col-lg-6"><div class="pa-card p-0"><div style="padding:1rem 1.25rem;border-bottom:1px solid var(--pa-border)"><h6 class="mb-0 font-heading-bold">By bot</h6></div>';
+    html += '<div class="col-lg-6"><div class="pa-card p-0"><div style="padding:1rem 1.25rem;border-bottom:1px solid var(--pa-border)"><h6 class="mb-0 font-heading-bold">' + __t.byBot + '</h6></div>';
     if (!data.by_bot.length) {
-        html += '<div class="text-center py-4 text-muted">No bot traffic in this range.</div>';
+        html += '<div class="text-center py-4 text-muted">' + __t.noBotTraffic + '</div>';
     } else {
-        html += '<table class="pa-table"><thead><tr><th>Bot</th><th class="text-end">Hits</th><th class="text-end">Unique</th></tr></thead><tbody>';
+        html += '<table class="pa-table"><thead><tr><th>' + __t.colBot + '</th><th class="text-end">' + __t.colHits + '</th><th class="text-end">' + __t.colUnique + '</th></tr></thead><tbody>';
         var maxHits = data.by_bot[0].hits || 1;
         data.by_bot.forEach(function(b) {
             var w = Math.round((+b.hits / maxHits) * 100);
@@ -80,11 +100,11 @@ function render(data) {
     html += '</div></div>';
 
     // Top pages
-    html += '<div class="col-lg-6"><div class="pa-card p-0"><div style="padding:1rem 1.25rem;border-bottom:1px solid var(--pa-border)"><h6 class="mb-0 font-heading-bold">Top pages hit by bots</h6></div>';
+    html += '<div class="col-lg-6"><div class="pa-card p-0"><div style="padding:1rem 1.25rem;border-bottom:1px solid var(--pa-border)"><h6 class="mb-0 font-heading-bold">' + __t.topPagesByBots + '</h6></div>';
     if (!data.top_pages.length) {
-        html += '<div class="text-center py-4 text-muted">No bot pageviews in this range.</div>';
+        html += '<div class="text-center py-4 text-muted">' + __t.noBotPageviews + '</div>';
     } else {
-        html += '<table class="pa-table"><thead><tr><th>Page</th><th class="text-end">Hits</th><th class="text-end">Distinct bots</th></tr></thead><tbody>';
+        html += '<table class="pa-table"><thead><tr><th>' + __t.colPage + '</th><th class="text-end">' + __t.colHits + '</th><th class="text-end">' + __t.colDistinctBots + '</th></tr></thead><tbody>';
         data.top_pages.forEach(function(p) {
             html += '<tr>';
             html += '<td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + escapeHtml(p.url) + '"><code style="font-size:0.8125rem;background:transparent;padding:0">' + escapeHtml(p.url) + '</code></td>';

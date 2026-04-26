@@ -1,5 +1,5 @@
 @extends('layouts.public')
-@section('title', $site->name . ' — Analytics')
+@section('title', __('public.title_suffix', ['site' => $site->name]))
 @section('content')
 
 <div style="min-height:100vh;background:var(--pa-bg);color:var(--pa-text)">
@@ -18,16 +18,16 @@
             {{-- Date range picker --}}
             <div class="dropdown">
                 <button class="btn-pa-outline dropdown-toggle text-sm" type="button" id="pubRangeBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-calendar3 me-1"></i><span id="pub-range-label">Last 7 days</span>
+                    <i class="bi bi-calendar3 me-1"></i><span id="pub-range-label">{{ __('public.range_last_7_days') }}</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end pa-dropdown" aria-labelledby="pubRangeBtn">
-                    <li><a class="dropdown-item" href="#" onclick="setRange('today','Today');return false">Today</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="setRange('yesterday','Yesterday');return false">Yesterday</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="setRange('last24h','Last 24 hours');return false">Last 24 hours</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="setRange('last7days','Last 7 days');return false">Last 7 days</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="setRange('last30days','Last 30 days');return false">Last 30 days</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="setRange('this_month','This month');return false">This month</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="setRange('last_month','Last month');return false">Last month</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="setRange('today',{{ \Illuminate\Support\Js::from(__('public.range_today')) }});return false">{{ __('public.range_today') }}</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="setRange('yesterday',{{ \Illuminate\Support\Js::from(__('public.range_yesterday')) }});return false">{{ __('public.range_yesterday') }}</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="setRange('last24h',{{ \Illuminate\Support\Js::from(__('public.range_last_24h')) }});return false">{{ __('public.range_last_24h') }}</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="setRange('last7days',{{ \Illuminate\Support\Js::from(__('public.range_last_7_days')) }});return false">{{ __('public.range_last_7_days') }}</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="setRange('last30days',{{ \Illuminate\Support\Js::from(__('public.range_last_30_days')) }});return false">{{ __('public.range_last_30_days') }}</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="setRange('this_month',{{ \Illuminate\Support\Js::from(__('public.range_this_month')) }});return false">{{ __('public.range_this_month') }}</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="setRange('last_month',{{ \Illuminate\Support\Js::from(__('public.range_last_month')) }});return false">{{ __('public.range_last_month') }}</a></li>
                 </ul>
             </div>
 
@@ -53,9 +53,9 @@
         {{-- Chart --}}
         <div class="pa-card mb-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <h6 class="mb-0 font-heading">Traffic Overview</h6>
+                <h6 class="mb-0 font-heading">{{ __('public.traffic_overview') }}</h6>
                 <div class="d-flex gap-2" id="pub-metric-btns">
-                    @foreach(['visitors'=>'Visitors','sessions'=>'Sessions','pageviews'=>'Pageviews'] as $m => $l)
+                    @foreach(['visitors'=>__('public.col_visitors'),'sessions'=>__('public.col_sessions'),'pageviews'=>__('public.col_pageviews')] as $m => $l)
                     <button onclick="switchMetric('{{ $m }}')" data-metric="{{ $m }}"
                             class="btn-pa-outline" style="font-size:0.75rem;padding:0.2rem 0.6rem">{{ $l }}</button>
                     @endforeach
@@ -69,8 +69,8 @@
             @if(in_array('pages', $sections))
             <div class="col-lg-6">
                 <div class="detail-card">
-                    <div class="detail-card-header"><span>Top Pages</span><span>Pageviews</span></div>
-                    <div id="pub-pages"><div class="text-center py-3 text-muted">Loading...</div></div>
+                    <div class="detail-card-header"><span>{{ __('public.top_pages') }}</span><span>{{ __('public.col_pageviews') }}</span></div>
+                    <div id="pub-pages"><div class="text-center py-3 text-muted">{{ __('public.loading') }}</div></div>
                 </div>
             </div>
             @endif
@@ -78,8 +78,8 @@
             @if(in_array('sources', $sections))
             <div class="col-lg-6">
                 <div class="detail-card">
-                    <div class="detail-card-header"><span>Traffic Sources</span><span>Visitors</span></div>
-                    <div id="pub-sources"><div class="text-center py-3 text-muted">Loading...</div></div>
+                    <div class="detail-card-header"><span>{{ __('public.traffic_sources') }}</span><span>{{ __('public.col_visitors') }}</span></div>
+                    <div id="pub-sources"><div class="text-center py-3 text-muted">{{ __('public.loading') }}</div></div>
                 </div>
             </div>
             @endif
@@ -87,8 +87,8 @@
             @if(in_array('locations', $sections))
             <div class="col-lg-6">
                 <div class="detail-card">
-                    <div class="detail-card-header"><span>Locations</span><span>Visitors</span></div>
-                    <div id="pub-locations"><div class="text-center py-3 text-muted">Loading...</div></div>
+                    <div class="detail-card-header"><span>{{ __('public.locations') }}</span><span>{{ __('public.col_visitors') }}</span></div>
+                    <div id="pub-locations"><div class="text-center py-3 text-muted">{{ __('public.loading') }}</div></div>
                 </div>
             </div>
             @endif
@@ -96,8 +96,8 @@
             @if(in_array('devices', $sections))
             <div class="col-lg-6">
                 <div class="detail-card">
-                    <div class="detail-card-header"><span>Devices</span><span>Visitors</span></div>
-                    <div id="pub-devices"><div class="text-center py-3 text-muted">Loading...</div></div>
+                    <div class="detail-card-header"><span>{{ __('public.devices') }}</span><span>{{ __('public.col_visitors') }}</span></div>
+                    <div id="pub-devices"><div class="text-center py-3 text-muted">{{ __('public.loading') }}</div></div>
                 </div>
             </div>
             @endif
@@ -105,8 +105,8 @@
             @if(in_array('browsers', $sections))
             <div class="col-lg-6">
                 <div class="detail-card">
-                    <div class="detail-card-header"><span>Browsers</span><span>Visitors</span></div>
-                    <div id="pub-browsers"><div class="text-center py-3 text-muted">Loading...</div></div>
+                    <div class="detail-card-header"><span>{{ __('public.browsers') }}</span><span>{{ __('public.col_visitors') }}</span></div>
+                    <div id="pub-browsers"><div class="text-center py-3 text-muted">{{ __('public.loading') }}</div></div>
                 </div>
             </div>
             @endif
@@ -114,8 +114,8 @@
             @if(in_array('os', $sections))
             <div class="col-lg-6">
                 <div class="detail-card">
-                    <div class="detail-card-header"><span>Operating Systems</span><span>Visitors</span></div>
-                    <div id="pub-os"><div class="text-center py-3 text-muted">Loading...</div></div>
+                    <div class="detail-card-header"><span>{{ __('public.operating_systems') }}</span><span>{{ __('public.col_visitors') }}</span></div>
+                    <div id="pub-os"><div class="text-center py-3 text-muted">{{ __('public.loading') }}</div></div>
                 </div>
             </div>
             @endif
@@ -123,8 +123,8 @@
             @if(in_array('resolutions', $sections))
             <div class="col-lg-6">
                 <div class="detail-card">
-                    <div class="detail-card-header"><span>Screen Resolutions</span><span>Visitors</span></div>
-                    <div id="pub-resolutions"><div class="text-center py-3 text-muted">Loading...</div></div>
+                    <div class="detail-card-header"><span>{{ __('public.screen_resolutions') }}</span><span>{{ __('public.col_visitors') }}</span></div>
+                    <div id="pub-resolutions"><div class="text-center py-3 text-muted">{{ __('public.loading') }}</div></div>
                 </div>
             </div>
             @endif
@@ -132,7 +132,7 @@
 
         <div style="text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--pa-border)">
             <p style="font-size:0.8125rem;color:var(--pa-text-muted);margin:0">
-                Analytics by <a href="{{ url('/') }}" style="color:var(--pa-primary);text-decoration:none;font-weight:600">Statalog</a>
+                {{ __('public.analytics_by') }} <a href="{{ url('/') }}" style="color:var(--pa-primary);text-decoration:none;font-weight:600">{{ config('app.name') }}</a>
             </p>
         </div>
 
@@ -203,13 +203,13 @@ function renderChart() {
 function renderList(elId, rows, keyField, valField, total) {
     var el = document.getElementById(elId);
     if (!el) return;
-    if (!rows || !rows.length) { el.innerHTML = '<div class="text-center py-3" style="color:var(--pa-text-muted);font-size:.875rem">No data</div>'; return; }
+    if (!rows || !rows.length) { el.innerHTML = '<div class="text-center py-3" style="color:var(--pa-text-muted);font-size:.875rem">' + @json(__('public.no_data')) + '</div>'; return; }
     var html = '';
     rows.slice(0, 10).forEach(function(r) {
         var pct = total > 0 ? Math.round((r[valField] / total) * 100) : 0;
         html += '<div class="detail-row">' +
             '<div class="detail-bar-wrap"><div class="detail-bar" style="width:' + pct + '%"></div>' +
-            '<span class="detail-label">' + (r[keyField] || 'Unknown') + '</span></div>' +
+            '<span class="detail-label">' + (r[keyField] || @json(__('public.unknown'))) + '</span></div>' +
             '<span class="detail-value">' + Number(r[valField]).toLocaleString() + '</span>' +
             '</div>';
     });

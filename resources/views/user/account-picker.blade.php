@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose account — {{ config('app.name') }}</title>
+    <title>{{ __('sites.account_picker_choose_title') }} — {{ config('app.name') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -32,8 +32,8 @@
         <img src="{{ asset('img/logo.png') }}" alt="{{ config('app.name') }}" class="picker-logo">
     </a>
 
-    <div class="picker-title">Choose an account</div>
-    <div class="picker-sub">Logged in as <strong>{{ $user->email }}</strong></div>
+    <div class="picker-title">{{ __('sites.account_picker_title') }}</div>
+    <div class="picker-sub">{!! __('sites.account_picker_logged', ['email' => '<strong>'.e($user->email).'</strong>']) !!}</div>
 
     {{-- Own account --}}
     <form method="POST" action="{{ route('user.account-users.switch') }}">
@@ -46,14 +46,14 @@
             <div>
                 <div class="account-name">
                     {{ $user->name }}
-                    <span class="account-badge badge-you">Your account</span>
+                    <span class="account-badge badge-you">{{ __('sites.account_your') }}</span>
                 </div>
                 <div class="account-meta">
                     {{ $user->email }}
                     @if($ownSites->count())
-                        &middot; {{ $ownSites->count() }} {{ Str::plural('site', $ownSites->count()) }}
+                        &middot; {{ $ownSites->count() === 1 ? __('sites.account_site_one', ['count' => $ownSites->count()]) : __('sites.account_site_many', ['count' => $ownSites->count()]) }}
                     @else
-                        &middot; No sites yet
+                        &middot; {{ __('sites.account_no_sites_yet') }}
                     @endif
                 </div>
             </div>
@@ -85,7 +85,7 @@
                 </div>
                 <div class="account-meta">
                     {{ $owner->email }}
-                    &middot; {{ $siteCount }} {{ Str::plural('site', $siteCount) }}
+                    &middot; {{ $siteCount === 1 ? __('sites.account_site_one', ['count' => $siteCount]) : __('sites.account_site_many', ['count' => $siteCount]) }}
                 </div>
             </div>
             <i class="bi bi-chevron-right account-arrow"></i>
@@ -97,7 +97,7 @@
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" style="background:none;border:none;color:var(--pa-text-muted);font-size:0.875rem;cursor:pointer;text-decoration:underline">
-                Log out
+                {{ __('sites.btn_logout') }}
             </button>
         </form>
     </div>

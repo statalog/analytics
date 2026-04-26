@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Locations')
+@section('title', __('analytics.page_locations'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-geo-alt me-2 icon-primary"></i>Locations
+        <i class="bi bi-geo-alt me-2 icon-primary"></i>{{ __('analytics.page_locations') }}
     </h4>
     @include('components.date-range-picker')
 </div>
@@ -12,7 +12,7 @@
     <div class="col-lg-6">
         <div class="pa-card p-0">
             <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--pa-border)">
-                <h6 class="mb-0 font-heading-bold">Countries</h6>
+                <h6 class="mb-0 font-heading-bold">{{ __('analytics.card_countries') }}</h6>
             </div>
             <div id="countries-table"><div class="text-center py-5"><div class="spinner-border text-secondary" role="status"></div></div></div>
         </div>
@@ -20,7 +20,7 @@
     <div class="col-lg-6">
         <div class="pa-card p-0">
             <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--pa-border)">
-                <h6 class="mb-0 font-heading-bold">Cities</h6>
+                <h6 class="mb-0 font-heading-bold">{{ __('analytics.card_cities') }}</h6>
             </div>
             <div id="cities-table"><div class="text-center py-5"><div class="spinner-border text-secondary" role="status"></div></div></div>
         </div>
@@ -30,6 +30,15 @@
 
 @push('scripts')
 <script>
+var __t = {
+    noData:     @json(__('analytics.no_data_dot')),
+    noCity:     @json(__('analytics.no_city_data')),
+    colLocation:@json(__('analytics.col_location')),
+    colVisitors:@json(__('analytics.col_visitors')),
+    colCity:    @json(__('analytics.col_city')),
+    colCountry: @json(__('analytics.col_country')),
+};
+
 function loadData() {
     var params = new URLSearchParams(window.location.search);
     fetch('{{ route("user.locations.data") }}?' + params.toString())
@@ -47,11 +56,11 @@ function bar(pct) {
 
 function renderTable(id, rows, labelKey, valueKey) {
     if (!rows || !rows.length) {
-        document.getElementById(id).innerHTML = '<div class="text-center py-4 text-muted">No data.</div>';
+        document.getElementById(id).innerHTML = '<div class="text-center py-4 text-muted">' + __t.noData + '</div>';
         return;
     }
     var max = rows.reduce(function(m, r) { return Math.max(m, +r[valueKey]); }, 1);
-    var html = '<table class="pa-table"><thead><tr><th>Location</th><th class="text-end">Visitors</th></tr></thead><tbody>';
+    var html = '<table class="pa-table"><thead><tr><th>' + __t.colLocation + '</th><th class="text-end">' + __t.colVisitors + '</th></tr></thead><tbody>';
     rows.forEach(function(r) {
         var pct = Math.round((+r[valueKey] / max) * 100);
         html += '<tr><td><div style="font-weight:500;display:flex;align-items:center">' + flag(r[labelKey]) + escHtml(r[labelKey] || '—') + '</div>' + bar(pct) + '</td>'
@@ -63,11 +72,11 @@ function renderTable(id, rows, labelKey, valueKey) {
 
 function renderCities(rows) {
     if (!rows || !rows.length) {
-        document.getElementById('cities-table').innerHTML = '<div class="text-center py-4 text-muted">No city data.</div>';
+        document.getElementById('cities-table').innerHTML = '<div class="text-center py-4 text-muted">' + __t.noCity + '</div>';
         return;
     }
     var max = rows.reduce(function(m, r) { return Math.max(m, +r.visitors); }, 1);
-    var html = '<table class="pa-table"><thead><tr><th>City</th><th>Country</th><th class="text-end">Visitors</th></tr></thead><tbody>';
+    var html = '<table class="pa-table"><thead><tr><th>' + __t.colCity + '</th><th>' + __t.colCountry + '</th><th class="text-end">' + __t.colVisitors + '</th></tr></thead><tbody>';
     rows.forEach(function(r) {
         var pct = Math.round((+r.visitors / max) * 100);
         html += '<tr><td><div class="fw-medium">' + escHtml(r.city) + '</div>' + bar(pct) + '</td>'

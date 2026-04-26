@@ -14,7 +14,7 @@
 
         <div class="pa-card mb-4">
             <h6 class="mb-3 font-heading-bold">
-                <i class="bi bi-globe me-2 icon-primary"></i>Website Details
+                <i class="bi bi-globe me-2 icon-primary"></i>{{ __('sites.website_details') }}
             </h6>
 
             <div class="mb-3">
@@ -55,11 +55,9 @@
 
             <div class="d-flex align-items-center justify-content-between" style="padding:0.75rem;background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius)">
                 <div>
-                    <label class="mb-0 fw-semibold text-sm">Store bot traffic <span style="color:var(--pa-success);font-size:0.7rem;font-weight:600;margin-left:0.25rem">Recommended</span></label>
+                    <label class="mb-0 fw-semibold text-sm">{{ __('sites.bot_track_label') }} <span style="color:var(--pa-success);font-size:0.7rem;font-weight:600;margin-left:0.25rem">{{ __('sites.bot_track_recommended') }}</span></label>
                     <div style="font-size:0.8125rem;color:var(--pa-text-muted);margin-top:0.25rem;line-height:1.5">
-                        Highly recommended — track crawlers (Googlebot, Bingbot, AI scrapers like GPTBot and ClaudeBot, SEO tools, etc.) to understand who's indexing and mining your site.
-                        Bot hits are always <strong>excluded from your regular stats by default</strong>, so they never pollute your human analytics.
-                        You get a dedicated <strong>Bots</strong> page with a breakdown by bot, category, and page, and you can toggle bots in or out on any report.
+                        {{ __('sites.bot_track_hint') }}
                     </div>
                 </div>
                 <label style="position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;cursor:pointer;margin-left:1rem">
@@ -90,22 +88,20 @@
         @if($site->track_bots)
         <div class="pa-card mb-4" style="border-color:#f59e0b">
             <h6 class="mb-2 font-heading-bold">
-                <i class="bi bi-robot me-2" style="color:#f59e0b"></i>Bot tracking snippet
+                <i class="bi bi-robot me-2" style="color:#f59e0b"></i>{{ __('sites.bot_snippet_title') }}
             </h6>
             <p style="font-size:0.8125rem;color:var(--pa-text-muted);margin-bottom:0.75rem">
-                You have <strong>Store bot traffic</strong> enabled. Replace your current tracking snippet with this one.
-                It adds a <code>&lt;noscript&gt;</code> pixel that crawlers (Googlebot, GPTBot, etc.) fetch automatically —
-                the page URL is detected from the request with no extra configuration needed.
+                {!! __('sites.bot_snippet_intro') !!}
             </p>
             <div style="position:relative">
                 <pre id="bot-snippet-code" style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:var(--pa-radius);padding:0.875rem 2.5rem 0.875rem 0.875rem;font-size:0.8125rem;overflow-x:auto;white-space:pre-wrap;word-break:break-all;margin:0">{{ $site->bot_tracking_snippet }}</pre>
-                <button type="button" onclick="copyBotSnippet()" title="Copy code"
+                <button type="button" onclick="copyBotSnippet()" title="{{ __('sites.tracking_copy_code') }}"
                         style="position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--pa-text-muted);cursor:pointer;padding:0.25rem">
                     <i class="bi bi-clipboard" id="bot-snippet-icon"></i>
                 </button>
             </div>
             <p style="font-size:0.75rem;color:var(--pa-text-muted);margin-top:0.6rem;margin-bottom:0">
-                <i class="bi bi-info-circle me-1"></i>Paste this once in your site's global layout. No placeholders to replace.
+                <i class="bi bi-info-circle me-1"></i>{{ __('sites.bot_snippet_note') }}
             </p>
         </div>
         @endif
@@ -161,14 +157,14 @@
                         $allSections = ['chart', 'pages', 'sources', 'locations', 'devices', 'browsers', 'os', 'resolutions'];
                         $activeSections = old('public_sections', $site->public_sections ?: $allSections);
                         $sectionLabels = [
-                            'chart'       => 'Chart',
-                            'pages'       => 'Top Pages',
-                            'sources'     => 'Traffic Sources',
-                            'locations'   => 'Locations',
-                            'devices'     => 'Devices',
-                            'browsers'    => 'Browsers',
-                            'os'          => 'Operating Systems',
-                            'resolutions' => 'Screen Resolutions',
+                            'chart'       => __('sites.section_chart'),
+                            'pages'       => __('sites.section_pages'),
+                            'sources'     => __('sites.section_sources'),
+                            'locations'   => __('sites.section_locations'),
+                            'devices'     => __('sites.section_devices'),
+                            'browsers'    => __('sites.section_browsers'),
+                            'os'          => __('sites.section_os'),
+                            'resolutions' => __('sites.section_resolutions'),
                         ];
                     @endphp
                     <div class="d-flex flex-column gap-2">
@@ -211,18 +207,18 @@
                 @csrf @method('DELETE')
                 <div class="modal-header" style="border-bottom:1px solid var(--pa-border)">
                     <h5 class="modal-title font-heading-bold">
-                        <i class="bi bi-exclamation-triangle me-2 text-danger"></i>Delete website?
+                        <i class="bi bi-exclamation-triangle me-2 text-danger"></i>{{ __('sites.delete_website_title') }}
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('app.action_close') }}"></button>
                 </div>
                 <div class="modal-body">
-                    <p style="margin-bottom:1rem">You're about to permanently delete <strong>{{ $site->name }}</strong> and all of its analytics data (pageviews, events, errors, heatmaps). This cannot be undone.</p>
-                    <label class="auth-label">Confirm your password</label>
-                    <input type="password" name="password" class="pa-input @error('password') is-invalid @enderror" required autocomplete="current-password" placeholder="Your account password">
+                    <p style="margin-bottom:1rem">{!! __('sites.delete_website_warn', ['name' => '<strong>'.e($site->name).'</strong>']) !!}</p>
+                    <label class="auth-label">{{ __('sites.confirm_password_label') }}</label>
+                    <input type="password" name="password" class="pa-input @error('password') is-invalid @enderror" required autocomplete="current-password" placeholder="{{ __('sites.confirm_password_placeholder') }}">
                     @error('password')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                 </div>
                 <div class="modal-footer" style="border-top:1px solid var(--pa-border)">
-                    <button type="button" class="btn-pa-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-pa-outline" data-bs-dismiss="modal">{{ __('app.action_cancel') }}</button>
                     <button type="submit" class="btn-pa-danger">
                         <i class="bi bi-trash me-1"></i>{{ __('sites.btn_delete') }}
                     </button>

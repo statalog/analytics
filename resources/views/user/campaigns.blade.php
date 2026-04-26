@@ -61,7 +61,7 @@ function renderDrilldown(rows, source, medium, campaign) {
     html += '<button class="btn-pa-outline" style="padding:0.25rem 0.5rem" onclick="loadCampaigns()"><i class="bi bi-arrow-left"></i></button>';
     html += '<span class="fw-semibold">' + title + '</span></div>';
     if (!rows.length) {
-        html += '<div class="text-center py-4 text-muted">No data</div>';
+        html += '<div class="text-center py-4 text-muted">{{ __("analytics.no_data") }}</div>';
     } else {
         html += '<table class="pa-table"><thead><tr><th>{{ __("analytics.col_page_url") }}</th><th class="text-end">{{ __("analytics.col_visitors") }}</th></tr></thead><tbody>';
         rows.forEach(function(row) {

@@ -1,20 +1,20 @@
 @extends('layouts.app')
-@section('title', 'Performance')
+@section('title', __('analytics.page_performance'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-speedometer me-2 icon-primary"></i>Performance
+        <i class="bi bi-speedometer me-2 icon-primary"></i>{{ __('analytics.page_performance') }}
     </h4>
     @include('components.date-range-picker')
 </div>
 
 <div class="pa-card mb-4">
-    <h6 class="mb-3 font-heading-bold">Page load time over time</h6>
+    <h6 class="mb-3 font-heading-bold">{{ __('analytics.perf_load_over_time') }}</h6>
     <div style="height:300px"><canvas id="perf-chart"></canvas></div>
 </div>
 
 <div class="pa-card">
-    <h6 class="mb-3 font-heading-bold">Performance overview</h6>
+    <h6 class="mb-3 font-heading-bold">{{ __('analytics.perf_overview') }}</h6>
     <div id="perf-overview" class="row g-3">
         <div class="col-12 text-center py-3"><div class="spinner-border text-secondary" role="status"></div></div>
     </div>
@@ -26,13 +26,13 @@
 var perfChart = null;
 
 var METRICS = [
-    { key: 'avg_network',        label: 'Network time',        color: '#3B82F6' },
-    { key: 'avg_server',         label: 'Server time',         color: '#F59E0B' },
-    { key: 'avg_transfer',       label: 'Transfer time',       color: '#EC4899' },
-    { key: 'avg_dom_processing', label: 'DOM processing time', color: '#8B5CF6' },
-    { key: 'avg_dom_completion', label: 'DOM completion time', color: '#10B981' },
-    { key: 'avg_on_load',        label: 'On load time',        color: '#06B6D4' },
-    { key: 'avg_load',           label: 'Page load time',      color: '#6366F1' },
+    { key: 'avg_network',        label: @json(__('analytics.perf_avg_network')),        color: '#3B82F6' },
+    { key: 'avg_server',         label: @json(__('analytics.perf_avg_server')),         color: '#F59E0B' },
+    { key: 'avg_transfer',       label: @json(__('analytics.perf_avg_transfer')),       color: '#EC4899' },
+    { key: 'avg_dom_processing', label: @json(__('analytics.perf_avg_dom_processing')), color: '#8B5CF6' },
+    { key: 'avg_dom_completion', label: @json(__('analytics.perf_avg_dom_completion')), color: '#10B981' },
+    { key: 'avg_on_load',        label: @json(__('analytics.perf_avg_on_load')),        color: '#06B6D4' },
+    { key: 'avg_load',           label: @json(__('analytics.perf_avg_load')),           color: '#6366F1' },
 ];
 
 function fmtMs(ms) {

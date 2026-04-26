@@ -10,14 +10,14 @@
 @if(session('is_demo'))
 <div class="alert alert-warning d-flex align-items-center gap-2 mb-4" style="font-size:0.875rem">
     <i class="bi bi-lock-fill"></i>
-    <span>Profile settings are <strong>read-only</strong> in the demo account.</span>
+    <span>{!! __('app.profile_demo_readonly', ['strong' => '<strong>'.__('app.demo_readonly_word').'</strong>']) !!}</span>
 </div>
 @endif
 
 @if(session('status') === 'demo-blocked')
 <div class="alert alert-warning d-flex align-items-center gap-2 mb-4" style="font-size:0.875rem">
     <i class="bi bi-lock-fill"></i>
-    <span>Changes are not allowed in the demo account.</span>
+    <span>{{ __('app.demo_blocked') }}</span>
 </div>
 @endif
 
@@ -26,46 +26,46 @@
     {{-- Profile information --}}
     <div class="col-lg-6">
         <div class="pa-card">
-            <h6 class="mb-1 font-heading-bold">Profile Information</h6>
-            <p class="text-sm-muted mb-3">Update your account's profile information and email address.</p>
+            <h6 class="mb-1 font-heading-bold">{{ __('profile.profile_information') }}</h6>
+            <p class="text-sm-muted mb-3">{{ __('profile.profile_information_intro') }}</p>
 
             <form method="POST" action="{{ route('user.profile.update') }}">
                 @csrf @method('PATCH')
 
                 <div class="mb-3">
-                    <label class="auth-label">Name</label>
+                    <label class="auth-label">{{ __('profile.name') }}</label>
                     <input type="text" name="name" class="pa-input @error('name', 'updateProfileInformation') is-invalid @enderror"
                            value="{{ old('name', $user->name) }}" required autofocus autocomplete="name">
                     @error('name', 'updateProfileInformation')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="auth-label">Email</label>
+                    <label class="auth-label">{{ __('profile.email') }}</label>
                     <input type="email" name="email" class="pa-input @error('email', 'updateProfileInformation') is-invalid @enderror"
                            value="{{ old('email', $user->email) }}" required autocomplete="username">
                     @error('email', 'updateProfileInformation')<div class="invalid-feedback">{{ $message }}</div>@enderror
 
                     @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                         <div class="mt-2 text-sm-muted">
-                            Your email address is unverified.
+                            {{ __('profile.email_unverified') }}
                             <form method="POST" action="{{ route('verification.send') }}" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-link p-0" style="font-size:0.8125rem;color:var(--pa-primary);text-decoration:underline">
-                                    Click here to re-send the verification email.
+                                    {{ __('profile.resend_verification') }}
                                 </button>
                             </form>
                             @if (session('status') === 'verification-link-sent')
-                                <div style="color:var(--pa-success);font-weight:600;margin-top:0.25rem">A new verification link has been sent.</div>
+                                <div style="color:var(--pa-success);font-weight:600;margin-top:0.25rem">{{ __('profile.verification_sent') }}</div>
                             @endif
                         </div>
                     @endif
                 </div>
 
                 <button type="submit" class="btn-pa-primary">
-                    <i class="bi bi-check-lg me-1"></i> Save
+                    <i class="bi bi-check-lg me-1"></i> {{ __('profile.btn_save') }}
                 </button>
                 @if (session('status') === 'profile-updated')
-                    <span style="font-size:0.8125rem;color:var(--pa-success);margin-left:0.75rem">Saved.</span>
+                    <span style="font-size:0.8125rem;color:var(--pa-success);margin-left:0.75rem">{{ __('profile.saved_short') }}</span>
                 @endif
             </form>
         </div>
@@ -74,34 +74,34 @@
     {{-- Right column: password + 2FA --}}
     <div class="col-lg-6">
         <div class="pa-card mb-4">
-            <h6 class="mb-1 font-heading-bold">Update Password</h6>
-            <p class="text-sm-muted mb-3">Ensure your account is using a long, random password to stay secure.</p>
+            <h6 class="mb-1 font-heading-bold">{{ __('profile.update_password') }}</h6>
+            <p class="text-sm-muted mb-3">{{ __('profile.update_password_intro') }}</p>
 
             <form method="POST" action="{{ route('password.update') }}">
                 @csrf @method('PUT')
 
                 <div class="mb-3">
-                    <label class="auth-label">Current Password</label>
+                    <label class="auth-label">{{ __('profile.current_password') }}</label>
                     <input type="password" name="current_password" class="pa-input @error('current_password', 'updatePassword') is-invalid @enderror" autocomplete="current-password">
                     @error('current_password', 'updatePassword')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="auth-label">New Password</label>
+                    <label class="auth-label">{{ __('profile.new_password') }}</label>
                     <input type="password" name="password" class="pa-input @error('password', 'updatePassword') is-invalid @enderror" autocomplete="new-password">
                     @error('password', 'updatePassword')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="auth-label">Confirm Password</label>
+                    <label class="auth-label">{{ __('profile.confirm_password') }}</label>
                     <input type="password" name="password_confirmation" class="pa-input" autocomplete="new-password">
                 </div>
 
                 <button type="submit" class="btn-pa-primary">
-                    <i class="bi bi-check-lg me-1"></i> Save
+                    <i class="bi bi-check-lg me-1"></i> {{ __('profile.btn_save') }}
                 </button>
                 @if (session('status') === 'password-updated')
-                    <span style="font-size:0.8125rem;color:var(--pa-success);margin-left:0.75rem">Saved.</span>
+                    <span style="font-size:0.8125rem;color:var(--pa-success);margin-left:0.75rem">{{ __('profile.saved_short') }}</span>
                 @endif
             </form>
         </div>

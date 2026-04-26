@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Devices')
+@section('title', __('analytics.page_devices'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-laptop me-2 icon-primary"></i>Devices &amp; Software
+        <i class="bi bi-laptop me-2 icon-primary"></i>{{ __('analytics.page_devices') }}
     </h4>
     @include('components.date-range-picker')
 </div>
@@ -13,6 +13,18 @@
 
 @push('scripts')
 <script>
+var __t = {
+    deviceType: @json(__('analytics.card_device_type')),
+    browsers:   @json(__('analytics.card_browsers')),
+    os:         @json(__('analytics.card_operating_systems')),
+    resolutions:@json(__('analytics.card_screen_resolutions')),
+    noData:     @json(__('analytics.no_data_dot')),
+    colDevice:  @json(__('analytics.col_device')),
+    colVisitors:@json(__('analytics.col_visitors')),
+    colShare:   @json(__('analytics.col_share')),
+    colName:    @json(__('analytics.col_name')),
+};
+
 function loadData() {
     var params = new URLSearchParams(window.location.search);
     fetch('{{ route("user.devices.data") }}?' + params.toString())
@@ -25,10 +37,10 @@ var deviceIcons = { desktop: 'pc-display', mobile: 'phone', tablet: 'tablet', tv
 function render(data) {
     var html = '<div class="row g-3">';
 
-    html += col('Device type', deviceTable(data.devices));
-    html += col('Browsers', barTable(data.browsers, 'browser', 'visitors', browserIcon));
-    html += col('Operating systems', barTable(data.os, 'os', 'visitors', osIcon));
-    html += col('Screen resolutions', barTable(data.resolutions, 'screen_resolution', 'cnt'));
+    html += col(__t.deviceType, deviceTable(data.devices));
+    html += col(__t.browsers, barTable(data.browsers, 'browser', 'visitors', browserIcon));
+    html += col(__t.os, barTable(data.os, 'os', 'visitors', osIcon));
+    html += col(__t.resolutions, barTable(data.resolutions, 'screen_resolution', 'cnt'));
 
     html += '</div>';
     document.getElementById('devices-content').innerHTML = html;
@@ -42,9 +54,9 @@ function col(title, inner) {
 }
 
 function deviceTable(rows) {
-    if (!rows || !rows.length) return '<div class="text-center py-4 text-muted">No data.</div>';
+    if (!rows || !rows.length) return '<div class="text-center py-4 text-muted">' + __t.noData + '</div>';
     var total = rows.reduce(function(s, r) { return s + (+r.visitors); }, 0) || 1;
-    var html = '<table class="pa-table"><thead><tr><th>Device</th><th class="text-end">Visitors</th><th class="text-end">Share</th></tr></thead><tbody>';
+    var html = '<table class="pa-table"><thead><tr><th>' + __t.colDevice + '</th><th class="text-end">' + __t.colVisitors + '</th><th class="text-end">' + __t.colShare + '</th></tr></thead><tbody>';
     rows.forEach(function(r) {
         var icon = deviceIcons[r.device] || 'display';
         var pct = Math.round((+r.visitors / total) * 100);
@@ -76,9 +88,9 @@ function osIcon(name) {
 }
 
 function barTable(rows, labelKey, valueKey, iconFn) {
-    if (!rows || !rows.length) return '<div class="text-center py-4 text-muted">No data.</div>';
+    if (!rows || !rows.length) return '<div class="text-center py-4 text-muted">' + __t.noData + '</div>';
     var max = rows.reduce(function(m, r) { return Math.max(m, +r[valueKey]); }, 1);
-    var html = '<table class="pa-table"><thead><tr><th>Name</th><th class="text-end">Visitors</th></tr></thead><tbody>';
+    var html = '<table class="pa-table"><thead><tr><th>' + __t.colName + '</th><th class="text-end">' + __t.colVisitors + '</th></tr></thead><tbody>';
     rows.forEach(function(r) {
         var pct = Math.round((+r[valueKey] / max) * 100);
         var icon = iconFn ? iconFn(r[labelKey]) : '';

@@ -286,15 +286,21 @@
                 var id = confirmBtn.getAttribute('data-pa-modal-confirm');
                 var t  = pending;
                 pending = null;
-                closeModal(id);
+
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>' + confirmBtn.textContent.trim();
 
                 if (t.tagName === 'A') {
+                    closeModal(id);
                     window.location.href = t.href;
                 } else if (t.form) {
+                    closeModal(id);
                     t.form.submit();
                 } else if (t.tagName === 'FORM') {
+                    closeModal(id);
                     t.submit();
                 } else if (t.dataset.paConfirmUrl) {
+                    closeModal(id);
                     window.location.href = t.dataset.paConfirmUrl;
                 }
                 return;

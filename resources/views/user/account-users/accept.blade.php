@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accept Invitation — {{ config('app.name') }}</title>
+    <title>{{ __('cloud::members.accept_page_title') }} — {{ config('app.name') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -24,46 +24,43 @@
 
     {{-- ── EXPIRED ── --}}
     @if(!empty($expired))
-        <div class="invite-title">Invitation expired</div>
-        <div class="invite-sub">This invitation link is no longer valid. Ask <strong>{{ $invitation->owner->name }}</strong> to send a new invitation.</div>
-        <a href="{{ route('login') }}" class="btn-pa-primary w-100 text-center d-block">Go to login</a>
+        <div class="invite-title">{{ __('cloud::members.expired_title') }}</div>
+        <div class="invite-sub">{!! __('cloud::members.expired_body', ['owner' => e($invitation->owner->name)]) !!}</div>
+        <a href="{{ route('login') }}" class="btn-pa-primary w-100 text-center d-block">{{ __('cloud::members.btn_go_to_login') }}</a>
 
     {{-- ── LOGGED-IN USER WITH CORRECT EMAIL — CONFIRM ── --}}
     @elseif(!empty($confirm))
-        <div class="invite-title">Accept invitation</div>
+        <div class="invite-title">{{ __('cloud::members.accept_title') }}</div>
         <div class="invite-sub">
-            You've been invited by <strong>{{ $invitation->owner->name }}</strong> as
-            <strong>{{ ucfirst($invitation->role) }}</strong>.
+            {!! __('cloud::members.accept_body', ['owner' => e($invitation->owner->name), 'role' => e(ucfirst($invitation->role))]) !!}
         </div>
         @if(session('error'))
             <div class="pa-alert danger mb-3">{{ session('error') }}</div>
         @endif
         <form method="POST" action="{{ route('invitations.accept', $invitation->token) }}">
             @csrf
-            <button type="submit" class="btn-pa-primary w-100">Accept &amp; go to dashboard</button>
+            <button type="submit" class="btn-pa-primary w-100">{{ __('cloud::members.btn_accept_dashboard') }}</button>
         </form>
 
     {{-- ── EMAIL ALREADY HAS AN ACCOUNT — SEND TO LOGIN ── --}}
     @elseif(!empty($user_exists))
-        <div class="invite-title">Log in to accept</div>
+        <div class="invite-title">{{ __('cloud::members.login_to_accept_title') }}</div>
         <div class="invite-sub">
-            <strong>{{ $invitation->owner->name }}</strong> invited <strong>{{ $invitation->email }}</strong>.
-            You already have an account — log in to accept the invitation.
+            {!! __('cloud::members.login_to_accept_body', ['owner' => e($invitation->owner->name), 'email' => e($invitation->email)]) !!}
         </div>
         @if(session('error'))
             <div class="pa-alert danger mb-3">{{ session('error') }}</div>
         @endif
-        <a href="{{ route('login') }}" class="btn-pa-primary w-100 text-center d-block">Log in to accept</a>
+        <a href="{{ route('login') }}" class="btn-pa-primary w-100 text-center d-block">{{ __('cloud::members.btn_login_to_accept') }}</a>
         <p style="text-align:center;margin-top:1rem;font-size:0.875rem;color:var(--pa-text-muted)">
-            Make sure you log in with <strong>{{ $invitation->email }}</strong>.
+            {!! __('cloud::members.login_with_hint', ['email' => e($invitation->email)]) !!}
         </p>
 
     {{-- ── NEW USER — REGISTRATION FORM ── --}}
     @else
-        <div class="invite-title">Create your account</div>
+        <div class="invite-title">{{ __('cloud::members.create_account_title') }}</div>
         <div class="invite-sub">
-            <strong>{{ $invitation->owner->name }}</strong> invited you as <strong>{{ ucfirst($invitation->role) }}</strong>.
-            Set a password to create your account and accept.
+            {!! __('cloud::members.create_account_body', ['owner' => e($invitation->owner->name), 'role' => e(ucfirst($invitation->role))]) !!}
         </div>
 
         @if(session('error'))
@@ -74,37 +71,37 @@
             @csrf
 
             <div class="mb-3">
-                <label class="auth-label">Email address</label>
+                <label class="auth-label">{{ __('cloud::members.label_email') }}</label>
                 <input type="email" class="pa-input" value="{{ $invitation->email }}" readonly style="opacity:.7;cursor:not-allowed">
             </div>
 
             <div class="mb-3">
-                <label class="auth-label">Your name</label>
+                <label class="auth-label">{{ __('cloud::members.label_your_name') }}</label>
                 <input type="text" name="name" class="pa-input @error('name') is-invalid @enderror"
-                       value="{{ old('name') }}" required autofocus placeholder="Full name">
+                       value="{{ old('name') }}" required autofocus placeholder="{{ __('cloud::members.placeholder_full_name') }}">
                 @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="mb-3">
-                <label class="auth-label">Password</label>
+                <label class="auth-label">{{ __('cloud::members.label_password') }}</label>
                 <input type="password" name="password" class="pa-input @error('password') is-invalid @enderror"
-                       required placeholder="Choose a strong password">
+                       required placeholder="{{ __('cloud::members.placeholder_password') }}">
                 @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="mb-4">
-                <label class="auth-label">Confirm password</label>
-                <input type="password" name="password_confirmation" class="pa-input" required placeholder="Repeat password">
+                <label class="auth-label">{{ __('cloud::members.label_confirm_password') }}</label>
+                <input type="password" name="password_confirmation" class="pa-input" required placeholder="{{ __('cloud::members.placeholder_repeat_password') }}">
             </div>
 
             <button type="submit" class="btn-pa-primary w-100">
-                <i class="bi bi-check2-circle me-1"></i>Create account &amp; accept
+                <i class="bi bi-check2-circle me-1"></i>{{ __('cloud::members.btn_create_accept') }}
             </button>
         </form>
 
         <p style="text-align:center;margin-top:1.25rem;font-size:0.875rem;color:var(--pa-text-muted)">
-            Already have an account?
-            <a class="icon-primary" href="{{ route('login') }}">Log in instead</a>
+            {{ __('cloud::members.have_account') }}
+            <a class="icon-primary" href="{{ route('login') }}">{{ __('cloud::members.login_instead') }}</a>
         </p>
     @endif
 </div>

@@ -1,31 +1,29 @@
 @extends('layouts.app')
-@section('title', 'Team members')
+@section('title', __('cloud::members.page_title'))
 @section('content')
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-people me-2 icon-primary"></i>Team members
+        <i class="bi bi-people me-2 icon-primary"></i>{{ __('cloud::members.page_title') }}
     </h4>
 </div>
 
 <div class="pa-card mb-4" style="background:var(--pa-input-bg);border-color:var(--pa-border)">
     <div class="row g-3 align-items-start">
         <div class="col-md-8">
-            <div style="font-weight:600;margin-bottom:0.375rem">Invite people to your analytics workspace</div>
+            <div style="font-weight:600;margin-bottom:0.375rem">{{ __('cloud::members.intro_heading') }}</div>
             <div style="color:var(--pa-text-muted);font-size:0.875rem;line-height:1.65">
-                Send an invitation by email — the recipient will receive a link they must click to accept.
-                If they don't have a Statalog account yet, they'll be prompted to create one first.
-                Once accepted, they appear under <strong>Active members</strong> below.
+                {!! __('cloud::members.intro_body') !!}
             </div>
         </div>
         <div class="col-md-4">
             <div style="display:flex;flex-direction:column;gap:0.5rem">
                 <div style="font-size:0.8125rem;display:flex;align-items:flex-start;gap:0.5rem">
                     <i class="bi bi-person-fill-gear icon-primary" style="margin-top:0.1rem;flex-shrink:0"></i>
-                    <span><strong>Admin</strong> — full access, can manage sites, members, and settings</span>
+                    <span>{!! __('cloud::members.role_admin_desc') !!}</span>
                 </div>
                 <div style="font-size:0.8125rem;display:flex;align-items:flex-start;gap:0.5rem">
                     <i class="bi bi-eye-fill" style="color:var(--pa-text-muted);margin-top:0.1rem;flex-shrink:0"></i>
-                    <span><strong>Viewer</strong> — read-only access to reports and dashboards</span>
+                    <span>{!! __('cloud::members.role_viewer_desc') !!}</span>
                 </div>
             </div>
         </div>
@@ -37,32 +35,32 @@
     {{-- Invite form --}}
     <div class="col-md-4 col-lg-3">
         <div class="pa-card">
-            <h6 class="mb-3 font-heading-bold">Invite by email</h6>
+            <h6 class="mb-3 font-heading-bold">{{ __('cloud::members.invite_heading') }}</h6>
             <form method="POST" action="{{ route('user.invitations.store') }}" id="invite-form">
                 @csrf
                 <div class="mb-3">
-                    <label class="auth-label">Email address</label>
+                    <label class="auth-label">{{ __('cloud::members.label_email') }}</label>
                     <input type="email" name="email" class="pa-input @error('email') is-invalid @enderror"
-                           required value="{{ old('email') }}" placeholder="person@example.com" autocomplete="off">
+                           required value="{{ old('email') }}" placeholder="{{ __('cloud::members.placeholder_email') }}" autocomplete="off">
                     @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="auth-label">Role</label>
+                    <label class="auth-label">{{ __('cloud::members.label_role') }}</label>
                     <select name="role" id="role-select" class="pa-input" required onchange="toggleSiteSelector(this.value)">
-                        <option value="viewer" {{ old('role','viewer')==='viewer'?'selected':'' }}>Viewer — read-only</option>
-                        <option value="admin"  {{ old('role')==='admin'?'selected':'' }}>Admin — full access</option>
+                        <option value="viewer" {{ old('role','viewer')==='viewer'?'selected':'' }}>{{ __('cloud::members.role_viewer_option') }}</option>
+                        <option value="admin"  {{ old('role')==='admin'?'selected':'' }}>{{ __('cloud::members.role_admin_option') }}</option>
                     </select>
                 </div>
 
                 {{-- Per-site selector (viewers only) --}}
                 @if($sites->count())
                 <div id="site-selector" style="display:none;margin-bottom:1rem">
-                    <label class="auth-label">Site access</label>
+                    <label class="auth-label">{{ __('cloud::members.label_site_access') }}</label>
                     <div style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:8px;overflow:hidden">
                         {{-- All sites row --}}
                         <label style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;border-bottom:1px solid var(--pa-border)">
-                            <span style="font-size:0.875rem;color:var(--pa-text-muted)">All sites</span>
+                            <span style="font-size:0.875rem;color:var(--pa-text-muted)">{{ __('cloud::members.all_sites') }}</span>
                             <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
                                 <input type="checkbox" id="all-sites-cb" checked onchange="onAllSitesChange(this.checked)"
                                        style="opacity:0;width:0;height:0;position:absolute">
@@ -83,11 +81,11 @@
                         </label>
                         @endforeach
                     </div>
-                    <div style="font-size:0.75rem;color:var(--pa-text-muted);margin-top:0.35rem">Leave "All sites" on to grant access to everything.</div>
+                    <div style="font-size:0.75rem;color:var(--pa-text-muted);margin-top:0.35rem">{{ __('cloud::members.all_sites_hint') }}</div>
                 </div>
                 @endif
 
-                <button type="submit" class="btn-pa-primary w-100"><i class="bi bi-send me-1"></i>Send invitation</button>
+                <button type="submit" class="btn-pa-primary w-100"><i class="bi bi-send me-1"></i>{{ __('cloud::members.btn_send_invitation') }}</button>
             </form>
         </div>
     </div>
@@ -98,12 +96,12 @@
         @if($invitations->count())
         <div class="pa-card p-0 mb-4">
             <div style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--pa-border);display:flex;align-items:center;justify-content:space-between">
-                <h6 class="mb-0 font-heading-bold">Pending invitations</h6>
+                <h6 class="mb-0 font-heading-bold">{{ __('cloud::members.pending_heading') }}</h6>
                 <span class="badge" style="background:var(--pa-input-bg);color:var(--pa-text-muted);font-size:0.75rem;border-radius:20px;padding:0.2rem 0.6rem">{{ $invitations->count() }}</span>
             </div>
             <table class="pa-table">
                 <thead>
-                    <tr><th>Email</th><th>Role</th><th>Status</th><th>Expires</th><th></th></tr>
+                    <tr><th>{{ __('cloud::members.col_email') }}</th><th>{{ __('cloud::members.col_role') }}</th><th>{{ __('cloud::members.col_status') }}</th><th>{{ __('cloud::members.col_expires') }}</th><th></th></tr>
                 </thead>
                 <tbody>
                     @foreach($invitations as $inv)
@@ -112,11 +110,11 @@
                         <td class="text-sm">{{ ucfirst($inv->role) }}</td>
                         <td class="text-sm">
                             @if($inv->accepted_at)
-                                <span style="color:#22c55e"><i class="bi bi-check-circle-fill me-1"></i>Accepted {{ $inv->accepted_at->format('M j') }}</span>
+                                <span style="color:#22c55e"><i class="bi bi-check-circle-fill me-1"></i>{{ __('cloud::members.status_accepted', ['date' => $inv->accepted_at->format('M j')]) }}</span>
                             @elseif($inv->opened_at)
-                                <span class="icon-primary"><i class="bi bi-envelope-open me-1"></i>Opened {{ $inv->opened_at->diffForHumans() }}</span>
+                                <span class="icon-primary"><i class="bi bi-envelope-open me-1"></i>{{ __('cloud::members.status_opened', ['when' => $inv->opened_at->diffForHumans()]) }}</span>
                             @else
-                                <span class="text-muted"><i class="bi bi-envelope me-1"></i>Not opened</span>
+                                <span class="text-muted"><i class="bi bi-envelope me-1"></i>{{ __('cloud::members.status_not_opened') }}</span>
                             @endif
                         </td>
                         <td class="text-sm-muted">{{ $inv->expires_at->format('M j') }}</td>
@@ -124,7 +122,7 @@
                             <form method="POST" action="{{ route('user.invitations.destroy', $inv) }}" class="d-inline delete-form">
                                 @csrf @method('DELETE')
                                 <button type="button" class="btn-pa-outline" style="padding:0.2rem 0.5rem;font-size:0.8125rem;color:var(--pa-danger)"
-                                        onclick="confirmDelete(this.closest('form'), 'Revoke invitation?', 'This will revoke the invitation sent to <strong>{{ $inv->email }}</strong>. They will no longer be able to use the link.', 'Revoke invitation')">
+                                        onclick="confirmDelete(this.closest('form'), '{{ __('cloud::members.revoke_title') }}', '{!! __('cloud::members.revoke_body', ['email' => $inv->email]) !!}', '{{ __('cloud::members.revoke_confirm') }}')">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
                             </form>
@@ -139,17 +137,17 @@
         {{-- Active members --}}
         <div class="pa-card p-0">
             <div style="padding:0.875rem 1.25rem;border-bottom:1px solid var(--pa-border)">
-                <h6 class="mb-0 font-heading-bold">Active members</h6>
+                <h6 class="mb-0 font-heading-bold">{{ __('cloud::members.active_heading') }}</h6>
             </div>
             @if($members->isEmpty())
                 <div class="text-center py-5">
                     <i class="bi bi-people" style="font-size:2rem;color:var(--pa-primary);opacity:.4"></i>
-                    <div style="color:var(--pa-text-muted);margin-top:0.75rem">Nobody else has access yet.</div>
+                    <div style="color:var(--pa-text-muted);margin-top:0.75rem">{{ __('cloud::members.empty_members') }}</div>
                 </div>
             @else
                 <table class="pa-table">
                     <thead>
-                        <tr><th>User</th><th>Role</th><th>Site access</th><th></th></tr>
+                        <tr><th>{{ __('cloud::members.col_user') }}</th><th>{{ __('cloud::members.col_role') }}</th><th>{{ __('cloud::members.col_site_access') }}</th><th></th></tr>
                     </thead>
                     <tbody>
                         @foreach($members as $m)
@@ -163,22 +161,22 @@
                                     @csrf @method('PUT')
                                     <input type="hidden" name="sites" value="">{{-- placeholder updated by JS --}}
                                     <select name="role" class="pa-input" style="padding:0.25rem 0.5rem;font-size:0.8125rem" onchange="this.form.submit()">
-                                        <option value="viewer" {{ $m->role === 'viewer' ? 'selected' : '' }}>Viewer</option>
-                                        <option value="admin"  {{ $m->role === 'admin'  ? 'selected' : '' }}>Admin</option>
+                                        <option value="viewer" {{ $m->role === 'viewer' ? 'selected' : '' }}>{{ __('cloud::members.role_viewer') }}</option>
+                                        <option value="admin"  {{ $m->role === 'admin'  ? 'selected' : '' }}>{{ __('cloud::members.role_admin') }}</option>
                                     </select>
                                 </form>
                             </td>
                             <td>
                                 @if($m->isAdmin())
-                                    <span class="text-sm-muted">All sites</span>
+                                    <span class="text-sm-muted">{{ __('cloud::members.all_sites') }}</span>
                                 @else
                                     <button type="button" class="btn-pa-outline"
                                             style="font-size:0.8125rem;padding:0.2rem 0.6rem"
                                             onclick="openAccessModal({{ $m->id }}, '{{ addslashes($m->user?->name ?? $m->user?->email) }}', {{ json_encode($m->siteAccess->pluck('id')) }})">
                                         @if($m->siteAccess->count() === 0)
-                                            All sites <i class="bi bi-pencil ms-1" style="font-size:0.7rem"></i>
+                                            {{ __('cloud::members.all_sites') }} <i class="bi bi-pencil ms-1" style="font-size:0.7rem"></i>
                                         @else
-                                            {{ $m->siteAccess->count() }} / {{ $sites->count() }} sites <i class="bi bi-pencil ms-1" style="font-size:0.7rem"></i>
+                                            {{ __('cloud::members.sites_count', ['count' => $m->siteAccess->count(), 'total' => $sites->count()]) }} <i class="bi bi-pencil ms-1" style="font-size:0.7rem"></i>
                                         @endif
                                     </button>
                                 @endif
@@ -187,7 +185,7 @@
                                 <form method="POST" action="{{ route('user.account-users.destroy', $m) }}" class="d-inline delete-form">
                                     @csrf @method('DELETE')
                                     <button type="button" class="btn-pa-outline" style="padding:0.2rem 0.5rem;font-size:0.8125rem;color:var(--pa-danger)"
-                                            onclick="confirmDelete(this.closest('form'), 'Remove member?', 'This will remove <strong>{{ $m->user?->name ?? $m->user?->email }}</strong> from your account. They will lose all access immediately.', 'Remove member')">
+                                            onclick="confirmDelete(this.closest('form'), '{{ __('cloud::members.remove_title') }}', '{!! __('cloud::members.remove_body', ['name' => $m->user?->name ?? $m->user?->email]) !!}', '{{ __('cloud::members.remove_confirm') }}')">
                                         <i class="bi bi-x-lg"></i>
                                     </button>
                                 </form>
@@ -207,7 +205,7 @@
 <div id="access-modal" class="pa-modal" data-pa-modal="access-modal" aria-hidden="true">
     <div class="pa-modal-dialog" style="max-width:420px">
         <div style="padding:1.25rem 1.25rem 0;display:flex;align-items:center;justify-content:space-between">
-            <h6 class="mb-0 font-heading-bold">Edit site access — <span id="access-modal-name"></span></h6>
+            <h6 class="mb-0 font-heading-bold">{{ __('cloud::members.edit_access_title') }} <span id="access-modal-name"></span></h6>
             <button type="button" data-pa-modal-close style="background:none;border:none;font-size:1.25rem;color:var(--pa-text-muted);cursor:pointer;line-height:1;padding:0.25rem">&times;</button>
         </div>
         <form method="POST" id="access-modal-form">
@@ -217,7 +215,7 @@
                 <div style="background:var(--pa-input-bg);border:1px solid var(--pa-border);border-radius:8px;overflow:hidden;margin-bottom:0.5rem">
                     {{-- All sites --}}
                     <label style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.875rem;cursor:pointer;border-bottom:1px solid var(--pa-border)">
-                        <span style="font-size:0.875rem;color:var(--pa-text-muted)">All sites</span>
+                        <span style="font-size:0.875rem;color:var(--pa-text-muted)">{{ __('cloud::members.all_sites') }}</span>
                         <span style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0">
                             <input type="checkbox" id="modal-all-sites-cb" checked onchange="onModalAllSitesChange(this.checked)"
                                    style="opacity:0;width:0;height:0;position:absolute">
@@ -238,11 +236,11 @@
                     </label>
                     @endforeach
                 </div>
-                <div style="font-size:0.75rem;color:var(--pa-text-muted)">Leave "All sites" on to grant access to everything.</div>
+                <div style="font-size:0.75rem;color:var(--pa-text-muted)">{{ __('cloud::members.all_sites_hint') }}</div>
             </div>
             <div style="padding:0.75rem 1.25rem 1.25rem;display:flex;gap:0.75rem;justify-content:flex-end;border-top:1px solid var(--pa-border)">
-                <button type="button" class="btn-pa-outline" data-pa-modal-close>Cancel</button>
-                <button type="submit" class="btn-pa-primary">Save</button>
+                <button type="button" class="btn-pa-outline" data-pa-modal-close>{{ __('cloud::members.btn_cancel') }}</button>
+                <button type="submit" class="btn-pa-primary">{{ __('cloud::members.btn_save') }}</button>
             </div>
         </form>
     </div>
@@ -254,7 +252,7 @@
         <h6 id="delete-modal-title" style="font-family:'Space Grotesk',sans-serif;font-weight:700;margin-bottom:0.75rem"></h6>
         <p id="delete-modal-body" style="color:var(--pa-text-muted);font-size:0.9375rem;margin-bottom:1.5rem;line-height:1.6"></p>
         <div style="display:flex;gap:0.75rem;justify-content:flex-end">
-            <button type="button" class="btn-pa-outline" onclick="closeDeleteModal()">Cancel</button>
+            <button type="button" class="btn-pa-outline" onclick="closeDeleteModal()">{{ __('cloud::members.btn_cancel') }}</button>
             <button type="button" id="delete-modal-confirm" class="btn-pa-primary" style="background:var(--pa-danger);border-color:var(--pa-danger)"></button>
         </div>
     </div>

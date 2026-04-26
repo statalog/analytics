@@ -14,7 +14,7 @@
                 <th>{{ __('analytics.col_target_path') }}</th>
                 <th>{{ __('analytics.col_match_type') }}</th>
                 <th class="text-end">{{ __('analytics.col_completions') }}</th>
-                <th class="text-end">Revenue</th>
+                <th class="text-end">{{ __('analytics.col_revenue') }}</th>
                 <th>{{ __('analytics.label_actions') }}</th>
             </tr>
         </thead>
@@ -56,7 +56,7 @@
     id="delete-goal"
     variant="danger"
     icon="exclamation-triangle"
-    title="Delete goal?"
+    :title="__('analytics.delete_goal_title')"
     :body="__('analytics.confirm_delete_goal')"
     confirmLabel="{{ __('app.action_delete') }}"
 />

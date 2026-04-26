@@ -11,7 +11,7 @@
     <span class="live-badge"><span class="pulse"></span> <span id="live-count">0</span> {{ __('analytics.live_visitors_online') }}</span>
     @if($site->track_subdomains)
     <select class="form-select form-select-sm" id="subdomain-filter" style="width:auto;min-width:200px" onchange="onSubdomainChange()">
-        <option value="">All domains</option>
+        <option value="">{{ __('analytics.live_all_domains') }}</option>
     </select>
     @endif
 </div>
@@ -26,8 +26,8 @@
         <h6 class="mb-0 font-heading">{{ __('analytics.live_visitors_per_minute') }}</h6>
         <div class="d-flex align-items-center gap-2">
             <span class="text-xs-muted" id="updated-at"></span>
-            <button class="date-range-btn active" id="btn-30" onclick="setChartInterval(30)">30 min</button>
-            <button class="date-range-btn" id="btn-60" onclick="setChartInterval(60)">60 min</button>
+            <button class="date-range-btn active" id="btn-30" onclick="setChartInterval(30)">{{ __('analytics.live_30_min') }}</button>
+            <button class="date-range-btn" id="btn-60" onclick="setChartInterval(60)">{{ __('analytics.live_60_min') }}</button>
         </div>
     </div>
     <div style="position:relative;height:200px"><canvas id="live-chart"></canvas></div>
@@ -37,12 +37,12 @@
     <ul class="nav nav-tabs mb-3" style="border-bottom:1px solid var(--pa-border)">
         <li class="nav-item">
             <a class="nav-link active text-sm" id="tab-visits-btn" href="#" onclick="switchTab('visits');return false">
-                <i class="bi bi-list-ul me-1"></i>Recent Visits
+                <i class="bi bi-list-ul me-1"></i>{{ __('analytics.live_recent_visits_tab') }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-sm" id="tab-map-btn" href="#" onclick="switchTab('map');return false">
-                <i class="bi bi-globe2 me-1"></i>Map
+                <i class="bi bi-globe2 me-1"></i>{{ __('analytics.live_map_tab') }}
             </a>
         </li>
     </ul>
@@ -92,6 +92,15 @@ var __t = {
     visitors:   @json(__('analytics.metric_visitors')),
     direct:     @json(__('analytics.live_source_direct')),
     noRecent:   @json(__('analytics.live_no_recent_visits')),
+    allDomains: @json(__('analytics.live_all_domains')),
+    justNow:    @json(__('analytics.live_just_now')),
+    minAgo:     @json(__('analytics.live_min_ago')),
+    updated:    @json(__('analytics.live_updated')),
+    mapNoData:  @json(__('analytics.live_map_no_data')),
+    mapCount:   @json(__('analytics.live_map_count')),
+    visitor:    @json(__('analytics.live_visitor_singular')),
+    visitors_p: @json(__('analytics.live_visitor_plural')),
+    unknown:    @json(__('analytics.unknown')),
 };
 
 function visitorAvatar(id) {
@@ -130,8 +139,8 @@ function formatTimestamp(ts) {
     var now = new Date();
     var diffSec = Math.floor((now - d) / 1000);
     var diffMin = Math.floor(diffSec / 60);
-    if (diffSec < 60) return '<span>Just now</span>';
-    if (diffMin < 60) return '<span>' + diffMin + 'm ago</span><span style="display:block;font-size:0.75rem;color:var(--pa-text-muted)">' + d.toLocaleTimeString() + '</span>';
+    if (diffSec < 60) return '<span>' + __t.justNow + '</span>';
+    if (diffMin < 60) return '<span>' + __t.minAgo.replace(':n', diffMin) + '</span><span style="display:block;font-size:0.75rem;color:var(--pa-text-muted)">' + d.toLocaleTimeString() + '</span>';
     return d.toLocaleTimeString();
 }
 
@@ -191,7 +200,7 @@ function loadLiveData() {
                 var sel = document.getElementById('subdomain-filter');
                 if (sel) {
                     var prev = sel.value;
-                    sel.innerHTML = '<option value="">All domains</option>';
+                    sel.innerHTML = '<option value="">' + __t.allDomains + '</option>';
                     data.subdomains.forEach(function(h) {
                         var opt = document.createElement('option');
                         opt.value = h; opt.textContent = h;
@@ -202,7 +211,7 @@ function loadLiveData() {
             }
 
             var now = new Date();
-            document.getElementById('updated-at').textContent = 'Updated ' + now.toLocaleTimeString();
+            document.getElementById('updated-at').textContent = __t.updated.replace(':time', now.toLocaleTimeString());
 
             var rows = '';
             (data.recent || []).forEach(function(v) {
@@ -247,7 +256,7 @@ function renderLiveMap(points) {
     if (!liveMap) return;
     liveMarkerGroup.clearLayers();
     if (!points || points.length === 0) {
-        document.getElementById('live-map-count').textContent = 'No visitors with location data in the last ' + chartInterval + ' minutes';
+        document.getElementById('live-map-count').textContent = __t.mapNoData.replace(':minutes', chartInterval);
         return;
     }
     var maxHits = Math.max.apply(null, points.map(function(p) { return parseInt(p.hits) || 1; }));
@@ -262,13 +271,16 @@ function renderLiveMap(points) {
             radius: r, fillColor: '#22C55E', color: '#16a34a', weight: 1, opacity: 0.8, fillOpacity: opacity
         });
         var label = p.city ? p.city + (p.country ? ', ' + p.country : '') : (p.country || '');
-        circle.bindTooltip('<strong>' + (label || 'Unknown') + '</strong><br>' + hits + (hits === 1 ? ' visitor' : ' visitors'), { direction: 'top', offset: [0, -4] });
+        circle.bindTooltip('<strong>' + (label || __t.unknown) + '</strong><br>' + hits + ' ' + (hits === 1 ? __t.visitor : __t.visitors_p), { direction: 'top', offset: [0, -4] });
         liveMarkerGroup.addLayer(circle);
         bounds.push([lat, lng]);
     });
     if (bounds.length > 0) liveMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 8 });
     var total = points.reduce(function(s, p) { return s + (parseInt(p.hits) || 0); }, 0);
-    document.getElementById('live-map-count').textContent = total + ' visitor' + (total === 1 ? '' : 's') + ' at ' + points.length + ' location' + (points.length === 1 ? '' : 's') + ' (last ' + chartInterval + ' min)';
+    document.getElementById('live-map-count').textContent = __t.mapCount
+        .replace(':total', total)
+        .replace(':locations', points.length)
+        .replace(':minutes', chartInterval);
 }
 
 function loadLiveMapData() {

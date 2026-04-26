@@ -48,7 +48,7 @@ var __t = {
     topPages:    @json(__('analytics.card_top_pages')),
     sources:     @json(__('analytics.card_traffic_sources')),
     locations:   @json(__('analytics.card_locations')),
-    locMap:      'Locations Map',
+    locMap:      @json(__('analytics.card_locations_map')),
     devices:     @json(__('analytics.card_devices')),
     browsers:    @json(__('analytics.card_browsers')),
     os:          @json(__('analytics.card_operating_systems')),
@@ -174,7 +174,7 @@ function renderLocationsMapCard(points) {
                 weight: 1, opacity: 0.8, fillOpacity: opacity
             });
             var label = p.city ? p.city + (p.country ? ', ' + p.country : '') : (p.country || '');
-            circle.bindTooltip('<strong>' + (label || 'Unknown') + '</strong><br>' + hits + (hits === 1 ? ' visitor' : ' visitors'), { direction: 'top', offset: [0, -4] });
+            circle.bindTooltip('<strong>' + (label || __t.unknown) + '</strong><br>' + hits + ' ' + (hits === 1 ? @json(__('analytics.live_visitor_singular')) : @json(__('analytics.live_visitor_plural'))), { direction: 'top', offset: [0, -4] });
             __dashMarkers.addLayer(circle);
             bounds.push([lat, lng]);
         });

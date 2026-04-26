@@ -12,14 +12,14 @@
         <div class="mb-3">
             <label class="auth-label">{{ __('sites.field_name') }}</label>
             <input type="text" name="name" class="pa-input @error('name') is-invalid @enderror" required
-                   placeholder="My Website" value="{{ old('name') }}">
+                   placeholder="{{ __('sites.placeholder_name') }}" value="{{ old('name') }}">
             @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
 
         <div class="mb-3">
             <label class="auth-label">{{ __('sites.field_domain') }}</label>
             <input type="text" name="domain" class="pa-input @error('domain') is-invalid @enderror" required
-                   placeholder="example.com" value="{{ old('domain') }}">
+                   placeholder="{{ __('sites.placeholder_domain') }}" value="{{ old('domain') }}">
             @error('domain')<div class="invalid-feedback">{{ $message }}</div>@enderror
             <small class="text-sm-muted">{{ __('sites.hint_domain') }}</small>
         </div>

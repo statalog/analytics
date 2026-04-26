@@ -9,7 +9,7 @@
 <div class="row g-4 mb-4">
     <div class="col-md-4">
         <div class="pa-card" style="height:260px">
-            <h6 class="mb-2 font-heading">Distribution</h6>
+            <h6 class="mb-2 font-heading">{{ __('analytics.nvr_distribution') }}</h6>
             <div style="position:relative;width:180px;height:180px;margin:0 auto">
                 <canvas id="nvr-donut" width="180" height="180"></canvas>
             </div>
@@ -23,7 +23,7 @@
 </div>
 
 <div class="pa-card">
-    <h6 class="mb-3 font-heading">Over time</h6>
+    <h6 class="mb-3 font-heading">{{ __('analytics.nvr_over_time') }}</h6>
     <div style="height:220px;position:relative">
         <canvas id="nvr-line"></canvas>
     </div>
@@ -35,6 +35,14 @@
 <script>
 var donutChart = null;
 var lineChart  = null;
+var __t = {
+    new:        @json(__('analytics.label_new')),
+    returning:  @json(__('analytics.label_returning')),
+    visitorType:@json(__('analytics.col_visitor_type')),
+    visitors:   @json(__('analytics.col_visitors')),
+    sessions:   @json(__('analytics.col_sessions')),
+    share:      @json(__('analytics.col_share')),
+};
 
 function loadData() {
     var params = new URLSearchParams(window.location.search);
@@ -52,6 +60,7 @@ function loadData() {
                     { segment: 'New',       visitors: totalNew, sessions: totalNew },
                     { segment: 'Returning', visitors: totalRet, sessions: totalRet },
                 ];
+                // (segment values stay 'New'/'Returning' as canonical keys; display labels are translated)
             }
 
             renderDistribution(segments);
@@ -78,7 +87,7 @@ function renderDistribution(rows) {
     donutChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['New', 'Returning'],
+            labels: [__t.new, __t.returning],
             datasets: [{
                 data: total > 0 ? [newVal, retVal] : [1, 1],
                 backgroundColor: total > 0 ? [paColor(), paColor(0.45)] : ['#e5e7eb', '#e5e7eb'],
@@ -99,9 +108,9 @@ function renderDistribution(rows) {
 
     // Table
     var html = '<table class="pa-table" style="width:100%">'
-        + '<thead><tr><th>Visitor Type</th><th class="text-end">Visitors</th><th class="text-end">Sessions</th><th class="text-end">Share</th></tr></thead><tbody>';
+        + '<thead><tr><th>' + __t.visitorType + '</th><th class="text-end">' + __t.visitors + '</th><th class="text-end">' + __t.sessions + '</th><th class="text-end">' + __t.share + '</th></tr></thead><tbody>';
 
-    [[newRow, 'New', paColor()], [retRow, 'Returning', paColor(0.45)]].forEach(function(item) {
+    [[newRow, __t.new, paColor()], [retRow, __t.returning, paColor(0.45)]].forEach(function(item) {
         var row = item[0]; var label = item[1]; var color = item[2];
         var v = parseInt(row.visitors || 0);
         var s = parseInt(row.sessions || 0);
@@ -134,7 +143,7 @@ function renderTimeline(rows) {
             labels: labels,
             datasets: [
                 {
-                    label: 'New',
+                    label: __t.new,
                     data: newData,
                     borderColor: paColor(),
                     backgroundColor: paColor(0.08),
@@ -144,7 +153,7 @@ function renderTimeline(rows) {
                     borderWidth: 2,
                 },
                 {
-                    label: 'Returning',
+                    label: __t.returning,
                     data: retData,
                     borderColor: paColor(0.55),
                     backgroundColor: paColor(0.04),

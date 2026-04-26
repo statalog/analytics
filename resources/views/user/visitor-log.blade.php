@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title', 'Visitors')
+@section('title', __('analytics.page_visitors'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-person-lines-fill me-2 icon-primary"></i>Visitors
+        <i class="bi bi-person-lines-fill me-2 icon-primary"></i>{{ __('analytics.page_visitors') }}
         <span id="total-badge" style="font-size:0.875rem;font-weight:400;color:var(--pa-text-muted);margin-left:0.5rem"></span>
     </h4>
-    <div class="text-sm-muted">Last 30 days</div>
+    <div class="text-sm-muted">{{ __('analytics.visitors_last_30d') }}</div>
 </div>
 
 <div class="pa-card p-0">
@@ -21,6 +21,19 @@
 <script>
 var currentPage = 1;
 var totalPages  = 1;
+var __t = {
+    sessions:   @json(__('analytics.sessions_label')),
+    noSessions: @json(__('analytics.no_visitor_sessions_30d')),
+    colTime:    @json(__('analytics.col_time')),
+    colLocation:@json(__('analytics.col_location')),
+    colEntry:   @json(__('analytics.col_entry_page')),
+    colDevice:  @json(__('analytics.col_device')),
+    colBrowser: @json(__('analytics.col_browser')),
+    colOs:      @json(__('analytics.col_os')),
+    colPages:   @json(__('analytics.col_pages')),
+    colDuration:@json(__('analytics.col_duration')),
+    colSource:  @json(__('analytics.col_source')),
+};
 
 function visitorAvatar(id) {
     if (!id) return '<span style="width:16px;height:16px;display:inline-block;flex-shrink:0"></span>';
@@ -113,10 +126,10 @@ function render(data) {
     totalPages = data.pages || 1;
 
     var total = (data.total || 0).toLocaleString();
-    document.getElementById('total-badge').textContent = total + ' sessions';
+    document.getElementById('total-badge').textContent = __t.sessions.replace(':count', total);
 
     if (!rows.length) {
-        document.getElementById('visitor-table').innerHTML = '<div class="text-center py-5 text-muted">No visitor sessions in the last 30 days.</div>';
+        document.getElementById('visitor-table').innerHTML = '<div class="text-center py-5 text-muted">' + __t.noSessions + '</div>';
         document.getElementById('pagination').innerHTML = '';
         return;
     }
@@ -124,15 +137,15 @@ function render(data) {
     var html = '<div style="overflow-x:auto"><table class="pa-table" style="min-width:900px">';
     html += '<thead><tr>'
           + '<th style="width:36px"></th>'
-          + '<th>Time</th>'
-          + '<th>Location</th>'
-          + '<th>Entry page</th>'
-          + '<th>Device</th>'
-          + '<th>Browser</th>'
-          + '<th>OS</th>'
-          + '<th class="text-end">Pages</th>'
-          + '<th class="text-end">Duration</th>'
-          + '<th>Source</th>'
+          + '<th>' + __t.colTime + '</th>'
+          + '<th>' + __t.colLocation + '</th>'
+          + '<th>' + __t.colEntry + '</th>'
+          + '<th>' + __t.colDevice + '</th>'
+          + '<th>' + __t.colBrowser + '</th>'
+          + '<th>' + __t.colOs + '</th>'
+          + '<th class="text-end">' + __t.colPages + '</th>'
+          + '<th class="text-end">' + __t.colDuration + '</th>'
+          + '<th>' + __t.colSource + '</th>'
           + '</tr></thead><tbody>';
 
     rows.forEach(function(r) {

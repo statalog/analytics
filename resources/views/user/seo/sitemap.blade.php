@@ -1,19 +1,19 @@
 @extends('layouts.app')
-@section('title', 'Sitemap Checker')
+@section('title', __('seo.page_sitemap'))
 @section('content')
 <div class="d-flex align-items-center gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-map me-2 icon-primary"></i>SEO Tools
+        <i class="bi bi-map me-2 icon-primary"></i>{{ __('seo.page_seo_tools') }}
     </h4>
 </div>
 @include('user.seo._nav')
 
 <div class="pa-card mb-3">
     <div class="d-flex align-items-center gap-3 flex-wrap">
-        <div class="text-sm-muted">Checking sitemap for:</div>
+        <div class="text-sm-muted">{{ __('seo.sitemap_checking_for') }}</div>
         <code style="background:var(--pa-surface);padding:0.25rem 0.75rem;border-radius:6px;font-size:0.875rem">https://{{ $site->domain }}/sitemap.xml</code>
         <button onclick="runCheck()" class="btn btn-sm btn-primary ms-auto" id="btn-check">
-            <i class="bi bi-play-fill me-1"></i>Check Sitemap
+            <i class="bi bi-play-fill me-1"></i>{{ __('seo.sitemap_btn_check') }}
         </button>
     </div>
 </div>
@@ -34,7 +34,7 @@ function runCheck() {
             if (data.error) { document.getElementById('result').innerHTML = '<div class="pa-card"><div class="alert alert-danger mb-0"><i class="bi bi-exclamation-circle me-2"></i>' + data.error + '</div></div>'; return; }
 
             var html = '<div class="pa-card mb-3"><div class="d-flex gap-4 flex-wrap">';
-            html += '<div><div class="stat-value">' + (data.count || 0).toLocaleString() + '</div><div class="stat-label">' + (data.type === 'index' ? 'Child sitemaps' : 'URLs') + '</div></div>';
+            html += '<div><div class="stat-value">' + (data.count || 0).toLocaleString() + '</div><div class="stat-label">' + (data.type === 'index' ? @json(__('seo.sitemap_child')) : @json(__('seo.sitemap_urls'))) + '</div></div>';
             html += '</div>';
 
             if (data.issues && data.issues.length) {
@@ -44,15 +44,15 @@ function runCheck() {
             html += '</div>';
 
             if (data.type === 'index') {
-                html += '<div class="pa-card"><h6 class="mb-3">Child Sitemaps</h6><ul class="mb-0 text-sm">';
+                html += '<div class="pa-card"><h6 class="mb-3">' + @json(__('seo.sitemap_child_heading')) + '</h6><ul class="mb-0 text-sm">';
                 (data.sitemaps || []).forEach(function(s) { html += '<li><a href="' + s + '" target="_blank" rel="noopener">' + s + '</a></li>'; });
                 html += '</ul></div>';
             } else if (data.urls && data.urls.length) {
-                html += '<div class="pa-card" style="padding:0"><table class="pa-table" style="width:100%"><thead><tr><th>URL</th><th>Last Modified</th><th>Priority</th></tr></thead><tbody>';
+                html += '<div class="pa-card" style="padding:0"><table class="pa-table" style="width:100%"><thead><tr><th>' + @json(__('seo.sitemap_col_url')) + '</th><th>' + @json(__('seo.sitemap_col_lastmod')) + '</th><th>' + @json(__('seo.sitemap_col_priority')) + '</th></tr></thead><tbody>';
                 data.urls.forEach(function(u) {
                     html += '<tr><td style="font-size:0.8125rem;max-width:500px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><a href="' + u.loc + '" target="_blank" rel="noopener">' + u.loc + '</a></td><td class="text-sm">' + (u.lastmod || '—') + '</td><td class="text-sm">' + (u.priority || '—') + '</td></tr>';
                 });
-                if (data.count > 200) html += '<tr><td colspan="3" class="text-center text-sm-muted">Showing first 200 of ' + data.count.toLocaleString() + ' URLs</td></tr>';
+                if (data.count > 200) html += '<tr><td colspan="3" class="text-center text-sm-muted">' + @json(__('seo.sitemap_showing_first', ['count' => '__C__'])).replace('__C__', data.count.toLocaleString()) + '</td></tr>';
                 html += '</tbody></table></div>';
             }
 

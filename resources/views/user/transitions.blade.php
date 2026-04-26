@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Page Transitions')
+@section('title', __('analytics.page_transitions'))
 @section('content')
 
 <div class="d-flex align-items-center gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-shuffle me-2 icon-primary"></i>Page Transitions
+        <i class="bi bi-shuffle me-2 icon-primary"></i>{{ __('analytics.page_transitions') }}
     </h4>
 </div>
 
@@ -14,11 +14,11 @@
             <select id="url-input" style="width:100%"></select>
         </div>
         <button onclick="runCheck()" class="btn-pa-primary flex-shrink-0" id="btn-check">
-            <i class="bi bi-play-fill me-1"></i>Analyse
+            <i class="bi bi-play-fill me-1"></i>{{ __('analytics.transitions_analyse') }}
         </button>
     </div>
     <div class="text-sm-muted mt-2">
-        Shows the pages visitors came from and went to for any page on your site.
+        {{ __('analytics.transitions_intro') }}
     </div>
 </div>
 
@@ -29,6 +29,22 @@
 @push('scripts')
 <script>
 var TRANSITIONS_URL = '{{ route("user.transitions.data") }}';
+var __t = {
+    analyse:    @json(__('analytics.transitions_analyse')),
+    analysing:  @json(__('analytics.transitions_analysing')),
+    noData:     @json(__('analytics.no_data')),
+    noPageData: @json(__('analytics.no_data_for_page')),
+    cameFrom:   @json(__('analytics.transitions_came_from')),
+    wentTo:     @json(__('analytics.transitions_went_to')),
+    selected:   @json(__('analytics.transitions_selected')),
+    pageviews:  @json(__('analytics.transitions_pageviews')),
+    direct:     @json(__('analytics.transitions_direct_entry')),
+    exit:       @json(__('analytics.transitions_exit')),
+    directPct:  @json(__('analytics.transitions_direct_pct')),
+    exitsPct:   @json(__('analytics.transitions_exits_pct')),
+    selectPage: @json(__('analytics.transitions_select_page')),
+    requestFailed: @json(__('analytics.request_failed')),
+};
 
 function pct(hits, total) {
     if (!total) return 0;
@@ -63,7 +79,7 @@ function runCheck() {
 
     var btn = document.getElementById('btn-check');
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Analysing…';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>' + __t.analysing;
     document.getElementById('result').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-secondary" role="status"></div></div>';
 
     var qs = window.location.search;
@@ -71,7 +87,7 @@ function runCheck() {
         .then(r => r.json())
         .then(data => {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-play-fill me-1"></i>Analyse';
+            btn.innerHTML = '<i class="bi bi-play-fill me-1"></i>' + __t.analyse;
 
             if (data.error) {
                 document.getElementById('result').innerHTML = '<div class="pa-card"><div class="alert alert-danger mb-0">' + data.error + '</div></div>';
@@ -79,7 +95,7 @@ function runCheck() {
             }
 
             if (!data.total) {
-                document.getElementById('result').innerHTML = '<div class="pa-card"><div class="text-center py-3 text-muted">No data found for this page in the selected date range.</div></div>';
+                document.getElementById('result').innerHTML = '<div class="pa-card"><div class="text-center py-3 text-muted">' + __t.noPageData + '</div></div>';
                 return;
             }
 
@@ -93,11 +109,11 @@ function runCheck() {
             var exitPct  = pct(exits,   total);
 
             // Left column
-            var leftHtml = '<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--pa-text-muted);margin-bottom:0.75rem">Came from</div>';
+            var leftHtml = '<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--pa-text-muted);margin-bottom:0.75rem">' + __t.cameFrom + '</div>';
             if (entries > 0) {
                 leftHtml += '<div class="d-flex align-items-center gap-2 mb-2">'
                     + '<div style="flex:1">'
-                    + '<div style="font-size:0.8125rem;color:var(--pa-text-muted);font-style:italic">Direct / Entry</div>'
+                    + '<div style="font-size:0.8125rem;color:var(--pa-text-muted);font-style:italic">' + __t.direct + '</div>'
                     + '<div style="height:4px;border-radius:2px;background:var(--pa-border);margin-top:3px">'
                     + '<div style="width:' + entryPct + '%;height:100%;border-radius:2px;background:#6b7280"></div>'
                     + '</div>'
@@ -107,30 +123,30 @@ function runCheck() {
             }
             fromPages.forEach(function(item) { leftHtml += pageRow(item, total, 'var(--pa-primary)'); });
             if (!fromPages.length && !entries) {
-                leftHtml += '<div class="text-sm-muted">No data</div>';
+                leftHtml += '<div class="text-sm-muted">' + __t.noData + '</div>';
             }
 
             // Centre
             var shortPage = shortUrl(url);
             var centreHtml = '<div class="text-center">'
-                + '<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--pa-text-muted);margin-bottom:0.75rem">Selected page</div>'
+                + '<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--pa-text-muted);margin-bottom:0.75rem">' + __t.selected + '</div>'
                 + '<div style="padding:1rem;border:2px solid var(--pa-primary);border-radius:10px;margin-bottom:1rem">'
                 + '<div style="font-size:0.8125rem;font-weight:600;word-break:break-all;margin-bottom:0.5rem" title="' + url + '">' + shortPage + '</div>'
                 + '<div style="font-size:1.5rem;font-weight:800;color:var(--pa-primary)">' + total.toLocaleString() + '</div>'
-                + '<div class="text-xs-muted">pageviews</div>'
+                + '<div class="text-xs-muted">' + __t.pageviews + '</div>'
                 + '</div>'
                 + '<div class="text-sm-muted">'
-                + '<div><span style="font-weight:600;color:#6b7280">' + entryPct + '%</span> direct entries</div>'
-                + '<div><span style="font-weight:600;color:#ef4444">' + exitPct + '%</span> exits</div>'
+                + '<div><span style="font-weight:600;color:#6b7280">' + entryPct + '%</span> ' + __t.directPct + '</div>'
+                + '<div><span style="font-weight:600;color:#ef4444">' + exitPct + '%</span> ' + __t.exitsPct + '</div>'
                 + '</div>'
                 + '</div>';
 
             // Right column
-            var rightHtml = '<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--pa-text-muted);margin-bottom:0.75rem">Went to</div>';
+            var rightHtml = '<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--pa-text-muted);margin-bottom:0.75rem">' + __t.wentTo + '</div>';
             if (exits > 0) {
                 rightHtml += '<div class="d-flex align-items-center gap-2 mb-2">'
                     + '<div style="flex:1">'
-                    + '<div style="font-size:0.8125rem;color:#ef4444;font-style:italic">Exit (left site)</div>'
+                    + '<div style="font-size:0.8125rem;color:#ef4444;font-style:italic">' + __t.exit + '</div>'
                     + '<div style="height:4px;border-radius:2px;background:var(--pa-border);margin-top:3px">'
                     + '<div style="width:' + exitPct + '%;height:100%;border-radius:2px;background:#ef4444"></div>'
                     + '</div>'
@@ -140,7 +156,7 @@ function runCheck() {
             }
             toPages.forEach(function(item) { rightHtml += pageRow(item, total, '#10b981'); });
             if (!toPages.length && !exits) {
-                rightHtml += '<div class="text-sm-muted">No data</div>';
+                rightHtml += '<div class="text-sm-muted">' + __t.noData + '</div>';
             }
 
             var html = '<div class="pa-card">'
@@ -155,8 +171,8 @@ function runCheck() {
         })
         .catch(function() {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-play-fill me-1"></i>Analyse';
-            document.getElementById('result').innerHTML = '<div class="pa-card"><div class="alert alert-danger mb-0">Request failed. Please try again.</div></div>';
+            btn.innerHTML = '<i class="bi bi-play-fill me-1"></i>' + __t.analyse;
+            document.getElementById('result').innerHTML = '<div class="pa-card"><div class="alert alert-danger mb-0">' + __t.requestFailed + '</div></div>';
         });
 }
 
@@ -167,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var ts = new TomSelect('#url-input', {
         maxOptions: 25,
         openOnFocus: true,
-        placeholder: 'Select or search a page…',
+        placeholder: __t.selectPage,
         preload: true,
         load: function(query, callback) {
             fetch(searchUrl + '?q=' + encodeURIComponent(query))

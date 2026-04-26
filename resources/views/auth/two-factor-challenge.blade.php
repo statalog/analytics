@@ -4,8 +4,8 @@
             <a href="{{ route('home') }}"><img src="{{ asset('img/logo.png') }}" alt="{{ __('app.name') }}" style="height:42px;width:auto"></a>
         </div>
 
-        <div class="auth-heading">Two-factor authentication</div>
-        <div class="auth-subheading" id="auth-subheading">Enter the 6-digit code from your authenticator app.</div>
+        <div class="auth-heading">{{ __('auth.tfa_heading') }}</div>
+        <div class="auth-subheading" id="auth-subheading">{{ __('auth.tfa_subheading_code') }}</div>
 
         @if ($errors->any())
             <div class="pa-alert danger">{{ $errors->first() }}</div>
@@ -15,17 +15,17 @@
         <form method="POST" action="{{ route('two-factor.challenge') }}" id="tfa-code-form">
             @csrf
             <div class="mb-3">
-                <label class="auth-label">Authenticator code</label>
+                <label class="auth-label">{{ __('auth.tfa_label_code') }}</label>
                 <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code"
                        pattern="[0-9]*" maxlength="6" required autofocus
                        class="pa-input" placeholder="123456"
                        style="letter-spacing:0.3em;text-align:center;font-family:monospace;font-size:1.125rem">
             </div>
 
-            <button type="submit" class="btn-pa-primary" style="width:100%">Verify</button>
+            <button type="submit" class="btn-pa-primary" style="width:100%">{{ __('auth.btn_verify') }}</button>
 
             <div class="mt-3 text-center">
-                <a href="#" onclick="showRecovery(event)" class="auth-link text-sm">Use a recovery code instead</a>
+                <a href="#" onclick="showRecovery(event)" class="auth-link text-sm">{{ __('auth.tfa_use_recovery') }}</a>
             </div>
         </form>
 
@@ -33,16 +33,16 @@
         <form method="POST" action="{{ route('two-factor.challenge') }}" id="tfa-recovery-form" style="display:none">
             @csrf
             <div class="mb-3">
-                <label class="auth-label">Recovery code</label>
+                <label class="auth-label">{{ __('auth.tfa_label_recovery') }}</label>
                 <input type="text" name="recovery_code" autocomplete="one-time-code"
                        class="pa-input" placeholder="xxxxx-xxxxx"
                        style="font-family:monospace;letter-spacing:0.1em">
             </div>
 
-            <button type="submit" class="btn-pa-primary" style="width:100%">Verify</button>
+            <button type="submit" class="btn-pa-primary" style="width:100%">{{ __('auth.btn_verify') }}</button>
 
             <div class="mt-3 text-center">
-                <a href="#" onclick="showCode(event)" class="auth-link text-sm">Use authenticator code instead</a>
+                <a href="#" onclick="showCode(event)" class="auth-link text-sm">{{ __('auth.tfa_use_code') }}</a>
             </div>
         </form>
     </div>
@@ -54,7 +54,7 @@
         var f = document.getElementById('tfa-recovery-form');
         f.style.display = '';
         f.querySelector('[name=recovery_code]').focus();
-        document.getElementById('auth-subheading').textContent = 'Enter one of your saved recovery codes.';
+        document.getElementById('auth-subheading').textContent = @json(__('auth.tfa_subheading_recovery'));
     }
     function showCode(e) {
         e.preventDefault();
@@ -62,7 +62,7 @@
         var f = document.getElementById('tfa-code-form');
         f.style.display = '';
         f.querySelector('[name=code]').focus();
-        document.getElementById('auth-subheading').textContent = 'Enter the 6-digit code from your authenticator app.';
+        document.getElementById('auth-subheading').textContent = @json(__('auth.tfa_subheading_code'));
     }
     </script>
 </x-guest-layout>

@@ -45,7 +45,7 @@
     @if($siteTracksSubdomains)
     <div id="hostname-filter-wrap" style="display:none">
         <select id="hostname-filter" class="pa-input" style="font-size:0.8125rem;padding:0.35rem 0.6rem;width:auto;min-width:160px">
-            <option value="">All subdomains</option>
+            <option value="">{{ __('app.filter_all_subdomains') }}</option>
         </select>
     </div>
     @endif

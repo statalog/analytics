@@ -36,7 +36,7 @@ function render(rows) {
         html += '<td class="text-num">' + fmtDuration(row.avg_time) + '</td>';
         html += '<td class="text-end">' + (row.pageviews || 0).toLocaleString() + '</td></tr>';
     });
-    if (!rows.length) html += '<tr><td colspan="3" class="text-center text-muted">No data</td></tr>';
+    if (!rows.length) html += '<tr><td colspan="3" class="text-center text-muted">{{ __("analytics.no_data") }}</td></tr>';
     html += '</tbody></table>';
     document.getElementById('top-table').innerHTML = html;
 }

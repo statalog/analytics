@@ -1,24 +1,24 @@
 @extends('layouts.app')
-@section('title', 'Errors')
+@section('title', __('analytics.page_errors'))
 @section('content')
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <h4 class="mb-0 font-heading-bold">
-        <i class="bi bi-bug me-2 icon-primary"></i>Errors
+        <i class="bi bi-bug me-2 icon-primary"></i>{{ __('analytics.page_errors') }}
     </h4>
     @include('components.date-range-picker', ['botFilter' => false])
 </div>
 
 <div class="row g-3 mb-4" id="error-stats">
-    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">Total errors</div><div class="font-heading-bold text-xl" id="stat-total">—</div></div></div>
-    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">Unique errors</div><div class="font-heading-bold text-xl" id="stat-unique">—</div></div></div>
-    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">Affected visitors</div><div class="font-heading-bold text-xl" id="stat-visitors">—</div></div></div>
-    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">Error rate</div><div class="font-heading-bold text-xl" id="stat-rate">—</div></div></div>
+    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">{{ __('analytics.errors_total') }}</div><div class="font-heading-bold text-xl" id="stat-total">—</div></div></div>
+    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">{{ __('analytics.errors_unique') }}</div><div class="font-heading-bold text-xl" id="stat-unique">—</div></div></div>
+    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">{{ __('analytics.errors_affected') }}</div><div class="font-heading-bold text-xl" id="stat-visitors">—</div></div></div>
+    <div class="col-6 col-md-3"><div class="pa-card"><div class="text-sm-muted">{{ __('analytics.errors_rate') }}</div><div class="font-heading-bold text-xl" id="stat-rate">—</div></div></div>
 </div>
 
 <div class="row g-3 align-items-start">
     <div class="col-lg-5">
         <div class="pa-card">
-            <h6 class="mb-3 font-heading-bold">Errors over time</h6>
+            <h6 class="mb-3 font-heading-bold">{{ __('analytics.errors_over_time') }}</h6>
             <canvas id="chart"></canvas>
         </div>
     </div>
@@ -33,6 +33,14 @@
 @push('scripts')
 <script>
 let chart = null;
+var __t = {
+    noErrors:    @json(__('analytics.no_errors_range')),
+    colMessage:  @json(__('analytics.col_message')),
+    colFirstSeen:@json(__('analytics.col_first_seen_short')),
+    colLastSeen: @json(__('analytics.col_last_seen_short')),
+    colCount:    @json(__('analytics.col_count')),
+    colAffected: @json(__('analytics.col_affected')),
+};
 
 function loadData() {
     var params = new URLSearchParams(window.location.search);
@@ -83,15 +91,15 @@ function renderChart(rows) {
 
 function renderTable(rows) {
     if (!rows.length) {
-        document.getElementById('errors-table').innerHTML = '<div class="text-center py-5 text-muted"><i class="bi bi-check-circle" style="font-size:2rem;color:var(--pa-success);opacity:.5"></i><div class="mt-2">No errors in this range. Nice.</div></div>';
+        document.getElementById('errors-table').innerHTML = '<div class="text-center py-5 text-muted"><i class="bi bi-check-circle" style="font-size:2rem;color:var(--pa-success);opacity:.5"></i><div class="mt-2">' + __t.noErrors + '</div></div>';
         return;
     }
     var html = '<table class="pa-table"><thead><tr>';
-    html += '<th>Message</th>';
-    html += '<th>First seen</th>';
-    html += '<th>Last seen</th>';
-    html += '<th class="text-end">Count</th>';
-    html += '<th class="text-end">Affected</th>';
+    html += '<th>' + __t.colMessage + '</th>';
+    html += '<th>' + __t.colFirstSeen + '</th>';
+    html += '<th>' + __t.colLastSeen + '</th>';
+    html += '<th class="text-end">' + __t.colCount + '</th>';
+    html += '<th class="text-end">' + __t.colAffected + '</th>';
     html += '<th></th></tr></thead><tbody>';
     rows.forEach(function(row) {
         var msg = escapeHtml((row.message || '').substring(0, 120));
