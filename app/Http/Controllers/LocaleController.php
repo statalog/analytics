@@ -13,15 +13,23 @@ class LocaleController extends Controller
     {
         $supported = array_keys(config('statalog.locales', ['en' => 'English']));
 
-        if (!in_array($code, $supported, true)) {
-            return back();
+        // Accept both 'pt_BR' (catalog form) and 'pt-BR' (browser/URL form).
+        $normalized = str_replace('-', '_', $code);
+        $resolved = null;
+        foreach ($supported as $supportedCode) {
+            if (strcasecmp($supportedCode, $normalized) === 0) {
+                $resolved = $supportedCode;
+                break;
+            }
         }
+
+        if (!$resolved) return back();
 
         if ($user = $request->user()) {
-            $user->forceFill(['locale' => $code])->save();
+            $user->forceFill(['locale' => $resolved])->save();
         }
 
-        Cookie::queue(SetLocale::COOKIE, $code, 60 * 24 * 365);
+        Cookie::queue(SetLocale::COOKIE, $resolved, 60 * 24 * 365);
 
         return back();
     }

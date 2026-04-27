@@ -33,29 +33,46 @@ class SetLocale
     protected function resolve(Request $request, array $supported, string $default): string
     {
         $query = $request->query('lang');
-        if ($query && in_array($query, $supported, true)) {
-            Cookie::queue(self::COOKIE, $query, 60 * 24 * 365);
-            return $query;
-        }
+        if ($query && ($match = $this->matchLocale($query, $supported))) return $match;
 
         $user = $request->user();
-        if ($user && $user->locale && in_array($user->locale, $supported, true)) {
-            return $user->locale;
+        if ($user && $user->locale && ($match = $this->matchLocale($user->locale, $supported))) {
+            return $match;
         }
 
         $cookie = $request->cookie(self::COOKIE);
-        if ($cookie && in_array($cookie, $supported, true)) {
-            return $cookie;
-        }
+        if ($cookie && ($match = $this->matchLocale($cookie, $supported))) return $match;
 
         $accept = (string) $request->header('Accept-Language', '');
         foreach (array_filter(array_map('trim', explode(',', $accept))) as $part) {
-            $code = strtolower(substr(explode(';', $part)[0], 0, 2));
-            if ($code && in_array($code, $supported, true)) {
-                return $code;
-            }
+            $raw = trim(explode(';', $part)[0]);
+            if ($raw === '') continue;
+            if ($match = $this->matchLocale($raw, $supported)) return $match;
         }
 
         return $default;
+    }
+
+    /**
+     * Match an incoming locale against the supported list. Tries the full code
+     * first (e.g. pt_BR), then the language prefix (e.g. pt). Comparison is
+     * case-insensitive and accepts both '-' and '_' separators on input.
+     */
+    protected function matchLocale(string $input, array $supported): ?string
+    {
+        $normalized = str_replace('-', '_', strtolower($input));
+
+        // Exact (case-insensitive) match — supports pt_BR / zh_CN style codes.
+        foreach ($supported as $code) {
+            if (strcasecmp($code, $normalized) === 0) return $code;
+        }
+
+        // Prefix fallback — pt-BR → pt if 'pt' is supported but 'pt_BR' isn't.
+        $prefix = strstr($normalized, '_', true) ?: $normalized;
+        foreach ($supported as $code) {
+            if (strcasecmp($code, $prefix) === 0) return $code;
+        }
+
+        return null;
     }
 }

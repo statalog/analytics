@@ -1,0 +1,28 @@
+<?php
+
+return array (
+  'page_title' => 'Informe PDF',
+  'intro' => 'Genera una captura de pantalla en PDF de tus datos de análisis para cualquier rango de fechas. Elige las secciones que quieres incluir y descarga al instante.',
+  'configure_report' => 'Configurar informe',
+  'date_range' => 'Rango de fechas',
+  'range_last_7_days' => 'Últimos 7 días',
+  'range_last_30_days' => 'Últimos 30 días',
+  'range_this_month' => 'Este mes',
+  'range_last_month' => 'Mes pasado',
+  'range_custom' => 'Rango personalizado…',
+  'from' => 'Desde',
+  'to' => 'Hasta',
+  'sections_to_include' => 'Secciones a incluir',
+  'section_summary' => 'Estadísticas resumidas',
+  'section_pages' => 'Páginas principales',
+  'section_sources' => 'Fuentes de tráfico',
+  'section_locations' => 'Ubicaciones',
+  'section_devices' => 'Dispositivos y navegadores',
+  'btn_download' => 'Descargar PDF',
+  'whats_included' => 'Qué está incluido',
+  'summary_desc' => 'Visitantes, sesiones, pageviews, tasa de rechazo y duración promedio de visita para el período seleccionado con comparación al período anterior.',
+  'pages_desc' => 'Las 15 páginas más visitadas ordenadas por cantidad de pageviews.',
+  'sources_desc' => 'De dónde vinieron los visitantes: directo, motores de búsqueda, redes sociales y referencias.',
+  'locations_desc' => 'Países principales por cantidad de visitantes únicos.',
+  'devices_desc' => 'Desglose por tipo de dispositivo (escritorio, móvil, tablet) y navegadores principales.',
+);

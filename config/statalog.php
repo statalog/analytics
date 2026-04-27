@@ -25,14 +25,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Version
-    |--------------------------------------------------------------------------
-    */
-
-    'version' => '1.0.0',
-
-    /*
-    |--------------------------------------------------------------------------
     | Marketing URLs
     |--------------------------------------------------------------------------
     */
@@ -62,16 +54,54 @@ return [
     | Supported Locales
     |--------------------------------------------------------------------------
     |
-    | Map of locale code => native language name. Listed locales must have a
-    | matching `lang/{code}/` directory (and `packages/cloud/lang/{code}/` when
-    | the cloud package is installed). The first key is the fallback default
-    | when STATALOG_LOCALE_DEFAULT isn't set.
+    | Self-hosted installs choose which languages are active via the
+    | STATALOG_LOCALES env var (comma-separated list of locale codes).
+    | The map below is the catalog of officially packaged languages —
+    | only codes present here AND in STATALOG_LOCALES are exposed in the UI.
+    |
+    | Each enabled locale must have a matching `lang/{code}/` directory
+    | (and `packages/cloud/lang/{code}/` when the cloud package is installed).
+    |
+    | Add a new language? Drop the translation files in, add the code +
+    | native name to `locale_catalog` below, and bump it in your .env.
     |
     */
 
-    'locales' => [
-        'en' => 'English',
-    ],
+    'locales' => (function () {
+        $catalog = [
+            'en' => 'English',
+            'es' => 'Español',
+            'de' => 'Deutsch',
+            'fr' => 'Français',
+            'it' => 'Italiano',
+            'pt_BR' => 'Português (Brasil)',
+            'pt_PT' => 'Português (Portugal)',
+            'nl' => 'Nederlands',
+            'pl' => 'Polski',
+            'ro' => 'Română',
+            'ru' => 'Русский',
+            'tr' => 'Türkçe',
+            'cs' => 'Čeština',
+            'sv' => 'Svenska',
+            'da' => 'Dansk',
+            'nb' => 'Norsk',
+            'fi' => 'Suomi',
+            'el' => 'Ελληνικά',
+            'hu' => 'Magyar',
+            'uk' => 'Українська',
+            'ja' => '日本語',
+            'zh_CN' => '中文 (简体)',
+            'zh_TW' => '中文 (繁體)',
+            'ko' => '한국어',
+            'ar' => 'العربية',
+            'he' => 'עברית',
+            'hi' => 'हिन्दी',
+        ];
+
+        $enabled = array_filter(array_map('trim', explode(',', env('STATALOG_LOCALES', 'en'))));
+
+        return array_intersect_key($catalog, array_flip($enabled));
+    })(),
 
     'locale_default' => env('STATALOG_LOCALE_DEFAULT', 'en'),
 
