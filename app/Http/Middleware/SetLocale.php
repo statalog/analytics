@@ -15,11 +15,27 @@ class SetLocale
         $supported = array_keys(config('statalog.locales', ['en' => 'English']));
         $default   = config('statalog.locale_default', 'en');
 
+        // Dashboard/admin routes always live on the bare app domain. If we
+        // hit one on a locale subdomain (es.statalog.com/account/dashboard)
+        // redirect to the bare domain so user.locale drives the language.
+        if ($this->isDashboardPath($request) && $this->subdomainLocale($request)) {
+            $appHost = (string) parse_url((string) config('app.url'), PHP_URL_HOST);
+            $scheme  = $request->getScheme();
+            $target  = $scheme . '://' . $appHost . '/' . ltrim($request->path(), '/');
+            if ($qs = $request->getQueryString()) $target .= '?' . $qs;
+            return redirect($target, 302);
+        }
+
         $locale = $this->resolve($request, $supported, $default);
 
         app()->setLocale($locale);
 
         return $next($request);
+    }
+
+    protected function isDashboardPath(Request $request): bool
+    {
+        return $request->is('account/*') || $request->is('admin/*');
     }
 
     /**
