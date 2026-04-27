@@ -15,22 +15,19 @@
         {{ $slot }}
         @php $locales = config('statalog.locales', []); @endphp
         @if(count($locales) > 1)
-        <form method="POST" action="{{ route('locale.set', '_CODE_') }}" id="guest-locale-form" class="text-center mt-3" style="display:none">@csrf</form>
         <div class="text-center mt-3" style="font-size:0.8125rem;color:var(--pa-text-muted)">
             <i class="bi bi-translate me-1"></i>
             <select id="guest-locale-select" class="form-select form-select-sm d-inline-block w-auto" style="font-size:0.8125rem">
                 @foreach($locales as $code => $label)
-                    <option value="{{ $code }}" @selected(app()->getLocale() === $code)>{{ $label }}</option>
+                    <option value="{{ \App\Support\Locale::url($code) }}" @selected(app()->getLocale() === $code)>{{ $label }}</option>
                 @endforeach
             </select>
         </div>
         <script>
         (function() {
             var sel = document.getElementById('guest-locale-select');
-            var form = document.getElementById('guest-locale-form');
             sel.addEventListener('change', function() {
-                form.action = form.action.replace('_CODE_', encodeURIComponent(sel.value));
-                form.submit();
+                window.location.href = sel.value;
             });
         })();
         </script>

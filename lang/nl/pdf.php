@@ -1,0 +1,28 @@
+<?php
+
+return array (
+  'page_title' => '[TRANSLATE] PDF Report',
+  'intro' => '[TRANSLATE] Generate a PDF snapshot of your analytics data for any date range. Choose the sections you want to include and download instantly.',
+  'configure_report' => '[TRANSLATE] Configure report',
+  'date_range' => '[TRANSLATE] Date range',
+  'range_last_7_days' => '[TRANSLATE] Last 7 days',
+  'range_last_30_days' => '[TRANSLATE] Last 30 days',
+  'range_this_month' => '[TRANSLATE] This month',
+  'range_last_month' => '[TRANSLATE] Last month',
+  'range_custom' => '[TRANSLATE] Custom range…',
+  'from' => '[TRANSLATE] From',
+  'to' => '[TRANSLATE] To',
+  'sections_to_include' => '[TRANSLATE] Sections to include',
+  'section_summary' => '[TRANSLATE] Summary stats',
+  'section_pages' => '[TRANSLATE] Top pages',
+  'section_sources' => '[TRANSLATE] Traffic sources',
+  'section_locations' => '[TRANSLATE] Locations',
+  'section_devices' => '[TRANSLATE] Devices & browsers',
+  'btn_download' => '[TRANSLATE] Download PDF',
+  'whats_included' => '[TRANSLATE] What\'s included',
+  'summary_desc' => '[TRANSLATE] Visitors, sessions, pageviews, bounce rate, and average visit duration for the selected period with comparison to the previous period.',
+  'pages_desc' => '[TRANSLATE] The 15 most visited pages ranked by pageview count.',
+  'sources_desc' => '[TRANSLATE] Where visitors came from — direct, search engines, social networks, and referrers.',
+  'locations_desc' => '[TRANSLATE] Top countries by unique visitor count.',
+  'devices_desc' => '[TRANSLATE] Device type breakdown (desktop, mobile, tablet) and top browsers.',
+);

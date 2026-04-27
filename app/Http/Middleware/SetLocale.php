@@ -25,14 +25,17 @@ class SetLocale
     /**
      * Resolution priority:
      * 1. Subdomain prefix (es.statalog.com → es; pt-br.statalog.com → pt_BR)
-     *    — highest priority for marketing pages so each locale has its own
-     *    canonical URL. Hyphens in subdomains map back to underscores in
-     *    locale codes (DNS-safe vs Laravel-style).
-     * 2. ?lang=xx query (one-shot, persisted via cookie)
-     * 3. Authed user's saved locale
-     * 4. statalog_locale cookie
-     * 5. Accept-Language header
-     * 6. Configured default
+     *    — primary signal for marketing pages so each locale has its own
+     *    canonical URL.
+     * 2. ?lang=xx query — explicit one-shot override (testing).
+     * 3. Authed user's saved locale — dashboard preference.
+     * 4. Configured default.
+     *
+     * We deliberately do NOT consult cookies or Accept-Language. Once
+     * subdomains exist for every supported language, the URL is the source
+     * of truth: bare domain = default locale, period. Otherwise visitors
+     * see Spanish on statalog.com because their browser sends pt-br
+     * Accept-Language, which contradicts what the URL says.
      */
     protected function resolve(Request $request, array $supported, string $default): string
     {
@@ -45,16 +48,6 @@ class SetLocale
         $user = $request->user();
         if ($user && $user->locale && ($match = $this->matchLocale($user->locale, $supported))) {
             return $match;
-        }
-
-        $cookie = $request->cookie(self::COOKIE);
-        if ($cookie && ($match = $this->matchLocale($cookie, $supported))) return $match;
-
-        $accept = (string) $request->header('Accept-Language', '');
-        foreach (array_filter(array_map('trim', explode(',', $accept))) as $part) {
-            $raw = trim(explode(';', $part)[0]);
-            if ($raw === '') continue;
-            if ($match = $this->matchLocale($raw, $supported)) return $match;
         }
 
         return $default;
