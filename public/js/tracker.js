@@ -368,10 +368,13 @@
                     scroll_pct: maxScroll
                 });
                 try {
+                    // Send as plain string (text/plain by default) to keep the
+                    // request "simple" — no CORS preflight, works cross-subdomain.
+                    // The server parses the body as JSON regardless of Content-Type.
                     if (navigator.sendBeacon) {
-                        navigator.sendBeacon(heatmapEndpoint, new Blob([body], { type: 'application/json' }));
+                        navigator.sendBeacon(heatmapEndpoint, body);
                     } else {
-                        fetch(heatmapEndpoint, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: body });
+                        fetch(heatmapEndpoint, { method: 'POST', keepalive: true, body: body });
                     }
                 } catch (e) {}
                 maxScroll = 0;

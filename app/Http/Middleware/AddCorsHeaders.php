@@ -31,13 +31,7 @@ class AddCorsHeaders
     {
         $response = $next($request);
 
-        // Echo the requesting origin (or '*' for non-browser callers) instead of
-        // a hard wildcard. Browsers reject wildcard with credentials enabled.
-        $origin = $request->headers->get('Origin', '*');
-
-        $response->headers->set('Access-Control-Allow-Origin', $origin);
-        $response->headers->set('Vary', 'Origin');
-        $response->headers->set('Access-Control-Allow-Credentials', 'true');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
         $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
         $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
 

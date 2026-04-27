@@ -43,14 +43,10 @@ class CollectController extends Controller
 
         $gif = base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
 
-        $origin = $request->headers->get('Origin', '*');
-
         return response($gif, 200)
             ->header('Content-Type', 'image/gif')
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate')
-            ->header('Access-Control-Allow-Origin', $origin)
-            ->header('Vary', 'Origin')
-            ->header('Access-Control-Allow-Credentials', 'true')
+            ->header('Access-Control-Allow-Origin', '*')
             ->header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
             ->header('Access-Control-Allow-Headers', 'Content-Type');
     }
