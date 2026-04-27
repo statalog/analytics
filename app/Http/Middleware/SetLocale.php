@@ -24,18 +24,21 @@ class SetLocale
 
     /**
      * Resolution priority:
-     * 1. Subdomain prefix (es.statalog.com → es; pt-br.statalog.com → pt_BR)
-     *    — primary signal for marketing pages so each locale has its own
-     *    canonical URL.
-     * 2. ?lang=xx query — explicit one-shot override (testing).
-     * 3. Authed user's saved locale — dashboard preference.
-     * 4. Configured default.
+     *   - Marketing pages (public landing/docs/blog/legal/etc.):
+     *     1. Subdomain prefix (es.statalog.com → es)
+     *     2. ?lang=xx query — explicit one-shot override
+     *     3. Configured default (bare domain = default, period)
      *
-     * We deliberately do NOT consult cookies or Accept-Language. Once
-     * subdomains exist for every supported language, the URL is the source
-     * of truth: bare domain = default locale, period. Otherwise visitors
-     * see Spanish on statalog.com because their browser sends pt-br
-     * Accept-Language, which contradicts what the URL says.
+     *   - Dashboard / admin pages (/account/*, /admin/*):
+     *     1. Subdomain prefix
+     *     2. ?lang=xx query
+     *     3. Authed user's saved locale
+     *     4. Configured default
+     *
+     * Marketing pages deliberately do NOT consult user.locale — the URL is
+     * the source of truth. Otherwise an authed user with locale=ro who clicks
+     * "English" in the marketing switcher (which links to statalog.com)
+     * would still see Romanian, because user.locale would override the URL.
      */
     protected function resolve(Request $request, array $supported, string $default): string
     {
@@ -45,9 +48,12 @@ class SetLocale
         $query = $request->query('lang');
         if ($query && ($match = $this->matchLocale($query, $supported))) return $match;
 
-        $user = $request->user();
-        if ($user && $user->locale && ($match = $this->matchLocale($user->locale, $supported))) {
-            return $match;
+        // Only dashboard/admin paths fall through to the authed user's locale.
+        if ($request->is('account/*') || $request->is('admin/*')) {
+            $user = $request->user();
+            if ($user && $user->locale && ($match = $this->matchLocale($user->locale, $supported))) {
+                return $match;
+            }
         }
 
         return $default;
