@@ -1,0 +1,28 @@
+<?php
+
+return array (
+  'page_title' => 'Rapport PDF',
+  'intro' => 'Générez un aperçu PDF de vos données analytiques pour n\'importe quelle période. Choisissez les sections à inclure et téléchargez instantanément.',
+  'configure_report' => 'Configurer le rapport',
+  'date_range' => 'Période',
+  'range_last_7_days' => 'Les 7 derniers jours',
+  'range_last_30_days' => 'Les 30 derniers jours',
+  'range_this_month' => 'Ce mois',
+  'range_last_month' => 'Le mois dernier',
+  'range_custom' => 'Période personnalisée…',
+  'from' => 'Du',
+  'to' => 'Au',
+  'sections_to_include' => 'Sections à inclure',
+  'section_summary' => 'Statistiques récapitulatives',
+  'section_pages' => 'Pages populaires',
+  'section_sources' => 'Sources de trafic',
+  'section_locations' => 'Localités',
+  'section_devices' => 'Appareils et navigateurs',
+  'btn_download' => 'Télécharger le PDF',
+  'whats_included' => 'Ce qui est inclus',
+  'summary_desc' => 'Visiteurs, sessions, pages vues, taux de rebond et durée moyenne de visite pour la période sélectionnée avec comparaison à la période précédente.',
+  'pages_desc' => 'Les 15 pages les plus visitées classées par nombre de pages vues.',
+  'sources_desc' => 'D\'où proviennent les visiteurs — direct, moteurs de recherche, réseaux sociaux et référents.',
+  'locations_desc' => 'Pays les plus visités par nombre de visiteurs uniques.',
+  'devices_desc' => 'Répartition des types d\'appareils (bureau, mobile, tablette) et navigateurs les plus populaires.',
+);

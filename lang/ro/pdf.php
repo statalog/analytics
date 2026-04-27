@@ -1,0 +1,28 @@
+<?php
+
+return array (
+  'page_title' => 'Raport PDF',
+  'intro' => 'Generați o instantaneu PDF a datelor dumneavoastră de analitică pentru orice interval de date. Alegeți secțiunile pe care doriți să le includeți și descărcați instantaneu.',
+  'configure_report' => 'Configurare raport',
+  'date_range' => 'Interval de date',
+  'range_last_7_days' => 'Ultimii 7 zile',
+  'range_last_30_days' => 'Ultimii 30 de zile',
+  'range_this_month' => 'Luna aceasta',
+  'range_last_month' => 'Luna trecută',
+  'range_custom' => 'Interval personalizat…',
+  'from' => 'Din',
+  'to' => 'Către',
+  'sections_to_include' => 'Secțiuni de inclus',
+  'section_summary' => 'Statistici sumar',
+  'section_pages' => 'Pagini principale',
+  'section_sources' => 'Surse de trafic',
+  'section_locations' => 'Locații',
+  'section_devices' => 'Dispozitive și browsere',
+  'btn_download' => 'Descărcare PDF',
+  'whats_included' => 'Ce este inclus',
+  'summary_desc' => 'Vizitatori, sesiuni, paginile vizualizate, rata de bounce și durată medie a vizitei pentru perioada selectată cu comparație cu perioada anterioară.',
+  'pages_desc' => 'Cele 15 pagini cel mai des vizitate clasate după numărul de vizualizări de pagină.',
+  'sources_desc' => 'De unde au venit vizitatorii — direct, motoare de căutare, rețele sociale și referitori.',
+  'locations_desc' => 'Țări principale după numărul de vizitatori unici.',
+  'devices_desc' => 'Defalcare tip dispozitiv (desktop, mobil, tablă) și browsere principale.',
+);

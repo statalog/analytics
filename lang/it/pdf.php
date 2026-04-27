@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'page_title' => 'Relazione PDF',
+    'intro' => 'Genera uno snapshot in PDF dei Tuoi dati analitici per qualsiasi periodo. Scegli le sezioni che desideri includere e scarica istantaneamente.',
+    'configure_report' => 'Configura relazione',
+    'date_range' => 'Periodo',
+    'range_last_7_days' => 'Ultimi 7 giorni',
+    'range_last_30_days' => 'Ultimi 30 giorni',
+    'range_this_month' => 'Questo mese',
+    'range_last_month' => 'Mese scorso',
+    'range_custom' => 'Periodo personalizzato…',
+    'from' => 'Da',
+    'to' => 'A',
+    'sections_to_include' => 'Sezioni da includere',
+    'section_summary' => 'Statistiche di riepilogo',
+    'section_pages' => 'Pagine principali',
+    'section_sources' => 'Fonti di traffico',
+    'section_locations' => 'Posizioni',
+    'section_devices' => 'Dispositivi e browser',
+    'btn_download' => 'Scarica PDF',
+    'whats_included' => 'Cosa è incluso',
+    'summary_desc' => 'Visitatori, sessioni, visualizzazioni di pagina, frequenza di rimbalzo e durata media della visita per il periodo selezionato con confronto con il periodo precedente.',
+    'pages_desc' => 'Le 15 pagine più visitate classificate per numero di visualizzazioni di pagina.',
+    'sources_desc' => 'Da dove provengono i visitatori — diretti, motori di ricerca, social network e referrer.',
+    'locations_desc' => 'Paesi principali per numero di visitatori unici.',
+    'devices_desc' => 'Suddivisione di tipi di dispositivi (desktop, cellulare, tablet) e browser più popolari.',
+];

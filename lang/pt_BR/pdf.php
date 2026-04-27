@@ -1,0 +1,28 @@
+<?php
+
+return array (
+  'page_title' => 'Relatório PDF',
+  'intro' => 'Gere um instantâneo em PDF de seus dados analíticos para qualquer período. Escolha as seções que deseja incluir e baixe instantaneamente.',
+  'configure_report' => 'Configurar relatório',
+  'date_range' => 'Período',
+  'range_last_7_days' => 'Últimos 7 dias',
+  'range_last_30_days' => 'Últimos 30 dias',
+  'range_this_month' => 'Este mês',
+  'range_last_month' => 'Mês passado',
+  'range_custom' => 'Período personalizado…',
+  'from' => 'De',
+  'to' => 'Para',
+  'sections_to_include' => 'Seções a incluir',
+  'section_summary' => 'Estatísticas resumidas',
+  'section_pages' => 'Principais páginas',
+  'section_sources' => 'Fontes de tráfego',
+  'section_locations' => 'Locais',
+  'section_devices' => 'Dispositivos e navegadores',
+  'btn_download' => 'Baixar PDF',
+  'whats_included' => 'O que está incluído',
+  'summary_desc' => 'Visitantes, sessões, visualizações de página, taxa de rejeição e duração média de visita para o período selecionado com comparação ao período anterior.',
+  'pages_desc' => 'As 15 páginas mais visitadas classificadas por contagem de visualizações de página.',
+  'sources_desc' => 'De onde vieram os visitantes — direto, motores de busca, redes sociais e referenciadores.',
+  'locations_desc' => 'Principais países pelo número de visitantes únicos.',
+  'devices_desc' => 'Divisão de tipos de dispositivos (desktop, celular, tablet) e navegadores mais populares.',
+);
