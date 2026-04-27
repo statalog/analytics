@@ -1,0 +1,28 @@
+<?php
+
+return array (
+  'page_title' => 'PDF-Bericht',
+  'intro' => 'Erstellen Sie einen PDF-Schnappschuss Ihrer Analysedaten für beliebige Datumsbereiche. Wählen Sie die Abschnitte aus, die Sie einbeziehen möchten, und laden Sie sofort herunter.',
+  'configure_report' => 'Bericht konfigurieren',
+  'date_range' => 'Datumsbereich',
+  'range_last_7_days' => 'Letzte 7 Tage',
+  'range_last_30_days' => 'Letzte 30 Tage',
+  'range_this_month' => 'Dieser Monat',
+  'range_last_month' => 'Letzter Monat',
+  'range_custom' => 'Benutzerdefinierten Bereich…',
+  'from' => 'Von',
+  'to' => 'Bis',
+  'sections_to_include' => 'Abschnitte zum Einschließen',
+  'section_summary' => 'Zusammenfassungsstatistiken',
+  'section_pages' => 'Top-Seiten',
+  'section_sources' => 'Verkehrsquellen',
+  'section_locations' => 'Standorte',
+  'section_devices' => 'Geräte & Browser',
+  'btn_download' => 'PDF herunterladen',
+  'whats_included' => 'Was enthalten ist',
+  'summary_desc' => 'Besucher, Sitzungen, Seitenaufrufe, Absprungrate und durchschnittliche Besuchsdauer für den ausgewählten Zeitraum mit Vergleich zum vorherigen Zeitraum.',
+  'pages_desc' => 'Die 15 am häufigsten besuchten Seiten, nach Seitenaufrufen geordnet.',
+  'sources_desc' => 'Woher Besucher kamen — direkt, Suchmaschinen, soziale Netzwerke und Verweise.',
+  'locations_desc' => 'Top-Länder nach eindeutiger Besucherzahl.',
+  'devices_desc' => 'Aufschlüsselung des Gerätetyps (Desktop, Mobil, Tablet) und Top-Browser.',
+);

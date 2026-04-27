@@ -24,14 +24,21 @@ class SetLocale
 
     /**
      * Resolution priority:
-     * 1. ?lang=xx query (one-shot, persisted via cookie)
-     * 2. Authed user's saved locale
-     * 3. statalog_locale cookie
-     * 4. Accept-Language header
-     * 5. Configured default
+     * 1. Subdomain prefix (es.statalog.com → es; pt-br.statalog.com → pt_BR)
+     *    — highest priority for marketing pages so each locale has its own
+     *    canonical URL. Hyphens in subdomains map back to underscores in
+     *    locale codes (DNS-safe vs Laravel-style).
+     * 2. ?lang=xx query (one-shot, persisted via cookie)
+     * 3. Authed user's saved locale
+     * 4. statalog_locale cookie
+     * 5. Accept-Language header
+     * 6. Configured default
      */
     protected function resolve(Request $request, array $supported, string $default): string
     {
+        $sub = $this->subdomainLocale($request);
+        if ($sub && ($match = $this->matchLocale($sub, $supported))) return $match;
+
         $query = $request->query('lang');
         if ($query && ($match = $this->matchLocale($query, $supported))) return $match;
 
@@ -51,6 +58,33 @@ class SetLocale
         }
 
         return $default;
+    }
+
+    /**
+     * Returns the subdomain prefix when the request hostname is a locale
+     * subdomain of the configured app URL. E.g.
+     *   es.statalog.com         → 'es'
+     *   pt-br.statalog.com      → 'pt-br'  (matchLocale will normalize to pt_BR)
+     *   statalog.com            → null     (bare domain, no subdomain)
+     *   panel.statalog.com      → null     (not a locale prefix shape)
+     *
+     * Detection is conservative: we only treat it as a locale subdomain when
+     * the prefix is one of the configured supported codes. That way unrelated
+     * subdomains (panel, app, mail, …) pass through untouched.
+     */
+    protected function subdomainLocale(Request $request): ?string
+    {
+        $host = strtolower((string) $request->getHost());
+        $appHost = strtolower((string) parse_url((string) config('app.url'), PHP_URL_HOST));
+        if (!$host || !$appHost || $host === $appHost) return null;
+
+        // Only consider hosts that are direct subdomains of the configured app host.
+        if (!str_ends_with($host, '.' . $appHost)) return null;
+
+        $prefix = substr($host, 0, -strlen('.' . $appHost));
+        if ($prefix === '' || str_contains($prefix, '.')) return null; // multi-level subdomains skipped
+
+        return $prefix;
     }
 
     /**
