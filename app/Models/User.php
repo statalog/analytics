@@ -90,10 +90,20 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
             ->latest();
     }
 
-    /** Convenience accessor for the user's current plan via their active subscription. */
+    /** Convenience accessor for the user's current plan via their active subscription.
+     *  Falls back to the configured default (free) plan when no subscription row exists,
+     *  so freshly-signed-up users still resolve to the Free plan. */
     public function getPlanAttribute()
     {
-        return $this->subscription?->plan;
+        if ($plan = $this->subscription?->plan) {
+            return $plan;
+        }
+
+        if (class_exists(\Statalog\Cloud\Models\Plan::class)) {
+            return \Statalog\Cloud\Models\Plan::default();
+        }
+
+        return null;
     }
 
     public function settings(): HasMany

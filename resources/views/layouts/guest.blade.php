@@ -37,15 +37,19 @@
     </div>
 
     <style>
-    .auth-locale-bar {
-        position: absolute; top: 1.25rem; right: 1.25rem; z-index: 50;
-    }
+    /* Logo header becomes a flex row: logo on the left, switcher on the right.
+       The switcher itself is rendered at the bottom of <body> and moved into
+       the .auth-logo on DOM ready, since each auth view owns its own card. */
+    .auth-logo { display: flex !important; align-items: center; justify-content: space-between; text-align: left !important; }
+    .auth-logo a { margin: 0; }
+
+    .auth-locale-bar { display: inline-flex; }
     .auth-locale { position: relative; }
     .auth-locale-trigger {
         display: inline-flex; align-items: center; gap: 0.4rem;
-        padding: 0.45rem 0.85rem; border-radius: 9999px;
+        padding: 0.4rem 0.8rem; border-radius: 9999px;
         background: var(--pa-card-bg); border: 1px solid var(--pa-border);
-        color: var(--pa-text); font: inherit; font-size: 0.875rem; font-weight: 500;
+        color: var(--pa-text); font: inherit; font-size: 0.8125rem; font-weight: 500;
         cursor: pointer; transition: background .15s, border-color .15s;
     }
     .auth-locale-trigger:hover { background: color-mix(in srgb, var(--pa-text) 4%, var(--pa-card-bg)); border-color: color-mix(in srgb, var(--pa-text) 18%, var(--pa-border)); }
@@ -74,6 +78,14 @@
     </style>
 
     <script>
+    // Move the locale switcher into the auth card's logo header so it sits
+    // on the same row as the logo (logo left, switcher right).
+    document.addEventListener('DOMContentLoaded', function() {
+        var logo = document.querySelector('.auth-card .auth-logo');
+        var bar  = document.querySelector('.auth-locale-bar');
+        if (logo && bar) logo.appendChild(bar);
+    });
+
     document.addEventListener('click', function(e) {
         document.querySelectorAll('[data-dropdown].open').forEach(function(d) {
             if (!d.contains(e.target)) d.classList.remove('open');

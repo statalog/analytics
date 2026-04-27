@@ -186,7 +186,7 @@
             document.querySelectorAll('select.js-searchable').forEach(function (el) {
                 new TomSelect(el, {
                     maxOptions: null,        // show every option
-                    openOnFocus: true,       // dropdown opens when user focuses
+                    openOnFocus: false,      // only open on explicit click, not on incidental focus
                     hideSelected: false,     // keep currently-selected visible in the list
                     create: false,
                     sortField: { field: '$order' }  // preserve original option order
