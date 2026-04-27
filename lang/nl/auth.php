@@ -1,47 +1,71 @@
 <?php
 
-return array (
-  'failed' => '[TRANSLATE] These credentials do not match our records.',
-  'password' => '[TRANSLATE] The provided password is incorrect.',
-  'throttle' => '[TRANSLATE] Too many login attempts. Please try again in :seconds seconds.',
-  'login_title' => '[TRANSLATE] Log in to Statalog',
-  'login_heading' => '[TRANSLATE] Welcome back',
-  'login_subheading' => '[TRANSLATE] Sign in to your account',
-  'field_email' => '[TRANSLATE] Email',
-  'field_password' => '[TRANSLATE] Password',
-  'field_remember' => '[TRANSLATE] Remember me',
-  'btn_login' => '[TRANSLATE] Log in',
-  'link_forgot' => '[TRANSLATE] Forgot your password?',
-  'link_register' => '[TRANSLATE] Don\'t have an account? Register',
-  'register_title' => '[TRANSLATE] Create your Statalog account',
-  'register_heading' => '[TRANSLATE] Get started',
-  'register_subheading' => '[TRANSLATE] Self-hosted web analytics in 5 minutes',
-  'field_name' => '[TRANSLATE] Name',
-  'field_password_confirm' => '[TRANSLATE] Confirm Password',
-  'btn_register' => '[TRANSLATE] Create account',
-  'link_login' => '[TRANSLATE] Already have an account? Log in',
-  'forgot_title' => '[TRANSLATE] Reset your password',
-  'forgot_heading' => '[TRANSLATE] Forgot your password?',
-  'forgot_subheading' => '[TRANSLATE] Enter your email and we will send you a reset link.',
-  'btn_send_link' => '[TRANSLATE] Email Password Reset Link',
-  'reset_title' => '[TRANSLATE] Set a new password',
-  'reset_heading' => '[TRANSLATE] Reset password',
-  'btn_reset' => '[TRANSLATE] Reset Password',
-  'confirm_title' => '[TRANSLATE] Confirm password',
-  'confirm_heading' => '[TRANSLATE] This is a secure area of the application. Please confirm your password before continuing.',
-  'btn_confirm' => '[TRANSLATE] Confirm',
-  'verify_title' => '[TRANSLATE] Verify your email',
-  'verify_heading' => '[TRANSLATE] Verify your email address',
-  'verify_body' => '[TRANSLATE] Thanks for signing up. Before getting started, could you verify your email by clicking the link we just sent? If you didn\'t receive the email, we\'ll gladly send another.',
-  'verify_resend' => '[TRANSLATE] Resend verification email',
-  'btn_logout' => '[TRANSLATE] Log out',
-  'logged_out' => '[TRANSLATE] You have been logged out.',
-  'tfa_heading' => '[TRANSLATE] Two-factor authentication',
-  'tfa_subheading_code' => '[TRANSLATE] Enter the 6-digit code from your authenticator app.',
-  'tfa_subheading_recovery' => '[TRANSLATE] Enter one of your saved recovery codes.',
-  'tfa_label_code' => '[TRANSLATE] Authenticator code',
-  'tfa_label_recovery' => '[TRANSLATE] Recovery code',
-  'btn_verify' => '[TRANSLATE] Verify',
-  'tfa_use_recovery' => '[TRANSLATE] Use a recovery code instead',
-  'tfa_use_code' => '[TRANSLATE] Use authenticator code instead',
-);
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Verificatietaalregels
+    |--------------------------------------------------------------------------
+    */
+
+    'failed'   => 'Deze referenties komen niet met onze registratie overeen.',
+    'password' => 'Het gegeven wachtwoord is onjuist.',
+    'throttle' => 'Te veel inlogpogingen. Probeer het alstublieft over :seconds seconden opnieuw.',
+
+    // Aanmeldingspagina
+    'login_title'       => 'Meld u aan bij Statalog',
+    'login_heading'     => 'Welkom terug',
+    'login_subheading'  => 'Meld u aan bij uw account',
+    'field_email'       => 'E-mail',
+    'field_password'    => 'Wachtwoord',
+    'field_remember'    => 'Onthoud mij',
+    'btn_login'         => 'Aanmelden',
+    'link_forgot'       => 'Bent u uw wachtwoord vergeten?',
+    'link_register'     => 'Nog geen account? Registreren',
+
+    // Registratiepagina
+    'register_title'      => 'Maak uw Statalog-account aan',
+    'register_heading'    => 'Aan de slag',
+    'register_subheading' => 'Zelf-gehoste webanalytics in 5 minuten',
+    'field_name'          => 'Naam',
+    'field_password_confirm' => 'Wachtwoord bevestigen',
+    'btn_register'        => 'Account aanmaken',
+    'link_login'          => 'Al een account? Aanmelden',
+
+    // Wachtwoord vergeten
+    'forgot_title'    => 'Stel uw wachtwoord opnieuw in',
+    'forgot_heading'  => 'Wachtwoord vergeten?',
+    'forgot_subheading' => 'Voer uw e-mailadres in en we sturen u een herstelkoppeling.',
+    'btn_send_link'   => 'E-mail voor wachtwoord herstellen verzenden',
+
+    // Wachtwoord opnieuw instellen
+    'reset_title'    => 'Stel een nieuw wachtwoord in',
+    'reset_heading'  => 'Wachtwoord opnieuw instellen',
+    'btn_reset'      => 'Wachtwoord opnieuw instellen',
+
+    // Bevestig wachtwoord
+    'confirm_title'   => 'Bevestig wachtwoord',
+    'confirm_heading' => 'Dit is een beveiligd gedeelte van de toepassing. Bevestig alstublieft uw wachtwoord voordat u doorgaat.',
+    'btn_confirm'     => 'Bevestigen',
+
+    // E-mailverificatie
+    'verify_title'     => 'Verifieer uw e-mailadres',
+    'verify_heading'   => 'Verifieer uw e-mailadres',
+    'verify_body'      => 'Dank u voor het registreren. Kunt u alstublieft uw e-mailadres verifiëren door op de link te klikken die we zojuist hebben verzonden? Als u de e-mail niet hebt ontvangen, sturen we graag een ander exemplaar.',
+    'verify_resend'    => 'Verificatie-e-mail opnieuw verzenden',
+    'btn_logout'       => 'Afmelden',
+
+    // Sessie
+    'logged_out'       => 'U bent afgemeld.',
+
+    // Twee-staps verificatie
+    'tfa_heading'              => 'Twee-staps authenticatie',
+    'tfa_subheading_code'      => 'Voer de 6-cijferige code uit uw authenticator-app in.',
+    'tfa_subheading_recovery'  => 'Voer één van uw opgeslagen hersttelcodes in.',
+    'tfa_label_code'           => 'Authenticatorcode',
+    'tfa_label_recovery'       => 'Herstelcode',
+    'btn_verify'               => 'Verifiëren',
+    'tfa_use_recovery'         => 'Gebruik in plaats daarvan een herstelcode',
+    'tfa_use_code'             => 'Gebruik authenticatorcode in plaats daarvan',
+
+];

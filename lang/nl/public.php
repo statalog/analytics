@@ -1,33 +1,43 @@
 <?php
 
-return array (
-  'title_suffix' => '[TRANSLATE] :site — Analytics',
-  'protected_title' => '[TRANSLATE] Protected Dashboard — :site',
-  'password_protected' => '[TRANSLATE] This dashboard is password protected.',
-  'password_label' => '[TRANSLATE] Password',
-  'password_placeholder' => '[TRANSLATE] Enter password',
-  'btn_unlock' => '[TRANSLATE] Unlock Dashboard',
-  'powered_by' => '[TRANSLATE] Powered by',
-  'analytics_by' => '[TRANSLATE] Analytics by',
-  'range_today' => '[TRANSLATE] Today',
-  'range_yesterday' => '[TRANSLATE] Yesterday',
-  'range_last_24h' => '[TRANSLATE] Last 24 hours',
-  'range_last_7_days' => '[TRANSLATE] Last 7 days',
-  'range_last_30_days' => '[TRANSLATE] Last 30 days',
-  'range_this_month' => '[TRANSLATE] This month',
-  'range_last_month' => '[TRANSLATE] Last month',
-  'traffic_overview' => '[TRANSLATE] Traffic Overview',
-  'top_pages' => '[TRANSLATE] Top Pages',
-  'traffic_sources' => '[TRANSLATE] Traffic Sources',
-  'locations' => '[TRANSLATE] Locations',
-  'devices' => '[TRANSLATE] Devices',
-  'browsers' => '[TRANSLATE] Browsers',
-  'operating_systems' => '[TRANSLATE] Operating Systems',
-  'screen_resolutions' => '[TRANSLATE] Screen Resolutions',
-  'col_pageviews' => '[TRANSLATE] Pageviews',
-  'col_visitors' => '[TRANSLATE] Visitors',
-  'col_sessions' => '[TRANSLATE] Sessions',
-  'loading' => '[TRANSLATE] Loading...',
-  'no_data' => '[TRANSLATE] No data',
-  'unknown' => '[TRANSLATE] Unknown',
-);
+return [
+
+    // Openbaar dashboard
+    'title_suffix'        => ':site — Analytics',
+    'protected_title'     => 'Beveiligd Dashboard — :site',
+    'password_protected'  => 'Dit dashboard is met een wachtwoord beveiligd.',
+    'password_label'      => 'Wachtwoord',
+    'password_placeholder'=> 'Voer wachtwoord in',
+    'btn_unlock'          => 'Dashboard ontgrendelen',
+    'powered_by'          => 'Ondersteund door',
+    'analytics_by'        => 'Analytics door',
+
+    // Datumbereiken
+    'range_today'        => 'Vandaag',
+    'range_yesterday'    => 'Gisteren',
+    'range_last_24h'     => 'Afgelopen 24 uur',
+    'range_last_7_days'  => 'Afgelopen 7 dagen',
+    'range_last_30_days' => 'Afgelopen 30 dagen',
+    'range_this_month'   => 'Deze maand',
+    'range_last_month'   => 'Vorige maand',
+
+    // Secties
+    'traffic_overview'    => 'Verkeersoverzicht',
+    'top_pages'           => 'Topbladzijden',
+    'traffic_sources'     => 'Verkeersbronnen',
+    'locations'           => 'Locaties',
+    'devices'             => 'Apparaten',
+    'browsers'            => 'Browsers',
+    'operating_systems'   => 'Besturingssystemen',
+    'screen_resolutions'  => 'Schermresoluties',
+
+    // Kolomlabels
+    'col_pageviews'       => 'Paginaweergaven',
+    'col_visitors'        => 'Bezoekers',
+    'col_sessions'        => 'Sessies',
+
+    'loading'             => 'Laden…',
+    'no_data'             => 'Geen gegevens',
+    'unknown'             => 'Onbekend',
+
+];

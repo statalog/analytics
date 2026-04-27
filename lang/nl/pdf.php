@@ -1,28 +1,34 @@
 <?php
 
-return array (
-  'page_title' => '[TRANSLATE] PDF Report',
-  'intro' => '[TRANSLATE] Generate a PDF snapshot of your analytics data for any date range. Choose the sections you want to include and download instantly.',
-  'configure_report' => '[TRANSLATE] Configure report',
-  'date_range' => '[TRANSLATE] Date range',
-  'range_last_7_days' => '[TRANSLATE] Last 7 days',
-  'range_last_30_days' => '[TRANSLATE] Last 30 days',
-  'range_this_month' => '[TRANSLATE] This month',
-  'range_last_month' => '[TRANSLATE] Last month',
-  'range_custom' => '[TRANSLATE] Custom range…',
-  'from' => '[TRANSLATE] From',
-  'to' => '[TRANSLATE] To',
-  'sections_to_include' => '[TRANSLATE] Sections to include',
-  'section_summary' => '[TRANSLATE] Summary stats',
-  'section_pages' => '[TRANSLATE] Top pages',
-  'section_sources' => '[TRANSLATE] Traffic sources',
-  'section_locations' => '[TRANSLATE] Locations',
-  'section_devices' => '[TRANSLATE] Devices & browsers',
-  'btn_download' => '[TRANSLATE] Download PDF',
-  'whats_included' => '[TRANSLATE] What\'s included',
-  'summary_desc' => '[TRANSLATE] Visitors, sessions, pageviews, bounce rate, and average visit duration for the selected period with comparison to the previous period.',
-  'pages_desc' => '[TRANSLATE] The 15 most visited pages ranked by pageview count.',
-  'sources_desc' => '[TRANSLATE] Where visitors came from — direct, search engines, social networks, and referrers.',
-  'locations_desc' => '[TRANSLATE] Top countries by unique visitor count.',
-  'devices_desc' => '[TRANSLATE] Device type breakdown (desktop, mobile, tablet) and top browsers.',
-);
+return [
+
+    'page_title'           => 'PDF-rapport',
+    'intro'                => 'Genereer een PDF-momentopname van uw analysegegevens voor elk datumbereik. Kies welke secties u wilt opnemen en download direct.',
+
+    // Formulier
+    'configure_report'     => 'Rapport configureren',
+    'date_range'           => 'Datumbereik',
+    'range_last_7_days'    => 'Afgelopen 7 dagen',
+    'range_last_30_days'   => 'Afgelopen 30 dagen',
+    'range_this_month'     => 'Deze maand',
+    'range_last_month'     => 'Vorige maand',
+    'range_custom'         => 'Aangepast bereik…',
+    'from'                 => 'Van',
+    'to'                   => 'Tot',
+    'sections_to_include'  => 'Secties om op te nemen',
+    'section_summary'      => 'Samenvattingsstatistieken',
+    'section_pages'        => 'Topbladzijden',
+    'section_sources'      => 'Verkeersbronnen',
+    'section_locations'    => 'Locaties',
+    'section_devices'      => 'Apparaten en browsers',
+    'btn_download'         => 'PDF downloaden',
+
+    // Wat is inbegrepen
+    'whats_included'        => 'Wat is inbegrepen',
+    'summary_desc'          => 'Bezoekers, sessies, paginaweergaven, stuiteringspercentage en gemiddelde bezoekduur voor de geselecteerde periode met vergelijking met de vorige periode.',
+    'pages_desc'            => 'De 15 meest bezochte bladzijden gerangschikt op paginaweergaveaantal.',
+    'sources_desc'          => 'Waar bezoekers vandaan kwamen — direct, zoekmachines, sociale netwerken en verwijzers.',
+    'locations_desc'        => 'Topcountries op uniek bezoekeraantal.',
+    'devices_desc'          => 'Apparaattypeverdeling (desktop, mobiel, tablet) en topbrowsers.',
+
+];
