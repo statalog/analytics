@@ -1058,6 +1058,71 @@ class AnalyticsRepository
         );
     }
 
+    /**
+     * Ecommerce summary — revenue, orders, AOV — extracted from `value` property
+     * of the named event (defaults to 'purchase').
+     */
+    public function getEcommerceSummary(string $siteId, string $from, string $to, string $eventName = 'purchase'): array
+    {
+        $rows = $this->queryWithCache(
+            "ecom_sum:{$siteId}:{$eventName}:{$from}:{$to}", 300,
+            "SELECT
+                count() as orders,
+                sum(JSONExtractFloat(properties, 'value')) as revenue
+             FROM custom_events
+             WHERE site_id = :site_id AND event_name = :event_name AND timestamp >= :from AND timestamp <= :to",
+            ['site_id' => $siteId, 'event_name' => $eventName, 'from' => $from, 'to' => $to]
+        );
+
+        $row = $rows[0] ?? [];
+        $orders  = (int) ($row['orders'] ?? 0);
+        $revenue = (float) ($row['revenue'] ?? 0);
+        $aov     = $orders > 0 ? $revenue / $orders : 0;
+
+        return ['orders' => $orders, 'revenue' => $revenue, 'aov' => $aov];
+    }
+
+    /** Daily revenue series for the chart. */
+    public function getEcommerceRevenueOverTime(string $siteId, string $from, string $to, string $eventName = 'purchase', string $timezone = 'UTC'): array
+    {
+        return $this->queryWithCache(
+            "ecom_chart:{$siteId}:{$eventName}:{$from}:{$to}", 300,
+            "SELECT
+                toDate(timestamp, :tz) as date,
+                count() as orders,
+                sum(JSONExtractFloat(properties, 'value')) as revenue
+             FROM custom_events
+             WHERE site_id = :site_id AND event_name = :event_name AND timestamp >= :from AND timestamp <= :to
+             GROUP BY date
+             ORDER BY date",
+            ['site_id' => $siteId, 'event_name' => $eventName, 'from' => $from, 'to' => $to, 'tz' => $timezone]
+        );
+    }
+
+    /**
+     * Top products by revenue. Reads the `product_id` (or `product_name`)
+     * property from purchase events. Limited to top N rows.
+     */
+    public function getEcommerceTopProducts(string $siteId, string $from, string $to, string $eventName = 'purchase', int $limit = 10): array
+    {
+        return $this->queryWithCache(
+            "ecom_products:{$siteId}:{$eventName}:{$from}:{$to}", 300,
+            "SELECT
+                coalesce(
+                    nullIf(JSONExtractString(properties, 'product_name'), ''),
+                    nullIf(JSONExtractString(properties, 'product_id'), '')
+                ) as product,
+                count() as orders,
+                sum(JSONExtractFloat(properties, 'value')) as revenue
+             FROM custom_events
+             WHERE site_id = :site_id AND event_name = :event_name AND timestamp >= :from AND timestamp <= :to AND product != ''
+             GROUP BY product
+             ORDER BY revenue DESC
+             LIMIT {$limit}",
+            ['site_id' => $siteId, 'event_name' => $eventName, 'from' => $from, 'to' => $to]
+        );
+    }
+
     // --- Admin Stats ---
 
     /**

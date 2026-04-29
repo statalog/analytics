@@ -52,6 +52,16 @@ return [
     'card_operating_systems'  => 'Operating Systems',
     'card_screen_resolutions' => 'Screen Resolutions',
 
+    // Ecommerce dashboard section (auto-shown when 'purchase' events exist)
+    'ecom_heading'            => 'Ecommerce',
+    'ecom_revenue'            => 'Revenue',
+    'ecom_orders'             => 'Orders',
+    'ecom_aov'                => 'Avg order value',
+    'ecom_conv_rate'          => 'Conversion rate',
+    'ecom_chart_title'        => 'Revenue over time',
+    'ecom_top_products'       => 'Top products',
+    'ecom_no_products'        => 'No product data — pass product_id or product_name in your purchase events.',
+
     // Charts
     'chart_traffic_overview' => 'Traffic Overview',
     'trend_over_time'        => 'Trend Over Time',

@@ -81,6 +81,32 @@ class DashboardController extends Controller
         $avgDuration     = $repo->getAvgVisitDuration($site->site_id, $from, $to);
         $prevAvgDuration = $repo->getAvgVisitDuration($site->site_id, $prevFrom, $prevTo);
 
+        // Ecommerce summary — auto-skip when no purchase events recorded.
+        $ecomSummary = $repo->getEcommerceSummary($site->site_id, $from, $to);
+        $ecommerce = null;
+        if ($ecomSummary['orders'] > 0) {
+            $prevSummary = $repo->getEcommerceSummary($site->site_id, $prevFrom, $prevTo);
+            $convRate    = $sessions > 0 ? round($ecomSummary['orders'] / $sessions * 100, 2) : 0;
+            $prevConv    = $prevSessions > 0 ? round($prevSummary['orders'] / $prevSessions * 100, 2) : 0;
+
+            $ecommerce = [
+                'summary' => [
+                    'revenue'        => $ecomSummary['revenue'],
+                    'orders'         => $ecomSummary['orders'],
+                    'aov'            => $ecomSummary['aov'],
+                    'conversionRate' => $convRate,
+                    'trends' => [
+                        'revenue'        => $this->calculateTrend((float) $ecomSummary['revenue'], (float) $prevSummary['revenue']),
+                        'orders'         => $this->calculateTrend($ecomSummary['orders'], $prevSummary['orders']),
+                        'aov'            => $this->calculateTrend((float) $ecomSummary['aov'], (float) $prevSummary['aov']),
+                        'conversionRate' => $this->calculateTrend($convRate, $prevConv),
+                    ],
+                ],
+                'chart'    => $repo->getEcommerceRevenueOverTime($site->site_id, $from, $to, 'purchase', $site->timezone ?? 'UTC'),
+                'products' => $repo->getEcommerceTopProducts($site->site_id, $from, $to),
+            ];
+        }
+
         return response()->json([
             'stats' => [
                 ['metric' => 'visitors',  'label' => 'Unique Visitors', 'value' => number_format($visitors),            'trend' => $this->calculateTrend($visitors, $prevVisitors),       'icon' => 'people'],
@@ -97,6 +123,7 @@ class DashboardController extends Controller
             'browsers'    => $repo->getBrowsers($site->site_id, $from, $to),
             'os'          => $repo->getOperatingSystems($site->site_id, $from, $to),
             'resolutions' => $repo->getScreenResolutions($site->site_id, $from, $to),
+            'ecommerce'   => $ecommerce,
         ]);
     }
 

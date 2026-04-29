@@ -24,6 +24,26 @@
         </div>
     </div>
 
+    {{-- Ecommerce section — JS-rendered only when there are purchase events. --}}
+    <div id="ecom-section" style="display:none">
+        <div class="d-flex align-items-center gap-2 mb-3 mt-2">
+            <i class="bi bi-bag-check" style="color:var(--pa-primary);font-size:1.15rem"></i>
+            <h6 class="mb-0 font-heading">{{ __('analytics.ecom_heading') }}</h6>
+        </div>
+        <div class="row g-3 mb-3" id="ecom-stats-row"></div>
+        <div class="row g-3 mb-4">
+            <div class="col-lg-7">
+                <div class="pa-card">
+                    <h6 class="mb-3 font-heading">{{ __('analytics.ecom_chart_title') }}</h6>
+                    <div style="position:relative;height:240px"><canvas id="ecom-chart"></canvas></div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="pa-card" id="ecom-products"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-3">
         <div class="col-lg-6" id="card-pages"></div>
         <div class="col-lg-6" id="card-sources"></div>
@@ -199,7 +219,73 @@ function loadDashboardData() {
             renderDetailCard('card-browsers', __t.browsers,   data.browsers || [],   'browser','visitors',  function(r) { return getBrowserIcon(r.browser) + (r.browser || __t.unknown); });
             renderDetailCard('card-os',       __t.os,         data.os || [],         'os',     'visitors',  function(r) { return getOsIcon(r.os) + (r.os || __t.unknown); });
             renderDetailCard('card-resolutions', __t.resolutions, data.resolutions || [], 'screen_resolution', 'cnt');
+            renderEcommerce(data.ecommerce || null);
         });
+}
+
+// ── Ecommerce section ────────────────────────────────────────────────────────
+var ecomChart = null;
+function renderEcommerce(ec) {
+    var section = document.getElementById('ecom-section');
+    if (!ec) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+
+    var s = ec.summary || {};
+    var t = s.trends || {};
+    var fmt$ = function(n) { return '$' + (parseFloat(n) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+    var trendBadge = function(v) {
+        if (!v && v !== 0) return '';
+        var sign = v > 0 ? '+' : '';
+        var color = v > 0 ? 'var(--pa-success)' : (v < 0 ? 'var(--pa-danger)' : 'var(--pa-text-muted)');
+        return '<span style="font-size:0.75rem;color:' + color + ';font-weight:600">' + sign + v + '%</span>';
+    };
+    var card = function(label, value, trend) {
+        return '<div class="col-6 col-md-3"><div class="stat-card">'
+            + '<div class="stat-label">' + label + '</div>'
+            + '<div class="stat-value">' + value + '</div>'
+            + '<div class="stat-trend">' + trendBadge(trend) + '</div>'
+            + '</div></div>';
+    };
+
+    document.getElementById('ecom-stats-row').innerHTML =
+          card(@json(__('analytics.ecom_revenue')),  fmt$(s.revenue),                                          t.revenue)
+        + card(@json(__('analytics.ecom_orders')),   (s.orders || 0).toLocaleString(),                         t.orders)
+        + card(@json(__('analytics.ecom_aov')),      fmt$(s.aov),                                              t.aov)
+        + card(@json(__('analytics.ecom_conv_rate')), (s.conversionRate || 0) + '%',                            t.conversionRate);
+
+    // Revenue chart
+    var ctx = document.getElementById('ecom-chart').getContext('2d');
+    var labels = (ec.chart || []).map(function(r) { return r.date; });
+    var values = (ec.chart || []).map(function(r) { return parseFloat(r.revenue) || 0; });
+    if (ecomChart) ecomChart.destroy();
+    ecomChart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: labels, datasets: [{ label: @json(__('analytics.ecom_revenue')), data: values, borderColor: paColor(), backgroundColor: paColor(0.12), fill: true, tension: 0.3 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { return fmt$(c.parsed.y); } } } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return '$' + v.toLocaleString(); } } } } }
+    });
+
+    // Top products
+    var products = ec.products || [];
+    var html = '<h6 class="mb-3 font-heading">' + @json(__('analytics.ecom_top_products')) + '</h6>';
+    if (!products.length) {
+        html += '<div class="text-sm-muted py-3 text-center">' + @json(__('analytics.ecom_no_products')) + '</div>';
+    } else {
+        var max = products.reduce(function(a, p) { return Math.max(a, parseFloat(p.revenue) || 0); }, 1);
+        html += '<div style="display:flex;flex-direction:column;gap:0.5rem">';
+        products.forEach(function(p) {
+            var rev = parseFloat(p.revenue) || 0;
+            var w = Math.round((rev / max) * 100);
+            html += '<div>'
+                + '<div class="d-flex justify-content-between" style="font-size:0.875rem;margin-bottom:0.25rem">'
+                + '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%">' + (p.product || '—') + '</span>'
+                + '<span style="font-weight:600">' + fmt$(rev) + ' <span style="color:var(--pa-text-muted);font-weight:400;font-size:0.8125rem">· ' + p.orders + '</span></span>'
+                + '</div>'
+                + '<div style="height:4px;background:var(--pa-input-bg);border-radius:9999px;overflow:hidden"><div style="height:100%;width:' + w + '%;background:var(--pa-primary)"></div></div>'
+                + '</div>';
+        });
+        html += '</div>';
+    }
+    document.getElementById('ecom-products').innerHTML = html;
 }
 
 function loadChartData() {
