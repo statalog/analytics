@@ -118,7 +118,7 @@ class SiteController extends Controller
             'domain'   => [
                 'required', 'string', 'max:255',
                 'regex:/^([a-z0-9-]+\.)+[a-z]{2,}$/i',
-                Rule::unique('sites', 'domain')->where(fn ($q) => $q->where('user_id', auth()->id())),
+                Rule::unique('sites', 'domain')->where(fn ($q) => $q->where('user_id', auth()->id())->whereNull('deleted_at')),
             ],
             'timezone' => ['required', 'string', 'timezone'],
         ], [
@@ -165,7 +165,7 @@ class SiteController extends Controller
                 'regex:/^([a-z0-9-]+\.)+[a-z]{2,}$/i',
                 Rule::unique('sites', 'domain')
                     ->ignore($site->id)
-                    ->where(fn ($q) => $q->where('user_id', auth()->id())),
+                    ->where(fn ($q) => $q->where('user_id', auth()->id())->whereNull('deleted_at')),
             ],
             'timezone' => ['required', 'string', 'timezone'],
         ], [
