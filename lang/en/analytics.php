@@ -323,4 +323,18 @@ return [
     // Dashboard
     'card_locations_map'       => 'Locations Map',
 
+    // Time of day — chart headings
+    'tod_chart_by_hour'      => 'Pageviews by hour',
+    'tod_chart_by_day'       => 'Pageviews by day',
+
+    // Time of day — auto-summary sentences
+    'tod_peak_hour'          => 'Traffic peaks at :hour, accounting for :pct% of all pageviews.',
+    'tod_even_hours'         => 'Traffic is distributed fairly evenly throughout the day.',
+    'tod_busiest_day'        => ':day is your busiest day of the week.',
+    'tod_busiest_weekend'    => 'Your audience is most active on weekends.',
+    'tod_hottest_slot'       => 'Your hottest slot is :day at :hour.',
+    'tod_best_slot'          => ':day at :hour is your single best-performing slot.',
+    'tod_quiet_window'       => 'Traffic drops to near zero between :from and :to.',
+    'tod_no_quiet'           => 'There is no significant off-peak window — traffic runs consistently through the day.',
+
 ];
