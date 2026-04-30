@@ -45,7 +45,7 @@ function render(rows) {
     var html = '<div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:3px;width:100%"><thead><tr>'
              + '<td style="width:36px"></td>';
     HOURS.forEach(function(h) {
-        var label = h === 0 ? '12a' : h < 12 ? h + 'a' : h === 12 ? '12p' : (h-12) + 'p';
+        var label = String(h).padStart(2, '0');
         html += '<th style="' + CELL + 'font-weight:500;color:var(--pa-text-muted)">' + label + '</th>';
     });
     html += '</tr></thead><tbody>';
