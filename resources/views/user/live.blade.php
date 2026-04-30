@@ -131,7 +131,10 @@ function getLiveReferrer(referrer) {
     else if (d.indexOf('twitter') !== -1 || d === 't.co')    icon = '<i class="bi bi-twitter-x me-1"></i>';
     else if (d.indexOf('linkedin') !== -1) icon = '<i class="bi bi-linkedin me-1"></i>';
     else if (d.indexOf('github') !== -1)   icon = '<i class="bi bi-github me-1"></i>';
-    return icon + stripped;
+    var path = stripped.indexOf('/') !== -1 ? stripped.slice(stripped.indexOf('/')) : '';
+    var label = '<span style="font-weight:600">' + domain + '</span>';
+    if (path) label += '<br><span style="font-size:0.78rem;color:var(--pa-text-muted)">' + path + '</span>';
+    return icon + label;
 }
 
 function formatTimestamp(ts) {
