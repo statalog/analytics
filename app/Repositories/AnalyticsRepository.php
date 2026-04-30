@@ -269,6 +269,64 @@ class AnalyticsRepository
         );
     }
 
+    public function getVisitorsOverTimeHourly(string $siteId, string $from, string $to, string $timezone = 'UTC'): array
+    {
+        $rows = $this->queryWithCache(
+            "visitors_chart_hourly:{$siteId}:{$from}:{$to}" . $this->sdKey(), 60,
+            "SELECT
+                date,
+                sum(visitors) as visitors,
+                sum(pageviews) as pageviews,
+                count() as sessions,
+                round(countIf(pv_count = 1) * 100.0 / count(), 1) as bounce,
+                toInt32(avg(duration)) as duration
+            FROM (
+                SELECT
+                    session_id,
+                    formatDateTime(toStartOfHour(min(timestamp), :tz), '%Y-%m-%d %H:00:00', :tz) as date,
+                    uniq(visitor_id) as visitors,
+                    countIf(url != '') as pv_count,
+                    countIf(url != '') as pageviews,
+                    greatest(dateDiff('second', min(timestamp), max(timestamp)), max(visit_duration)) as duration
+                FROM pageviews
+                WHERE site_id = :site_id" . $this->sd() . " AND timestamp >= :from AND timestamp <= :to
+                GROUP BY session_id
+            )
+            GROUP BY date
+            ORDER BY date",
+            ['site_id' => $siteId, 'from' => $from, 'to' => $to, 'tz' => $timezone]
+        );
+
+        return $this->fillHourlyGaps($rows, $from, $to, $timezone);
+    }
+
+    private function fillHourlyGaps(array $rows, string $from, string $to, string $timezone): array
+    {
+        $indexed = [];
+        foreach ($rows as $row) {
+            $indexed[$row['date']] = $row;
+        }
+
+        $tz  = new \DateTimeZone($timezone);
+        $utc = new \DateTimeZone('UTC');
+        $cur = (new \DateTime($from, $utc))->setTimezone($tz);
+        $cur->setTime((int) $cur->format('H'), 0, 0);
+        $cap = new \DateTime('now', $utc);
+        if (new \DateTime($to, $utc) < $cap) {
+            $cap = new \DateTime($to, $utc);
+        }
+        $cap->setTimezone($tz);
+
+        $result = [];
+        while ($cur <= $cap) {
+            $key      = $cur->format('Y-m-d H:00:00');
+            $result[] = $indexed[$key] ?? ['date' => $key, 'visitors' => 0, 'pageviews' => 0, 'sessions' => 0, 'bounce' => 0, 'duration' => 0];
+            $cur->modify('+1 hour');
+        }
+
+        return $result;
+    }
+
     // --- Detail Cards ---
 
     public function getTopPages(string $siteId, string $from, string $to, int $limit = 10): array

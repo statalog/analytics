@@ -135,9 +135,14 @@ class DashboardController extends Controller
         }
 
         [$from, $to] = $this->getDateRange($request);
+        $range  = $request->input('range', 'last7days');
+        $hourly = in_array($range, ['today', 'yesterday', 'last24h']);
+        $repo   = $this->analyticsFor($site, $request->input('hostname'));
 
-        return response()->json(
-            $this->analyticsFor($site, $request->input('hostname'))->getVisitorsOverTime($site->site_id, $from, $to, $site->timezone)
-        );
+        $data = $hourly
+            ? $repo->getVisitorsOverTimeHourly($site->site_id, $from, $to, $site->timezone ?? 'UTC')
+            : $repo->getVisitorsOverTime($site->site_id, $from, $to, $site->timezone ?? 'UTC');
+
+        return response()->json(['data' => $data, 'hourly' => $hourly]);
     }
 }

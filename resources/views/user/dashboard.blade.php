@@ -63,6 +63,7 @@
 <script>
 var mainChart = null;
 var chartData = {};
+var chartHourly = false;
 var activeMetric = 'visitors';
 var __t = {
     topPages:    @json(__('analytics.card_top_pages')),
@@ -292,7 +293,7 @@ function loadChartData() {
     var params = new URLSearchParams(window.location.search);
     fetch('{{ route("user.dashboard.chart") }}?' + params.toString())
         .then(function(r) { return r.json(); })
-        .then(function(data) { chartData = data; renderChart('visitors'); });
+        .then(function(res) { chartData = res.data || res; chartHourly = !!(res.hourly); renderChart('visitors'); });
 }
 
 function renderStats(stats) {
@@ -317,7 +318,7 @@ function formatDuration(s) {
 
 function renderChart(metric) {
     var ctx = document.getElementById('main-chart').getContext('2d');
-    var labels = chartData.map(function(d) { return d.date; });
+    var labels = chartData.map(function(d) { return chartHourly ? d.date.substring(11, 16) : d.date; });
     var values = chartData.map(function(d) { return parseFloat(d[metric] || 0); });
     var hasData = values.some(function(v) { return v > 0; });
     var noDataEl = document.getElementById('chart-no-data');
