@@ -122,7 +122,8 @@ function getBrowserIcon(browser) {
 
 function getLiveReferrer(referrer) {
     if (!referrer) return __t.direct;
-    var domain = referrer.replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '');
+    var stripped = referrer.replace(/^https?:\/\//, '').replace(/^www\./, '');
+    var domain = stripped.split('/')[0];
     var d = domain.toLowerCase();
     var icon = '<i class="bi bi-globe2 me-1"></i>';
     if (d.indexOf('google') !== -1)    icon = '<i class="bi bi-google me-1"></i>';
@@ -130,7 +131,7 @@ function getLiveReferrer(referrer) {
     else if (d.indexOf('twitter') !== -1 || d === 't.co')    icon = '<i class="bi bi-twitter-x me-1"></i>';
     else if (d.indexOf('linkedin') !== -1) icon = '<i class="bi bi-linkedin me-1"></i>';
     else if (d.indexOf('github') !== -1)   icon = '<i class="bi bi-github me-1"></i>';
-    return icon + domain;
+    return icon + stripped;
 }
 
 function formatTimestamp(ts) {
