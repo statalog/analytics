@@ -13,7 +13,15 @@
     @include('components.date-range-picker')
 </div>
 
-<div class="row g-3 mb-3">
+<div class="pa-card mb-3">
+    <div id="locations-map" style="height:480px;border-radius:8px;background:#e8edf2"></div>
+    <div class="d-flex justify-content-between align-items-center mt-2 text-sm-muted">
+        <span id="map-count"></span>
+        <span id="map-updated"></span>
+    </div>
+</div>
+
+<div class="row g-3">
     <div class="col-lg-6">
         <div class="pa-card p-0">
             <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--pa-border)">
@@ -29,14 +37,6 @@
             </div>
             <div id="cities-table"><div class="text-center py-5"><div class="spinner-border text-secondary" role="status"></div></div></div>
         </div>
-    </div>
-</div>
-
-<div class="pa-card">
-    <div id="locations-map" style="height:480px;border-radius:8px;background:#e8edf2"></div>
-    <div class="d-flex justify-content-between align-items-center mt-2 text-sm-muted">
-        <span id="map-count"></span>
-        <span id="map-updated"></span>
     </div>
 </div>
 @endsection
