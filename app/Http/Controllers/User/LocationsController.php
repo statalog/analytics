@@ -25,7 +25,7 @@ class LocationsController extends Controller
 
         return view('user.locations', [
             'site'        => $site,
-            'breadcrumbs' => [['label' => 'Locations']],
+            'breadcrumbs' => [['label' => 'Visitor Locations']],
         ]);
     }
 

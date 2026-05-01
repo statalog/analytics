@@ -25,7 +25,7 @@ return [
     'page_channels'         => 'Channels',
     'page_pages'            => 'Pages',
     'page_transitions'      => 'Page Transitions',
-    'page_locations'        => 'Locations',
+    'page_locations'        => 'Visitor Locations',
     'page_devices'          => 'Devices & Software',
     'page_performance'      => 'Performance',
     'page_bots'             => 'Bots',

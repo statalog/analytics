@@ -134,7 +134,6 @@ Route::prefix('account')->name('user.')->middleware(['auth', 'verified'])->group
     Route::get('/visitors/data',     [VisitorLogController::class, 'data'])->name('visitor-log.data');
     Route::get('/performance',       [PerformanceController::class, 'index'])->name('performance');
     Route::get('/performance/data',  [PerformanceController::class, 'data'])->name('performance.data');
-    Route::get('/visitor-map',       [VisitorMapController::class, 'index'])->name('visitor-map');
     Route::get('/visitor-map/data',  [VisitorMapController::class, 'data'])->name('visitor-map.data');
     Route::get('/visitor-map/live',  [VisitorMapController::class, 'liveData'])->name('visitor-map.live');
     Route::get('/channels',              [ChannelsController::class, 'index'])->name('channels');

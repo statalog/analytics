@@ -5,7 +5,7 @@
     $currentSiteId = session('current_site_id');
     $currentSite = $currentSiteId ? $sites->firstWhere('site_id', $currentSiteId) : $sites->first();
 
-    $audienceRoutes = ['user.visitor-log*','user.pages*','user.locations*','user.devices*','user.time-of-day*','user.visitor-map*'];
+    $audienceRoutes = ['user.visitor-log*','user.pages*','user.locations*','user.devices*','user.time-of-day*'];
     $audienceOpen   = collect($audienceRoutes)->contains(fn($p) => request()->routeIs($p));
 
     $acquisitionRoutes = ['user.channels*','user.search-engines*','user.websites*','user.social-networks*','user.ai-sources*','user.campaigns*'];
@@ -66,16 +66,13 @@
                     <i class="bi bi-file-earmark-text"></i> Pages
                 </a>
                 <a href="{{ route('user.locations') }}" class="nav-link {{ request()->routeIs('user.locations*') ? 'active' : '' }}">
-                    <i class="bi bi-geo-alt"></i> Locations
+                    <i class="bi bi-geo-alt"></i> Visitor Locations
                 </a>
                 <a href="{{ route('user.devices') }}" class="nav-link {{ request()->routeIs('user.devices*') ? 'active' : '' }}">
                     <i class="bi bi-laptop"></i> Devices
                 </a>
                 <a href="{{ route('user.time-of-day') }}" class="nav-link {{ request()->routeIs('user.time-of-day*') ? 'active' : '' }}">
                     <i class="bi bi-clock"></i> Time of Day
-                </a>
-                <a href="{{ route('user.visitor-map') }}" class="nav-link {{ request()->routeIs('user.visitor-map*') ? 'active' : '' }}">
-                    <i class="bi bi-globe2"></i> Visitor Map
                 </a>
             </div>
         </div>
