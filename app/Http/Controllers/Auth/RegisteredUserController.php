@@ -30,6 +30,13 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Honeypot: reject if filled
+        if ($request->filled('website_url')) {
+            throw ValidationException::withMessages([
+                'email' => [__('auth.invalid_registration')],
+            ]);
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
@@ -44,13 +51,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        // If arriving from an invitation link, redirect back to accept it.
-        if ($token = session()->pull('invite_token')) {
-            return redirect()->route('invitations.show', $token);
-        }
-
-        return redirect(route('user.dashboard', absolute: false));
+        // Require email verification before accessing the app
+        return redirect()->route('verification.notice');
     }
 }

@@ -68,4 +68,7 @@ return [
     'tfa_use_recovery'         => 'Use a recovery code instead',
     'tfa_use_code'             => 'Use authenticator code instead',
 
+    // Registration validation
+    'invalid_registration'     => 'Invalid registration attempt.',
+
 ];

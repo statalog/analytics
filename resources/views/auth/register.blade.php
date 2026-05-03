@@ -8,6 +8,7 @@
 
         <form method="POST" action="{{ route('register') }}">
             @csrf
+            <input type="text" name="website_url" style="display:none;position:absolute;left:-9999px" tabindex="-1" autocomplete="off">
             <div class="mb-3">
                 <label class="auth-label" for="name">{{ __('auth.field_name') }}</label>
                 <input id="name" type="text" name="name" class="auth-input" value="{{ old('name') }}" required autofocus autocomplete="name">
